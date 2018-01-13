@@ -51,7 +51,7 @@ Tip: see how to [install and use Hydrogen Atom package](hydrogen.md).
 
 # 1. New interfaces
 
-New interfaces are exclusive to Pandoctools.
+New interfaces are exclusive to Knitty.
 
 ## 1.1 New command line interfaces
 
@@ -224,7 +224,7 @@ Notable options:
 
 Added `chunk=name` new keyword argument option. It's an alternative way to specify code chunk name (together with second positional argument. Keyword argument has a priority over it).
 
-This option is exclusive to Pandoctools.
+This option is exclusive to Knitty.
 
 
 # 3. New document options

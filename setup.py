@@ -10,7 +10,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
-    name='pandoctools',
+    name='knitty',
     version=versioneer.get_version(),
     cmdclass=versioneer.get_cmdclass(),
 
