@@ -9,7 +9,7 @@ See [**Knitty documentation**](https://github.com/kiwi0fruit/knitty/blob/master/
 ## Install
 
 ```sh
-pip install pandoctools
+pip install knitty
 ```
 
 If you use conda package manager (Anaconda/Miniconda) then you can install dependencies first:
@@ -22,6 +22,6 @@ Pandoc ≥ 2.0 is needed for proper Knitty output re-processing. In particular f
 Also can install from GitHub:
 
 ```sh
-pip install git+https://github.com/kiwi0fruit/pandoctools.git
+pip install git+https://github.com/kiwi0fruit/knitty.git
 ```
 In this case you need to have installed [Git](https://git-scm.com/downloads) available from command prompt.
