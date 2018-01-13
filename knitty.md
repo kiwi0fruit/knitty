@@ -67,8 +67,6 @@ New interfaces are exclusive to Pandoctools.
     * `-t TEXT`, `--to TEXT`, `-w TEXT`, `--write TEXT` – Pandoc option,
     * `--dir-name TEXT` – Manually name Knitty data folder (instead of default auto-naming).
 
-`knotr` - same as `stitch` CLI in original Stitch/Knotr but uses Stitch that is included in Knitty.
-
 
 ## 1.2 Alternative settings placement
 

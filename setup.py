@@ -47,7 +47,6 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            'knotr=knitty.stitch.cli:cli',
             'knitty=knitty.knitty:main',
             'pre-knitty=knitty.pre_knitty:main',
         ],
