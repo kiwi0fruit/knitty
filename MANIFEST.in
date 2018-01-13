@@ -1,0 +1,5 @@
+include knitty/*
+include knitty/stitch/*
+include knitty/stitch/static/*
+include versioneer.py
+include knitty/_version.py
