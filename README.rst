@@ -18,7 +18,7 @@ Install
 
 .. code:: sh
 
-    pip install pandoctools
+    pip install knitty
 
 If you use conda package manager (Anaconda/Miniconda) then you can
 install dependencies first:
@@ -35,7 +35,7 @@ Also can install from GitHub:
 
 .. code:: sh
 
-    pip install git+https://github.com/kiwi0fruit/pandoctools.git
+    pip install git+https://github.com/kiwi0fruit/knitty.git
 
 In this case you need to have installed
 `Git <https://git-scm.com/downloads>`__ available from command prompt.
