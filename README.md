@@ -24,5 +24,3 @@ Also can install from GitHub:
 pip install git+https://github.com/kiwi0fruit/knitty.git
 ```
 In this case you need to have installed [Git](https://git-scm.com/downloads) available from command prompt.
-
-<!-- pandoc README.md -o README.rst -->
