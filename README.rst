@@ -1,7 +1,3 @@
-.. raw:: html
-
-   <!-- pandoc README.md -o README.rst -->
-
 Knitty
 ======
 
@@ -39,3 +35,7 @@ Also can install from GitHub:
 
 In this case you need to have installed
 `Git <https://git-scm.com/downloads>`__ available from command prompt.
+
+.. raw:: html
+
+   <!-- pandoc README.md -o README.rst -->

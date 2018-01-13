@@ -1,4 +1,3 @@
-<!-- pandoc README.md -o README.rst -->
 # Knitty
 
 Knitty is another CLI for Stitch/Knotr: reproducible report generation tool via Jupyter, Pandoc and Markdown. Insert python code (or other Jupyter kernel code) to the Markdown document and have code's results in the output document.
@@ -25,3 +24,5 @@ Also can install from GitHub:
 pip install git+https://github.com/kiwi0fruit/knitty.git
 ```
 In this case you need to have installed [Git](https://git-scm.com/downloads) available from command prompt.
+
+<!-- pandoc README.md -o README.rst -->
