@@ -63,8 +63,10 @@ New interfaces are exclusive to Knitty.
 
 * first argument is an optional input file path that helps to auto-name Knitty data folder in some cases.
 * Options:
-    * `-o TEXT`, `--output TEXT` – Pandoc option,
-    * `-t TEXT`, `--to TEXT`, `-w TEXT`, `--write TEXT` – Pandoc option,
+    * `-o TEXT`, `--output TEXT` – Pandoc writer option. Optional but it helps to auto-name Knitty data folder in some cases,
+    * `-t TEXT`, `--to TEXT`, `-w TEXT`, `--write TEXT` – Pandoc writer option. Optional but it helps to auto-name Knitty data folder in some cases,
+    * `--standalone` – Pandoc writer option. Produce a standalone document instead of fragment,
+    * `--self-contained` – Pandoc writer option. Store resources like images inside document instead of external files,
     * `--dir-name TEXT` – Manually name Knitty data folder (instead of default auto-naming).
 
 

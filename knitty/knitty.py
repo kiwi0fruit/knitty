@@ -24,17 +24,22 @@ def dir_ext(to):
 @click.command(
     context_settings=dict(ignore_unknown_options=True,
                           allow_extra_args=True),
-    help="Input_file is optional but it helps to auto-name Knitty data folder in some cases."
+    help="Knitty is a Pandoc filter with arguments. It reads from stdin and writes to stdout." +
+    "INPUT_FILE is optional but it helps to auto-name Knitty data folder in some cases."
 )
 @click.pass_context
 @click.argument('input_file', type=str, default=None, required=False)
 @click.option('-o', '--output', type=str, default=None,
-              help='Pandoc option.')
+              help='Pandoc writer option. Optional but it helps to auto-name Knitty data folder in some cases.')
 @click.option('-w', '-t', '--write', '--to', type=str, default=None,
-              help='Pandoc option.')
+              help='Pandoc writer option. Optional but it helps to auto-name Knitty data folder in some cases.')
+@click.option('--standalone', is_flag=True, default=False,
+              help='Pandoc writer option. Produce a standalone document instead of fragment.')
+@click.option('--self-contained', is_flag=True, default=False,
+              help='Pandoc writer option. Store resources like images inside document instead of external files.')
 @click.option('--dir-name', type=str, default=None,
               help='Manually name Knitty data folder (instead of default auto-naming).')
-def main(ctx, input_file, output, to, dir_name):
+def main(ctx, input_file, output, to, standalone, self_contained, dir_name):
     if sys.stdin.isatty():
         raise Exception('The app is not meant to wait for user input.')
 
@@ -47,17 +52,22 @@ def main(ctx, input_file, output, to, dir_name):
             dir_name = 'stdout-' + dir_ext(to)
 
     if to is not None:
-        to = dir_ext(to)   # TODO Knitty (Stitch) later checks if `to` is in ('latex', 'pdf', 'beamer') so using `dir_ext` is OK
+        # Knitty (Stitch) later checks if `to` is in ('latex', 'pdf', 'beamer') so using `dir_ext` is OK
+        to = dir_ext(to)
     else:
         ext = (os.path.splitext(output)[1].lstrip('.')
                if output is not None
                else '')
         to = ext if (ext != '') else 'html'
-
-    sys.stdout.write(knitty_pandoc_filter(sys.stdin.read(), name=dir_name, to=to, standalone='--standalone' in ctx.args,
-                                          self_contained='--self-contained' in ctx.args,
-                                          pandoc_extra_args=ctx.args))
-
+    
+    pandoc_extra_args=ctx.args
+    if standalone:
+        pandoc_extra_args.append('--standalone')
+    if self_contained:
+        pandoc_extra_args.append('--self-contained')
+    # Knitty (Stitch) later do not need `to` in `pandoc_extra_args` so loosing it is OK
+    sys.stdout.write(knitty_pandoc_filter(sys.stdin.read(), name=dir_name, to=to, standalone=standalone,
+                                          self_contained=self_contained, pandoc_extra_args=pandoc_extra_args))
 
 if __name__ == '__main__':
     main()
