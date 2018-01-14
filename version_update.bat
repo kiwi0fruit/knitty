@@ -3,5 +3,5 @@ git tag -d %tagname%
 git push --delete origin %tagname%
 git tag -a %tagname%
 git push --tags
+pandoc README.md -o README.rst
 pause
-:: pandoc README.md -o README.rst
