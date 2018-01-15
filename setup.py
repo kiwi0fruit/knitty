@@ -38,8 +38,9 @@ setup(
     # keywords='sample setuptools development',
     packages=find_packages(exclude=['docs', 'tests']),
 
-    install_requires=['jupyter_core', 'traitlets', 'ipython', 'jupyter_client',
-                      'nbconvert', 'pandocfilters', 'pypandoc', 'click', 'psutil'],
+    install_requires=['jupyter_core', 'traitlets', 'ipython', 'jupyter_client', 'nbconvert', 'pandocfilters',
+                      'pypandoc', 'click', 'psutil'],
+    # install_requires=['knotr>0.4.1', 'click', 'psutil'],
 
     include_package_data=True,
     package_data={
