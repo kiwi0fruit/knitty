@@ -77,8 +77,9 @@ class Stitch(HasTraits):
     error : str, default 'continue'
         How to handle exceptions in the executed code-chunks.
     prompt : str, optional
-        String to put before each line of the input code. Defaults
-        to IPython-style counters.
+        String to put before each line of the input code. Defaults to 
+        IPython-style counters. If you specify ``prompt`` option for a code
+        chunk then it would have a prompt even if ``use_prompt`` is ``False``.
     echo : bool, default True
         Whether to include the input code-chunk in the output document.
     eval : bool, default True
@@ -238,14 +239,20 @@ class Stitch(HasTraits):
             if self.has_trait(attr):
                 self.set_trait(attr, val)
 
-    def stitch(self, source):
+    def stitch(self, source: str) -> dict:
         """
-        Wrapper around stitch_ast method.
+        Wrapper around ``stitch_ast`` method that preprocesses
+        source code to allow Stitch-style code blocks and
+        then convert to loaded Pandoc JSON AST.
 
         Parameters
         ----------
         source : str
             the actual text to be converted
+
+        Returns
+        -------
+        doc : dict
         """
         source = preprocess(source)
         ast = tokenize(source)
@@ -258,7 +265,7 @@ class Stitch(HasTraits):
         Parameters
         ----------
         ast : dict
-            Loaded Pandoc json AST
+            Loaded Pandoc JSON AST
 
         Returns
         -------
