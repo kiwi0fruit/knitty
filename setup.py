@@ -35,7 +35,7 @@ setup(
         'Programming Language :: Python :: 3.6',
     ],
 
-    # keywords='sample setuptools development',
+    keywords='atom hydrogen jupyter pandoc markdown report',
     packages=find_packages(exclude=['docs', 'tests']),
 
     install_requires=['jupyter_core', 'traitlets', 'ipython', 'jupyter_client', 'nbconvert', 'pandocfilters',
