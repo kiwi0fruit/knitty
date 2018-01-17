@@ -133,7 +133,8 @@ class Stitch(HasTraits):
                  error: str='continue',
                  prompt: str=None,
                  use_prompt: bool=False,
-                 pandoc_extra_args: list=None):
+                 pandoc_extra_args: list=None,
+                 pandoc_format: str="markdown"):
         """
         Parameters
         ----------
@@ -153,7 +154,10 @@ class Stitch(HasTraits):
             Whether to use prompt prefixes in code chunks
         pandoc_extra_args : list of str, default None
             Pandoc extra args for converting text from markdown
-            to JSON AST.
+            to JSON AST
+        pandoc_format : str, default ``markdown``
+            Pandoc format option for converting text from markdown
+            to JSON AST
         """
         super().__init__(to=to, standalone=standalone,
                          self_contained=self_contained, warning=warning,
@@ -162,6 +166,7 @@ class Stitch(HasTraits):
         self.name = name
         self.resource_dir = self.name_resource_dir(name)
         self.pandoc_extra_args = pandoc_extra_args
+        self.pandoc_format = pandoc_format
 
     def __getattr__(self, attr):
         if '.' in attr:
@@ -363,6 +368,7 @@ class Stitch(HasTraits):
                 text = message['content']['text']
                 output_blocks += plain_output(
                     text,
+                    self.pandoc_format,
                     self.pandoc_extra_args,
                     not (is_stderr(message) and warning) and pandoc
                 )
@@ -396,7 +402,8 @@ class Stitch(HasTraits):
 
                 if key == 'text/plain':
                     # ident, classes, kvs
-                    blocks = plain_output(data, self.pandoc_extra_args, pandoc)
+                    blocks = plain_output(data, self.pandoc_format,
+                                          self.pandoc_extra_args, pandoc)
                 elif key == 'text/latex':
                     blocks = [RawBlock('latex', data)]
                 elif key == 'text/html':
@@ -409,7 +416,8 @@ class Stitch(HasTraits):
                     blocks = [self.wrap_image_output(chunk_name, data, key,
                                                      attrs)]
                 else:
-                    blocks = tokenize_block(data, self.pandoc_extra_args)
+                    blocks = tokenize_block(data, self.pandoc_format,
+                                            self.pandoc_extra_args)
 
             output_blocks += blocks
         return output_blocks
@@ -429,6 +437,7 @@ class Stitch(HasTraits):
         """
         # TODO: interaction of output type and standalone.
         # TODO: this can be simplified, do the file-writing in one step
+        # noinspection PyShadowingNames
         def b64_encode(data):
             return base64.encodebytes(data.encode('utf-8')).decode('ascii')
 
@@ -637,6 +646,7 @@ def wrap_input_code(block, use_prompt, prompt, execution_count, code_style=None)
     return new
 
 
+# noinspection PyUnusedLocal
 def format_output_prompt(output, number):
     # TODO
     pass
@@ -653,13 +663,13 @@ def tokenize(source: str) -> dict:
     return json.loads(pypandoc.convert_text(source, 'json', 'markdown'))
 
 
-def tokenize_block(source: str, pandoc_extra_args: list=None) -> list:
+def tokenize_block(source: str, pandoc_format: str="markdown", pandoc_extra_args: list=None) -> list:
     """
     Convert a Jupyter output to Pandoc's JSON AST.
     """
     if pandoc_extra_args is None:
         pandoc_extra_args = []
-    json_doc = pypandoc.convert_text(source, to='json', format='markdown', extra_args=pandoc_extra_args)
+    json_doc = pypandoc.convert_text(source, to='json', format=pandoc_format, extra_args=pandoc_extra_args)
     return json.loads(json_doc)['blocks']
 
 
@@ -746,9 +756,10 @@ def extract_kernel_name(block):
 # Output Processing
 # -----------------
 
-def plain_output(text: str, pandoc_extra_args: list=None, pandoc: bool=False) -> list:
+def plain_output(text: str, pandoc_format: str="markdown",
+                 pandoc_extra_args: list=None, pandoc: bool=False) -> list:
     if pandoc:
-        return tokenize_block(text, pandoc_extra_args)
+        return tokenize_block(text, pandoc_format, pandoc_extra_args)
     else:
         return [Div(['', ['output'], []], [CodeBlock(['', [], []], text)])]
 

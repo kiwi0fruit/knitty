@@ -18,7 +18,7 @@ def dir_ext(to):
     if m:
         return formats.get(m.group(0), m.group(0))
     else:
-        raise StitchError('Invalid -t/-w/--to/--write option: {}'.format(to))
+        raise Exception('Invalid -t/-w/--to/--write option: {}'.format(to))
 
 
 @click.command(
@@ -29,6 +29,8 @@ def dir_ext(to):
 )
 @click.pass_context
 @click.argument('input_file', type=str, default=None, required=False)
+@click.option('-f', '-r', '--from', '--read', type=str, default="markdown",
+              help='Pandoc reader option. Specify input format.')
 @click.option('-o', '--output', type=str, default=None,
               help='Pandoc writer option. Optional but it helps to auto-name Knitty data folder in some cases.')
 @click.option('-w', '-t', '--write', '--to', type=str, default=None,
@@ -39,7 +41,7 @@ def dir_ext(to):
               help='Pandoc writer option. Store resources like images inside document instead of external files.')
 @click.option('--dir-name', type=str, default=None,
               help='Manually name Knitty data folder (instead of default auto-naming).')
-def main(ctx, input_file, output, to, standalone, self_contained, dir_name):
+def main(ctx, input_file, read, output, to, standalone, self_contained, dir_name):
     if sys.stdin.isatty():
         raise Exception('The app is not meant to wait for user input.')
 
@@ -60,14 +62,15 @@ def main(ctx, input_file, output, to, standalone, self_contained, dir_name):
                else '')
         to = ext if (ext != '') else 'html'
     
-    pandoc_extra_args=ctx.args
+    pandoc_extra_args = ctx.args
     if standalone:
         pandoc_extra_args.append('--standalone')
     if self_contained:
         pandoc_extra_args.append('--self-contained')
     # Knitty (Stitch) later do not need `to` in `pandoc_extra_args` so loosing it is OK
     sys.stdout.write(knitty_pandoc_filter(sys.stdin.read(), name=dir_name, to=to, standalone=standalone,
-                                          self_contained=self_contained, pandoc_extra_args=pandoc_extra_args))
+                                          self_contained=self_contained, pandoc_format=read,
+                                          pandoc_extra_args=pandoc_extra_args))
 
 if __name__ == '__main__':
     main()

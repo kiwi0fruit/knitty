@@ -31,13 +31,13 @@ def safe_spawn(func):
 
 
 def knitty_pandoc_filter(json_ast: str, name: str, to: str, standalone: bool, self_contained: bool,
-                         pandoc_extra_args: list) -> str:
+                         pandoc_format: str, pandoc_extra_args: list) -> str:
     """
     Changes Pandoc JSON AST string
     """
     ast = json.loads(json_ast)
     stitcher = Stitch(name=name, to=to, standalone=standalone, self_contained=self_contained,
-                      pandoc_extra_args=pandoc_extra_args)
+                      pandoc_format=pandoc_format, pandoc_extra_args=pandoc_extra_args)
 
     def work():
         nonlocal ast
