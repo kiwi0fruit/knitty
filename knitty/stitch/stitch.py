@@ -97,9 +97,6 @@ class Stitch(HasTraits):
           not warning/error or if it has 'text/plain' key.
         * 'hide': evaluate chunk but hide results
 
-    eval_default : bool, default True
-        default 'eval' attribute for every cell
-
 
     Notes
     -----
@@ -115,7 +112,6 @@ class Stitch(HasTraits):
     self_contained = opt.Bool(True)
     standalone = opt.Bool(True)
     use_prompt = opt.Bool(False)
-    eval_default = opt.Bool(True)
 
     # Document or Cell
     warning = opt.Bool(True)
@@ -296,8 +292,7 @@ class Stitch(HasTraits):
             # We should only have code blocks now...
             # Execute first, to get prompt numbers
             (lang, name), attrs = parse_kernel_arguments(block)
-            if attrs.get('eval') is None:
-                attrs['eval'] = self.eval_default
+            attrs['eval'] = self.get_option('eval', attrs)
             kernel_name = lm.map_to_kernel(lang)
             if name is None:
                 name = "unnamed_chunk_{}".format(i)
