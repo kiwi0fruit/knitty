@@ -70,6 +70,22 @@ New interfaces are exclusive to Knitty.
     * `--self-contained` – Pandoc writer option. Store resources like images inside document instead of external files,
     * `--dir-name TEXT` – Manually name Knitty data folder (instead of default auto-naming).
 
+Examples:
+
+```sh
+input_file="doc.md"
+reader_args=(-f markdown)
+writer_args=(-t html --standalone --self-contained)
+cat "${input_file}" | pre-knitty "${input_file}" | pandoc "${reader_args[@]}" -t json | knitty "${input_file}" "${reader_args[@]}" "${writer_args[@]}" | pandoc -f json "${writer_args[@]}" -o "${input_file}.html"
+```
+
+```bat
+set input_file=doc.md
+set reader_args=-f markdown
+set writer_args=-t html --standalone --self-contained
+type %input_file% | pre-knitty %input_file% | pandoc %reader_args% -t json | knitty %input_file% %reader_args% %writer_args% | pandoc -f json %writer_args% -o %input_file%.html
+```
+
 
 ## 1.2 Alternative settings placement
 
