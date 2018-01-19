@@ -14,7 +14,7 @@ setup(
     version=versioneer.get_version(),
     cmdclass=versioneer.get_cmdclass(),
 
-    description='Another CLI for Stitch/Knotr: reproducible report generation tool via Jupyter, Pandoc and Markdown.',
+    description='Inrterface wrapper for Stitch/Knotr: reproducible report generation tool via Jupyter, Pandoc and Markdown.',
     long_description=long_description,
 
     url='https://github.com/kiwi0fruit/knitty',

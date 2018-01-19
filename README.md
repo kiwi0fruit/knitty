@@ -28,6 +28,7 @@ In this case you need to have installed [Git](https://git-scm.com/downloads) ava
 
 ## Usage
 
+Unix:
 ```sh
 input_file="doc.md"
 reader_args=(-f markdown)
@@ -35,6 +36,7 @@ writer_args=(-t html --standalone --self-contained)
 cat "${input_file}" | pre-knitty "${input_file}" | pandoc "${reader_args[@]}" -t json | knitty "${input_file}" "${reader_args[@]}" "${writer_args[@]}" | pandoc -f json "${writer_args[@]}" -o "${input_file}.html"
 ```
 
+Windows:
 ```bat
 set input_file=doc.md
 set reader_args=-f markdown

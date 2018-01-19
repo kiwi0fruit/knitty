@@ -39,12 +39,16 @@ In this case you need to have installed
 Usage
 -----
 
+Unix:
+
 .. code:: sh
 
     input_file="doc.md"
     reader_args=(-f markdown)
     writer_args=(-t html --standalone --self-contained)
     cat "${input_file}" | pre-knitty "${input_file}" | pandoc "${reader_args[@]}" -t json | knitty "${input_file}" "${reader_args[@]}" "${writer_args[@]}" | pandoc -f json "${writer_args[@]}" -o "${input_file}.html"
+
+Windows:
 
 .. code:: bat
 
