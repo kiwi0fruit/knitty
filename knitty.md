@@ -110,7 +110,7 @@ print('Hello!')
 ```
 `````
 
-Standard Knotr/Stitch options also works:
+Standard RMarkdown-like Knotr/Stitch options also works:
 `````python
 ```{python, chunk3, echo=True}
 print('Hello!')
@@ -124,6 +124,9 @@ print('Hello!')
 ```
 `````
 
+**Please note** that Knitty converts Knitty-style and Stitch-style options (that are originally not supported by Pandoc parser) to Pandoc-style options. When converting Knitty also add `eval=True` like: <code>```{python, eval=True}</code> to <code>```{.python eval=True}</code>.
+
+Specifics:
 
 * There can't be any white spaces between `@` and `{...}`. But there can be whitespace characters between <code>\`\`\`</code> and `{...}` (all whitespace characters except `\r` and `\n` actually).
 * Chunk options arguments and keys should start with alphabetic characters or `_` and can contain alphanumeric characters, `-`, and `.` (but can't end with a `.`).  
@@ -132,7 +135,7 @@ print('Hello!')
 ```
 "[^"]*"|'[^']*'|[^\s,{}"'][^\s,{}]*
 ```
-* **Please note** that the following settings `@{ir, class=r}` are equivalent to `@{ir, r}` that is equivalent to <code>\`\`\`{.ir .r}</code> (this is because for Pandoc `class=c` attribute is the same as `.c` setting). So `r` would be a chunk name.
+* Please note that the following settings `@{ir, class=r}` are equivalent to `@{ir, r}` that is equivalent to <code>\`\`\`{.ir .r}</code> (this is because for Pandoc `class=c` attribute is the same as `.c` setting). So `r` would be a chunk name.
 
 
 ## 1.3 Support files with Atom/Hydrogen code cells
