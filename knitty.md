@@ -23,9 +23,8 @@ Modified version of Knotr/Stitch by Tom Augspurger is included in Knitty. [Origi
     * [2.3 Chunk keyword argument](#23-chunk-keyword-argument)
 3. [New document options](#3-new-document-options)
     * [3.1 Original document options](#31-original-document-options)
-    * [3.2 Default eval value](#32-default-eval-value)
-    * [3.3 Disabled code chunks prompt prefixes](#33-disabled-code-chunks-prompt-prefixes)
-    * [3.4 Languages / Kernels / Styles mappings in YAML metadata](#34-languages-kernels-styles-mappings-in-yaml-metadata)
+    * [3.2 Disabled code chunks prompt prefixes](#33-disabled-code-chunks-prompt-prefixes)
+    * [3.3 Languages / Kernels / Styles mappings in YAML metadata](#34-languages-kernels-styles-mappings-in-yaml-metadata)
 4. [API description](#4-api-description)
 5. [Known issues](#5-known-issues)
     * [5.1 No new line after Jupyter output](#51-no-new-line-after-jupyter-output)
@@ -227,7 +226,13 @@ See Knotr/Stitch code chunks options [here](https://pystitch.github.io/api.html#
 
 Notable options:
 
-* `eval=True`, `eval=False`: whether to execute the code chunk.
+* `eval=True`, `eval=False`: whether to execute the code chunk. As well as all other chunk options is can be set is yaml metadata section:
+
+```yaml
+---
+eval: True
+...
+```
 
 
 ## 2.2 Results Pandoc chunk option
@@ -253,20 +258,7 @@ This option is exclusive to Knitty.
 See Knotr/Stitch document options [here](https://pystitch.github.io/api.html#api) (some of the options are chunk options actually).
 
 
-## 3.2 Default eval value
-
-Default `eval` value for each code cell can be set in metadata section:
-
-```yaml
----
-eval_default: False
-...
-```
-
-Default `eval_default` value is `True`.
-
-
-## 3.3 Disabled code chunks prompt prefixes
+## 3.2 Disabled code chunks prompt prefixes
 
 Now code chunk prefixes are disabled by default. To enable them set it in the metadata section:
 
@@ -279,7 +271,7 @@ use_prompt: True
 If you specify `prompt` option for a code chunk then it would have a prompt even if it's disabled.
 
 
-## 3.4 Languages / Kernels / Styles mappings in YAML metadata
+## 3.3 Languages / Kernels / Styles mappings in YAML metadata
 
 Mappings to markdown YAML metadata are added:
 
