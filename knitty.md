@@ -229,7 +229,7 @@ See Knotr/Stitch code chunks options [here](https://pystitch.github.io/api.html#
 
 Notable options:
 
-* `eval=True`, `eval=False`: whether to execute the code chunk. As well as all other chunk options is can be set is yaml metadata section:
+* `eval=True`, `eval=False`: whether to execute the code chunk. As well as all other chunk options, default for all chunks `eval` option can be set is yaml metadata section:
 
 ```yaml
 ---
