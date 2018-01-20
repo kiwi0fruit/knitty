@@ -43,3 +43,19 @@ set reader_args=-f markdown
 set writer_args=-t html --standalone --self-contained
 type %input_file% | pre-knitty %input_file% | pandoc %reader_args% -t json | knitty %input_file% %reader_args% %writer_args% | pandoc -f json %writer_args% -o %input_file%.html
 ```
+
+Jupyter kernel specification in metadata section:
+```yaml
+---
+kernelspec:
+  display_name: R
+  language: R
+  name: ir
+...
+```
+
+Export to Jupyter notebook:
+```bat
+set writer_args=--standalone --self-contained -t markdown-fenced_code_attributes
+type test.md | pandoc -f markdown -t json | pre-notedown | pandoc -f json %writer_args% | knotedown --match=in > test.ipynb
+```

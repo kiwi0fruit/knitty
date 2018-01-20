@@ -85,6 +85,35 @@ set writer_args=-t html --standalone --self-contained
 type %input_file% | pre-knitty %input_file% | pandoc %reader_args% -t json | knitty %input_file% %reader_args% %writer_args% | pandoc -f json %writer_args% -o %input_file%.html
 ```
 
+`knotedown` - [patched Notedown module](https://github.com/kiwi0fruit/notedown) by Aaron O'Leary (aaren) was added to Knitty and available via `knotedown` CLI - same API as in `notedown` CLI. Patched version support Pandoc metadata that is then set in notebook metadata. For example:
+
+```yaml
+---
+kernelspec:
+  display_name: Python 3
+  language: python
+  name: python3
+...
+```
+
+```yaml
+---
+kernelspec:
+  display_name: R
+  language: R
+  name: ir
+...
+```
+
+Example:
+
+```bat
+set writer_args=--standalone --self-contained -t markdown-fenced_code_attributes
+type test.md | pandoc -f markdown -t json | pre-notedown | pandoc -f json %writer_args% | knotedown --match=in > test.ipynb
+```
+
+(`--standalone --self-contained -t markdown-fenced_code_attributes` are necessary for conversion). 
+
 
 ## 1.2 Alternative settings placement
 
