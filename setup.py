@@ -14,7 +14,7 @@ setup(
     version=versioneer.get_version(),
     cmdclass=versioneer.get_cmdclass(),
 
-    description='Inrterface wrapper for Stitch/Knotr: reproducible report generation tool via Jupyter, Pandoc and Markdown.',
+    description='Inrterface wrapper for Stitch/Knotr: reproducible report generation tool via Jupyter, Pandoc and Markdown. Export to Jupyter notebook via Notedown.',
     long_description=long_description,
 
     url='https://github.com/kiwi0fruit/knitty',
@@ -22,7 +22,7 @@ setup(
     author='Peter Zagubisalo',
     author_email='peter.zagubisalo@gmail.com',
 
-    license='MIT',
+    license='MIT (knitty, stitch), BSD 2-Clause (notedown)',
 
     classifiers=[
         'Development Status :: 3 - Alpha',
@@ -38,18 +38,22 @@ setup(
     keywords='atom hydrogen jupyter pandoc markdown report',
     packages=find_packages(exclude=['docs', 'tests']),
 
-    install_requires=['jupyter_core', 'traitlets', 'ipython', 'jupyter_client', 'nbconvert', 'pandocfilters',
-                      'pypandoc', 'click', 'psutil'],
-    # install_requires=['knotr>0.4.1', 'click', 'psutil'],
+    install_requires=['jupyter_core', 'traitlets', 'ipython', 'jupyter_client',
+                      'nbconvert', 'pandocfilters', 'pypandoc',
+                      'click', 'psutil',
+                      'nbformat', 'pandoc-attributes', 'six', 'pyyaml'],  # 'nbconvert'
+    # install_requires=['knotr>0.4.1', 'click', 'psutil', 'notedown>1.5.1'],
 
     include_package_data=True,
     package_data={
-        'knitty': ['stitch/*.py', 'stitch/static/*'],
+        'knitty': ['stitch/*', 'stitch/static/*', 'notedown/*', 'notedown/templates/*'],
     },
     entry_points={
         'console_scripts': [
             'knitty=knitty.knitty:main',
             'pre-knitty=knitty.pre_knitty:main',
+            'knotr=knitty.stitch.cli:cli',
+            'knotedown = knitty.notedown.main:app',
         ],
     },
 )
