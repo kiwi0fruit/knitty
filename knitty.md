@@ -105,14 +105,15 @@ kernelspec:
 ...
 ```
 
-Example:
+Export to Jupyter notebook and run it:
 
 ```bat
 set writer_args=--standalone --self-contained -t markdown-fenced_code_attributes
-type test.md | pandoc -f markdown -t json | pre-notedown | pandoc -f json %writer_args% | knotedown --match=in > test.ipynb
+type test.md | pandoc -f markdown -t json | pre-notedown | pandoc -f json %writer_args% | knotedown --match=in --nomagic > test.ipynb
+jupyter nbconvert --to notebook --execute test.ipynb
 ```
 
-(`--standalone --self-contained -t markdown-fenced_code_attributes` are necessary for conversion). 
+(`--standalone --self-contained -t markdown-fenced_code_attributes` are necessary for conversion, `--nomagic` is necessary for R kernel conversion). 
 
 
 ## 1.2 Alternative settings placement

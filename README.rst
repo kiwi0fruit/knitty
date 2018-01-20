@@ -68,9 +68,10 @@ Jupyter kernel specification in metadata section:
       name: ir
     ...
 
-Export to Jupyter notebook:
+Export to Jupyter notebook and run it:
 
 .. code:: bat
 
     set writer_args=--standalone --self-contained -t markdown-fenced_code_attributes
-    type test.md | pandoc -f markdown -t json | pre-notedown | pandoc -f json %writer_args% | knotedown --match=in > test.ipynb
+    type test.md | pandoc -f markdown -t json | pre-notedown | pandoc -f json %writer_args% | knotedown --match=in --nomagic > test.ipynb
+    jupyter nbconvert --to notebook --execute test.ipynb
