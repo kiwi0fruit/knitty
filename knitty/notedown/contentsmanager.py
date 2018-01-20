@@ -26,7 +26,7 @@ class NotedownContentsManager(FileContentsManager):
 
     To use, add the following line to ipython_notebook_config.py:
 
-      c.NotebookApp.contents_manager_class = 'notedown.NotedownContentsManager'
+      c.NotebookApp.contents_manager_class = 'knitty.notedown.NotedownContentsManager'
 
     Now markdown notebooks can be opened and edited in the browser!
     """
