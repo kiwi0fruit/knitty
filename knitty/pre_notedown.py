@@ -15,7 +15,7 @@ _help = '''pre-notedown reads from stdin and writes to stdout. Usage:
 `pre-notedown TO` - run Pandoc filter that prepares code blocks for md to ipynb conversion via Notedown.
 Code blocks for cells should to have `match=True` key word attribute.
 Intended to be later used with:
-`pandoc -f json --standalone --self-contained -t markdown-fenced_code_attributes | knotedown match=match`,
+`pandoc -f json --standalone --self-contained -t markdown-fenced_code_attributes | knotedown --match=match`,
 
 `pre-notedown --help` or `pre-notedown -h` - show this message and exit.
 '''
