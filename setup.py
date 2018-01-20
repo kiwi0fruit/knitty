@@ -40,9 +40,9 @@ setup(
 
     install_requires=['jupyter_core', 'traitlets', 'ipython', 'jupyter_client',
                       'nbconvert', 'pandocfilters', 'pypandoc',
-                      'click', 'psutil',
+                      'click', 'psutil', 'panflute',
                       'nbformat', 'pandoc-attributes', 'six', 'pyyaml'],  # 'nbconvert'
-    # install_requires=['knotr>0.4.1', 'click', 'psutil', 'notedown>1.5.1'],
+    # install_requires=['knotr>0.4.1', 'click', 'psutil', 'panflute', 'notedown>1.5.1'],
 
     include_package_data=True,
     package_data={
@@ -54,6 +54,7 @@ setup(
             'pre-knitty=knitty.pre_knitty:main',
             'knotr=knitty.stitch.cli:cli',
             'knotedown = knitty.notedown.main:app',
+            'pre-notedown = knitty.pre_notedown.main:app',
         ],
     },
 )
