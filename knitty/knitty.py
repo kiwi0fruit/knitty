@@ -3,6 +3,23 @@ from .ast_filter import knitty_pandoc_filter
 import click
 import os
 import re
+import panflute as pf
+import io
+
+
+def action(elem, doc):
+    if isinstance(elem, pf.CodeBlock):
+        input_ = elem.attributes.get('input', doc.get_metadata('input'))
+        if str(input_).lower() == 'true':
+            match = str(doc.get_metadata('match', 'in'))
+            if match not in elem.classes:
+                elem.classes.append(match)
+            id_ = elem.identifier
+            id_ = ("#" + id_ + " ") if (id_ != "" and id_ is not None) else ""
+            classes = " .".join(elem.classes)
+            classes = ("." + classes + " ") if (classes != "") else ""
+            kwargs = " ".join(["{}={}".format(k, v) for k, v in elem.attributes.items()])
+            elem.classes[0] = "{" + id_ + classes + kwargs + "}"
 
 
 def hyphenized_basename(file_path: str) -> str:
@@ -41,7 +58,9 @@ def dir_ext(to):
               help='Pandoc writer option. Store resources like images inside document instead of external files.')
 @click.option('--dir-name', type=str, default=None,
               help='Manually name Knitty data folder (instead of default auto-naming).')
-def main(ctx, input_file, read, output, to, standalone, self_contained, dir_name):
+@click.option('--to-ipynb', is_flag=True, default=False,
+              help='Additionally run Pandoc filter that prepares code blocks for md to ipynb conversion via Notedown.')
+def main(ctx, input_file, read, output, to, standalone, self_contained, dir_name, to_ipynb):
     if sys.stdin.isatty():
         raise Exception('The app is not meant to wait for user input.')
 
@@ -68,9 +87,17 @@ def main(ctx, input_file, read, output, to, standalone, self_contained, dir_name
     if self_contained:
         pandoc_extra_args.append('--self-contained')
     # Knitty (Stitch) later do not need `to` in `pandoc_extra_args` so loosing it is OK
-    sys.stdout.write(knitty_pandoc_filter(sys.stdin.read(), name=dir_name, to=to, standalone=standalone,
-                                          self_contained=self_contained, pandoc_format=read,
-                                          pandoc_extra_args=pandoc_extra_args))
+    out = knitty_pandoc_filter(sys.stdin.read(), name=dir_name, to=to, standalone=standalone,
+                               self_contained=self_contained, pandoc_format=read,
+                               pandoc_extra_args=pandoc_extra_args)
+    if to_ipynb:
+        with io.StringIO(out) as f:
+            doc = pf.load(f)
+        pf.run_filter(action, doc=doc)
+        with io.StringIO() as f:
+            pf.dump(doc, f)
+            out = f.getvalue()
+    sys.stdout.write(out)
 
 if __name__ == '__main__':
     main()

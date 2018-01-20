@@ -54,7 +54,6 @@ setup(
             'pre-knitty=knitty.pre_knitty:main',
             'knotr=knitty.stitch.cli:cli',
             'knotedown = knitty.notedown.main:app',
-            'pre-notedown = knitty.pre_notedown:main',
         ],
     },
 )

@@ -68,6 +68,11 @@ New interfaces are exclusive to Knitty.
     * `--standalone` – Pandoc writer option. Produce a standalone document instead of fragment,
     * `--self-contained` – Pandoc writer option. Store resources like images inside document instead of external files,
     * `--dir-name TEXT` – Manually name Knitty data folder (instead of default auto-naming).
+    * `--to-ipynb` – Additionally run Pandoc filter that prepares code blocks for md to ipynb conversion via Notedown. Code blocks for cells should have `input=True` key word attribute. Default value can be set in metadata section like `input: True`. Intended to be later used with:
+    ```bat
+    pandoc -f json --standalone --self-contained -t markdown-fenced_code_attributes | knotedown --match=in --nomagic
+    ```
+    * Other Knitty match value can be set in metadata section like `match: in`.
 
 Examples:
 
@@ -108,12 +113,14 @@ kernelspec:
 Export to Jupyter notebook and run it:
 
 ```bat
-set writer_args=--standalone --self-contained -t markdown-fenced_code_attributes
-type test.md | pandoc -f markdown -t json | pre-notedown | pandoc -f json %writer_args% | knotedown --match=in --nomagic > test.ipynb
-jupyter nbconvert --to notebook --execute test.ipynb
+set input_file=doc.md
+set reader_args=-f markdown
+set writer_args=-t markdown-fenced_code_attributes --standalone --self-contained
+type %input_file% | pre-knitty %input_file% | pandoc %reader_args% -t json | knitty %input_file% %reader_args% %writer_args% --to-ipynb | pandoc -f json %writer_args% | knotedown --match=in --nomagic > %input_file%.ipynb
+jupyter nbconvert --to notebook --execute %input_file%.ipynb
 ```
 
-(`--standalone --self-contained -t markdown-fenced_code_attributes` are necessary for conversion, `--nomagic` is necessary for R kernel conversion). 
+(`--standalone --self-contained -t markdown-fenced_code_attributes` are necessary for conversion, `--nomagic` is necessary for R kernel conversion).
 
 
 ## 1.2 Alternative settings placement
