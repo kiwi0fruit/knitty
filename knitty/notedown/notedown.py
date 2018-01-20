@@ -231,7 +231,7 @@ class MarkdownReader(NotebookReader):
             # is in the block attributes and also in the list
             # of languages
             language = set(attr.classes).intersection(languages).pop()
-            attr.classes.remove(language)
+            # attr.classes.remove(language)  # I didn't get what this for
         except KeyError:
             language = None
 
