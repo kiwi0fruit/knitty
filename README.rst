@@ -21,7 +21,7 @@ install dependencies first:
 
 .. code:: sh
 
-    conda install -c defaults -c conda-forge "pandoc>=2.0,<2.1" jupyter_core traitlets ipython jupyter_client nbconvert pandocfilters pypandoc click psutil
+    conda install -c defaults -c conda-forge "pandoc>=2.0,<2.1" jupyter_core traitlets ipython jupyter_client nbconvert pandocfilters pypandoc click psutil nbformat pandoc-attributes six pyyaml
 
 Pandoc ≥ 2.0 is needed for proper Knitty output re-processing. In
 particular for nested HTML insertions to Markdown for toolchain:
