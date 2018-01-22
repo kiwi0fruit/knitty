@@ -77,17 +77,32 @@ New interfaces are exclusive to Knitty.
 Examples:
 
 ```sh
+export PYTHONIOENCODING=utf-8
+
 input_file="doc.md"
 reader_args=(-f markdown)
 writer_args=(-t html --standalone --self-contained)
-cat "${input_file}" | pre-knitty "${input_file}" | pandoc "${reader_args[@]}" -t json | knitty "${input_file}" "${reader_args[@]}" "${writer_args[@]}" | pandoc -f json "${writer_args[@]}" -o "${input_file}.html"
+
+cat "${input_file}" | \
+pre-knitty "${input_file}" | \
+pandoc "${reader_args[@]}" -t json | \
+knitty "${input_file}" "${reader_args[@]}" "${writer_args[@]}" | \
+pandoc -f json "${writer_args[@]}" -o "${input_file}.html"
 ```
 
 ```bat
+chcp 65001 > NUL
+set PYTHONIOENCODING=utf-8
+
 set input_file=doc.md
 set reader_args=-f markdown
 set writer_args=-t html --standalone --self-contained
-type %input_file% | pre-knitty %input_file% | pandoc %reader_args% -t json | knitty %input_file% %reader_args% %writer_args% | pandoc -f json %writer_args% -o %input_file%.html
+
+type %input_file% | ^
+pre-knitty %input_file% | ^
+pandoc %reader_args% -t json | ^
+knitty %input_file% %reader_args% %writer_args% | ^
+pandoc -f json %writer_args% -o %input_file%.html
 ```
 
 `knotedown` - [patched Notedown module](https://github.com/kiwi0fruit/notedown) by Aaron O'Leary (aaren) was added to Knitty and available via `knotedown` CLI - same API as in `notedown` CLI. Patched version support Pandoc metadata that is then set in notebook metadata. For example:
@@ -113,10 +128,20 @@ kernelspec:
 Export to Jupyter notebook and run it:
 
 ```bat
+chcp 65001 > NUL
+set PYTHONIOENCODING=utf-8
+
 set input_file=doc.md
 set reader_args=-f markdown
 set writer_args=-t markdown-fenced_code_attributes --standalone --self-contained
-type %input_file% | pre-knitty %input_file% | pandoc %reader_args% -t json | knitty %input_file% %reader_args% %writer_args% --to-ipynb | pandoc -f json %writer_args% | knotedown --match=in --nomagic > %input_file%.ipynb
+
+type %input_file% | ^
+pre-knitty %input_file% | ^
+pandoc %reader_args% -t json | ^
+knitty %input_file% %reader_args% %writer_args% --to-ipynb | ^
+pandoc -f json %writer_args% | ^
+knotedown --match=in --nomagic > %input_file%.ipynb
+
 jupyter nbconvert --to notebook --execute %input_file%.ipynb
 ```
 
