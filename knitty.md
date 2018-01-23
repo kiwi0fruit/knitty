@@ -125,7 +125,7 @@ kernelspec:
 ...
 ```
 
-Export to Jupyter notebook and run it:
+Export to Jupyter notebook with cross-references (using [pandoc-crossref](https://github.com/lierdakil/pandoc-crossref): [download](https://github.com/lierdakil/pandoc-crossref/releases)) and execute it:
 
 ```bat
 chcp 65001 > NUL
@@ -133,7 +133,8 @@ set PYTHONIOENCODING=utf-8
 
 set input_file=doc.md
 set reader_args=-f markdown
-set writer_args=-t markdown-fenced_code_attributes --standalone --self-contained
+set jupymd=markdown-bracketed_spans-fenced_divs-link_attributes-simple_tables-multiline_tables-grid_tables-pipe_tables-fenced_code_attributes-markdown_in_html_blocks-table_captions-smart
+set writer_args=-t %jupymd% --standalone --self-contained --filter pandoc-crossref
 
 type %input_file% | ^
 pre-knitty %input_file% | ^
@@ -145,7 +146,7 @@ knotedown --match=in --nomagic > %input_file%.ipynb
 jupyter nbconvert --to notebook --execute %input_file%.ipynb
 ```
 
-(`--standalone --self-contained -t markdown-fenced_code_attributes` are necessary for conversion, `--nomagic` is necessary for R kernel conversion).
+(`--standalone --self-contained` are necessary for conversion, `--nomagic` is necessary for R kernel conversion, `%jupymd%` is a Markdown flavor compatible with *pandoc-crossref* and with Jupyter markdown cells).
 
 
 ## 1.2 Alternative settings placement
