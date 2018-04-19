@@ -73,6 +73,7 @@ New interfaces are exclusive to Knitty.
     pandoc -f json --standalone --self-contained -t markdown-fenced_code_attributes | knotedown --match=in --nomagic
     ```
     * Other Knitty match value can be set in metadata section like `match: in`.
+    * **UPD**: `to` option is also used in the if statement: `if self.to in ('latex', 'pdf', 'beamer')`.
 
 Examples:
 
