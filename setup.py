@@ -41,7 +41,7 @@ setup(
     install_requires=['jupyter_core', 'traitlets', 'ipython', 'jupyter_client',
                       'nbconvert', 'pandocfilters', 'pypandoc',
                       'click', 'psutil', 'panflute',
-                      'nbformat', 'pandoc-attributes', 'six', 'pyyaml'],  # 'nbconvert'
+                      'nbformat', 'pandoc-attributes', 'six', 'pyyaml'],
     # install_requires=['knotr>0.4.1', 'click', 'psutil', 'panflute', 'notedown>1.5.1'],
 
     include_package_data=True,
