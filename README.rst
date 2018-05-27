@@ -12,6 +12,12 @@ documentation <https://github.com/kiwi0fruit/knitty/blob/master/knitty.md>`__.
 Install
 -------
 
+Install as part of
+`Pandoctools <https://github.com/kiwi0fruit/pandoctools>`__ - convenient
+interface and works out of the box.
+
+Or install:
+
 .. code:: sh
 
     pip install knitty
@@ -26,6 +32,11 @@ install dependencies first:
 Pandoc ≥ 2.0 is needed for proper Knitty output re-processing. In
 particular for nested HTML insertions to Markdown for toolchain:
 ``file.md`` → ``file.md.md`` → ``file.md.md.html``.
+
+Pandoc 2.1.\* does not works on windows. Pandoc 2.2.\* doesn’t have
+compatible pandoc-crossref version. So the only option is Pandoc 2.0.5
+and `pandoc-crossref
+0.3.0.1 <https://github.com/lierdakil/pandoc-crossref/releases/tag/v0.3.0.1>`__.
 
 Also can install from GitHub:
 

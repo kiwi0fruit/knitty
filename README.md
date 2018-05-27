@@ -7,6 +7,10 @@ See [Knitty documentation](https://github.com/kiwi0fruit/knitty/blob/master/knit
 
 ## Install
 
+Install as part of [Pandoctools](https://github.com/kiwi0fruit/pandoctools) - convenient interface and works out of the box.
+
+Or install:
+
 ```sh
 pip install knitty
 ```
