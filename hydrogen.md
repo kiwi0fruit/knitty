@@ -11,7 +11,6 @@ Install [**Hydrogen**](https://atom.io/packages/hydrogen) (by *nteract*) Atom pa
 In order to make it work you may need to specify some Hydrogen settings (**Settings** → **Packages** → **Hydrogen**):
 
   * Specify **Language Mappings** with **kernel**: **grammar** mappings like: `{ "ir": "r", "python": "magicpython" }`,
-  * Set **Startup Code** to `{"python": "KNITTY=False"}`,
   * Register Jupyter kernels in the system so that Hydrogen can find them. First:
 
 ```sh
@@ -26,6 +25,8 @@ python -m ipykernel install --user --name the_env
 ```
 
 (presumably names can be different in the first/second commands).
+
+  * Set **Startup Code** to `{"the_env": "KNITTY=False"}` where `the_env` is the python kernel name.
 
 
 # Using Hydrogen
