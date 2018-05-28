@@ -26,8 +26,6 @@ python -m ipykernel install --user --name the_env
 
 (presumably names can be different in the first/second commands).
 
-  * Set **Startup Code** to `{"the_env": "KNITTY=False"}` where `the_env` is the python kernel name.
-
 
 # Using Hydrogen
 
