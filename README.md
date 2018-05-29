@@ -18,11 +18,9 @@ pip install knitty
 If you use conda package manager (Anaconda/Miniconda) then you can install dependencies first:
 
 ```sh
-conda install -c defaults -c conda-forge "pandoc>=2.0,<2.1" jupyter_core traitlets ipython jupyter_client nbconvert pandocfilters pypandoc click psutil nbformat pandoc-attributes six pyyaml
+conda install -c defaults -c conda-forge "pip>=10.0.1" "pandoc>=2.2.1" jupyter_core traitlets ipython jupyter_client nbconvert pandocfilters pypandoc click psutil nbformat pandoc-attributes six pyyaml
 ```
-Pandoc ≥ 2.0 is needed for proper Knitty output re-processing. In particular for nested HTML insertions to Markdown for toolchain: `file.md` → `file.md.md` → `file.md.md.html`.
-
-Pandoc 2.1.\* does not works on windows. Pandoc 2.2.\* doesn't have compatible pandoc-crossref version. So the only option is Pandoc 2.0.5 and [pandoc-crossref 0.3.0.1](https://github.com/lierdakil/pandoc-crossref/releases/tag/v0.3.0.1).
+Pandoc ≥ 2.0 is needed for proper Knitty output re-processing. In particular for nested HTML insertions to Markdown for toolchain: `file.md` → `file.md.md` → `file.md.md.html`. Pandoc 2.1.\* does not works on windows.
 
 Also can install from GitHub:
 
