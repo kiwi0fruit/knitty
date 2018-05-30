@@ -9,25 +9,23 @@ See [Knitty documentation](https://github.com/kiwi0fruit/knitty/blob/master/knit
 
 Install as part of [Pandoctools](https://github.com/kiwi0fruit/pandoctools) - convenient interface and works out of the box.
 
-Or install:
-
+Or install on Windows (if you use conda package manager (Anaconda/Miniconda) then you can install dependencies first):
 ```sh
+conda install -c defaults -c conda-forge "pip>=10.0.1" "pandoc>=2.2.1" jupyter_core ^
+traitlets ipython jupyter_client nbconvert pandocfilters pypandoc click psutil nbformat ^
+pandoc-attributes six pyyaml
 pip install knitty
 ```
 
-If you use conda package manager (Anaconda/Miniconda) then you can install dependencies first:
-
+On Unix:
 ```sh
-conda install -c defaults -c conda-forge "pip>=10.0.1" "pandoc>=2.2.1" jupyter_core traitlets ipython jupyter_client nbconvert pandocfilters pypandoc click psutil nbformat pandoc-attributes six pyyaml
+conda install -c defaults -c conda-forge "pip>=10.0.1" "pandoc>=2.2.1" jupyter_core \
+traitlets ipython jupyter_client nbconvert pandocfilters pypandoc click psutil nbformat \
+pandoc-attributes six pyyaml
+pip install knitty
 ```
+
 Pandoc ≥ 2.0 is needed for proper Knitty output re-processing. In particular for nested HTML insertions to Markdown for toolchain: `file.md` → `file.md.md` → `file.md.md.html`. Pandoc 2.1.\* does not works on windows.
-
-Also can install from GitHub:
-
-```sh
-pip install git+https://github.com/kiwi0fruit/knitty.git
-```
-In this case you need to have installed [Git](https://git-scm.com/downloads) available from command prompt.
 
 
 ## Usage
