@@ -99,7 +99,9 @@ and execute it:
 
     set input_file=doc.md
     set reader_args=-f markdown
-    set jupymd=markdown-bracketed_spans-fenced_divs-link_attributes-simple_tables-multiline_tables-grid_tables-pipe_tables-fenced_code_attributes-markdown_in_html_blocks-table_captions-smart
+    set jupymd=markdown-bracketed_spans-fenced_divs-link_attributes-simple_tables^
+    -multiline_tables-grid_tables-pipe_tables-fenced_code_attributes^
+    -markdown_in_html_blocks-table_captions-smart
     set writer_args=-t %jupymd% --standalone --self-contained --filter pandoc-crossref
 
     type %input_file% | ^
