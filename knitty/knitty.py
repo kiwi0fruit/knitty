@@ -99,5 +99,6 @@ def main(ctx, input_file, read, output, to, standalone, self_contained, dir_name
             out = f.getvalue()
     sys.stdout.write(out)
 
+
 if __name__ == '__main__':
     main()

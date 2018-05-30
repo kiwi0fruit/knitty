@@ -20,6 +20,7 @@ Token = namedtuple("Token", ['kind', 'value'])
 # Grammar:
 # ---------------------------------
 CELL = '%%'
+BLOCK_COMM_DEF = '%%%'
 CHUNK = '```'
 DEC = '@'
 # Chunk options:
@@ -70,7 +71,7 @@ class SEARCH:
         * Search pattern for Stitch-markdown doc
     HYDRO_FIRST_LINE: compiled regex
         * Has groups: COMM, BEGIN, END
-        * "# %% {lang, chunk, key=val, id=id1} ''' %% ''' comment text"
+        * "# %% {lang, chunk, key=val, id=id1} ''' %%% ''' comment text"
           Specifies inline and block comments patterns in Hydrogen doc's first line (cell blocks mode)
     HYDRO_BLOCK_COMM: str
         * Has groups: CODE, FIRST, LAST, BEGIN, END, LANG
@@ -122,7 +123,7 @@ class SEARCH:
     HYDRO_FIRST_LINE = re.compile(_HYDRO_LINE.format(
         comm=r'^(?P<COMM>[^\s]{1,3})',
         opt=_GFM_OPT,
-        block_def=r'( (?P<BEGIN>[^\s]{{1,6}}) {cell} (?P<END>[^\s]{{1,6}}))?'.format(cell=CELL)
+        block_def=r'( (?P<BEGIN>[^\s]{{1,6}}) {} (?P<END>[^\s]{{1,6}}))?'.format(BLOCK_COMM_DEF)
     ))
     OPT = _GFM_OPT
 
@@ -286,7 +287,7 @@ class OPT:
     # language=PythonRegExp
     _ARG = r'(?P<ARG>{key})'.format(key=KEY)  # language=PythonRegExp
     _DELIM = r'(?P<DELIM>{_},{_})'.format(_=SPACE)  # language=PythonRegExp
-    KWARG = r'(?P<KWARG>(?P<KEY>{key}){_}={_}(?P<VAL>{val}))'.format(key=KEY, val=VAL, _=SPACE)  # language=PythonRegExp
+    KWARG = r'(?P<KWARG>(?P<KEY>{key}){_}={_}(?P<VAL>{val}))'.format(key=KEY, val=VAL, _=SPACE)
 
     PATTERN = re.compile('|'.join([KWARG, _ARG, _DELIM]))
     NAME = re.compile(r'^{key}$'.format(key=KEY))
