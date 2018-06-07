@@ -323,11 +323,7 @@ def check_and_change(args, kwargs):
       `id`
       `class`
       `chunk`
-    * Makes sure CLASS_BACKUP class is absent
-      (see constants at the top of the file)
     * Sets chunk value the second positional argument
-    * Backups extra classes to CLASS_BACKUP value
-      (see constants at the top of the file)
 
     Parameters
     ----------
