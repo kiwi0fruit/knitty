@@ -102,7 +102,7 @@ class SEARCH:
     _RMARK_OPT = _OPT.replace('{lang}', _RMARK_LANG).replace('<OPT>', '<RMARK_OPT>')  # language=PythonRegExp
 
     _HYDRO_LINE = (
-        r'{comm} {cell}( {opt})?{block_def}( .*)?\r?\n').format(cell=CELL, opt='{opt}', block_def='{block_def}',
+        r'{comm} *{cell}( {opt})?{block_def}( .*)?\r?\n').format(cell=CELL, opt='{opt}', block_def='{block_def}',
                                                                 comm='{comm}')  # language=PythonRegExp
     _RMARK = r'{chunk}{_}{opt}{_}'.format(chunk=CHUNK, _=SPACE, opt=_RMARK_OPT)  # language=PythonRegExp
     _GFM = r'{dec}{opt}{_}\r?\n{chunk}{_}{lang2}{_}'.format(dec=DEC, chunk=CHUNK, opt=_GFM_OPT, lang2=_GFM_LANG2,
