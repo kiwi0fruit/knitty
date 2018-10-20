@@ -10,15 +10,17 @@ See [Knitty documentation](https://github.com/kiwi0fruit/knitty/blob/master/knit
 Install as part of [Pandoctools](https://github.com/kiwi0fruit/pandoctools) - convenient interface and works out of the box.
 
 Or install on Windows (if you use conda package manager (Anaconda/Miniconda) then you can install dependencies first):
-```sh
+```bash
 conda install -c defaults -c conda-forge "pip>=10.0.1" "pandoc>=2.2.1" jupyter_core ^
 traitlets ipython jupyter_client nbconvert pandocfilters pypandoc click psutil nbformat ^
 pandoc-attributes six pyyaml
-pip install knitty
+pip install --progress-bar off knitty
 ```
 
+If pip install fails try to change codepage: `chcp 1252`.
+
 On Unix:
-```sh
+```bash
 conda install -c defaults -c conda-forge "pip>=10.0.1" "pandoc>=2.2.1" jupyter_core \
 traitlets ipython jupyter_client nbconvert pandocfilters pypandoc click psutil nbformat \
 pandoc-attributes six pyyaml
@@ -31,7 +33,7 @@ Pandoc ≥ 2.0 is needed for proper Knitty output re-processing. In particular f
 ## Usage
 
 Unix:
-```sh
+```bash
 export PYTHONIOENCODING=utf-8
 
 input_file="doc.md"
