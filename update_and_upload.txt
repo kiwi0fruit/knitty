@@ -1,0 +1,23 @@
+Install to conda environment:
+
+* twine
+* pandoc>=2.2.1
+
+    conda install -c defaults -c conda-forge twine "pandoc>=2.2.1"
+
+
+Scripts:
+
+* run `update_version.bat` to update version
+* open terminal with activated environment
+  * to update rst drag and drop `update_rst.bat` to the terminal
+  * to upload package to pypi drag and drop `upload.bat` to the terminal
+
+
+Hint: Easily create shortcut to activated environment via Shortcutter:
+
+* Windows only preparation:
+    conda install pywin32
+* Cross-platform installation:
+    pip install shortcutter
+    shortcutter --terminal
