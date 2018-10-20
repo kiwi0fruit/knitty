@@ -204,9 +204,13 @@ Specifics:
 
 ## 1.3 Support files with Atom/Hydrogen code cells
 
-Added support for files with Atom/Hydrogen code cells (**.py** extension). You can split the file into code cells via in-line comments with <code> %% </code>:
+Added support for files with Atom/Hydrogen code cells (**.py** extension). You can split the file into code cells via in-line comments with `%%` (there **must** be space or new line after `%%`):
 ```py
 # %% {chunk=chunk2, echo=False} comment text
+...
+
+#%% or without space between
+...
 ```
 (for python). Knitty will convert such python code cells to markdown code chunks and then convert to output format (md / html / pdf).
 
