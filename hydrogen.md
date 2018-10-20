@@ -2,6 +2,7 @@
 
 * [Install Hydrogen Atom package](#install-hydrogen-atom-package)
 * [Using Hydrogen](#using-hydrogen)
+* [Reload imported modules in Hydrogen](#reload-imported-modules-in-hydrogen)
 
 
 # Install Hydrogen Atom package
@@ -48,3 +49,8 @@ s = 'Hello!'
 print(s)
 ```
 ````
+
+
+# Reload imported modules in Hydrogen
+
+[Reload imported modules in Hydrogen](https://github.com/kiwi0fruit/pandoctools/blob/master/tips.md#reload-imported-modules-in-hydrogen)
