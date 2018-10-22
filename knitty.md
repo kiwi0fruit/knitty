@@ -379,7 +379,8 @@ class Stitch(HasTraits):
                  error: str='continue',
                  prompt: str=None,
                  use_prompt: bool=False,
-                 pandoc_extra_args: list=None):
+                 pandoc_extra_args: list=None,
+                 pandoc_format: str="markdown"):
         """
         Parameters
         ----------
@@ -399,7 +400,10 @@ class Stitch(HasTraits):
             Whether to use prompt prefixes in code chunks
         pandoc_extra_args : list of str, default None
             Pandoc extra args for converting text from markdown
-            to JSON AST.
+            to JSON AST
+        pandoc_format : str, default ``markdown``
+            Pandoc format option for converting text from markdown
+            to JSON AST
         """
         ...
 
