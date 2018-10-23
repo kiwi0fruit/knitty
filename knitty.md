@@ -333,6 +333,10 @@ Added `chunk=name` new keyword argument option. It's an alternative way to speci
 
 This option is exclusive to Knitty.
 
+## 2.4 Input keyword argument
+
+For `knitty` CLI flag `--to-ipynb` and `knotedown` CLI flag `--match` code blocks for cells can have `input=True` (or `False`) key word attribute. Default value can be set in metadata section like `input: True`.
+
 
 # 3. New document options
 
