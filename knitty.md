@@ -21,6 +21,7 @@ Modified version of Knotr/Stitch by Tom Augspurger is included in Knitty. [Origi
     * [2.1 Original code chunk options](#21-original-code-chunk-options)
     * [2.2 Results Pandoc chunk option](#22-results-pandoc-chunk-option)
     * [2.3 Chunk keyword argument](#23-chunk-keyword-argument)
+    * [2.4 Input keyword argument](#24-input-keyword-argument)
 3. [New document options](#3-new-document-options)
     * [3.1 Original document options](#31-original-document-options)
     * [3.2 Disabled code chunks prompt prefixes](#33-disabled-code-chunks-prompt-prefixes)
