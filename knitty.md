@@ -21,10 +21,12 @@ Modified version of Knotr/Stitch by Tom Augspurger is included in Knitty. [Origi
     * [2.1 Original code chunk options](#21-original-code-chunk-options)
     * [2.2 Results Pandoc chunk option](#22-results-pandoc-chunk-option)
     * [2.3 Chunk keyword argument](#23-chunk-keyword-argument)
+    * [2.4 Input keyword argument](#24-input-keyword-argument)
 3. [New document options](#3-new-document-options)
     * [3.1 Original document options](#31-original-document-options)
     * [3.2 Disabled code chunks prompt prefixes](#33-disabled-code-chunks-prompt-prefixes)
     * [3.3 Languages / Kernels / Styles mappings in YAML metadata](#34-languages-kernels-styles-mappings-in-yaml-metadata)
+    * [3.4 Match metadata option](#34-match-metadata-option)
 4. [API description](#4-api-description)
 5. [Known issues](#5-known-issues)
     * [5.1 No new line after Jupyter output](#51-no-new-line-after-jupyter-output)
@@ -54,26 +56,51 @@ New interfaces are exclusive to Knitty.
 
 ## 1.1 New command line interfaces
 
+### pre-knitty
+
 `pre-knitty` - CLI app that reads from stdin. Transforms markdown source code from Knitty format to Pandoc format (replaces Knitty-format code chunk options with Pandoc-format code chunk options). And writes to stdout.
 
 * first argument is optional input file path (`pre-knitty` reads it's extension that is needed for [code cells][code_cells] mode).
 
-`knitty` - CLI app that is a Pandoc AST filter that reads from stdin and writes to stdout (but it has arguments and options).
+### knitty
 
-* first argument is an optional input file path that helps to auto-name Knitty data folder in some cases.
-* Options:
-    * `-f TEXT`, `-r TEXT`, `--from TEXT`, `--read TEXT` – Pandoc reader option. Specify input format,
-    * `-o TEXT`, `--output TEXT` – Pandoc writer option. Optional but it helps to auto-name Knitty data folder in some cases,
-    * `-t TEXT`, `--to TEXT`, `-w TEXT`, `--write TEXT` – Pandoc writer option. Optional but it helps to auto-name Knitty data folder in some cases,
-    * `--standalone` – Pandoc writer option. Produce a standalone document instead of fragment,
-    * `--self-contained` – Pandoc writer option. Store resources like images inside document instead of external files,
-    * `--dir-name TEXT` – Manually name Knitty data folder (instead of default auto-naming).
-    * `--to-ipynb` – Additionally run Pandoc filter that prepares code blocks for md to ipynb conversion via Notedown. Code blocks for cells should have `input=True` key word attribute. Default value can be set in metadata section like `input: True`. Intended to be later used with:
-    ```bat
-    pandoc -f json --standalone --self-contained -t markdown-fenced_code_attributes | knotedown --match=in --nomagic
-    ```
-    * Other Knitty match value can be set in metadata section like `match: in`.
-    * **UPD**: `to` option is also used in the if statement: `if self.to in ('latex', 'pdf', 'beamer')`.
+```
+Usage: knitty [OPTIONS] [INPUT_FILE]
+
+  Knitty is a Pandoc AST filter with options. It reads from stdin and writes
+  to stdout. It accepts all possible pandoc options and two knitty-only
+  options. INPUT_FILE is optional but it helps to auto-name Knitty data
+  folder in some cases.
+
+Options:
+  -f, -r, --from, --read TEXT  Pandoc reader option. Specify input format.
+  -o, --output TEXT            Pandoc writer option. Optional but it helps to
+                               auto-name Knitty data folder in some cases.
+  -w, -t, --write, --to TEXT   Pandoc writer option. Optional but it helps to
+                               auto-name Knitty data folder in some cases.
+                               Also the `-t` and `-o` options -> extension ->
+                               passed to Stitch that uses it in: `if self.to
+                               in ('latex', 'pdf', 'beamer')`.
+  --standalone                 Pandoc writer option. Produce a standalone
+                               document instead of fragment. The option is
+                               added to `pandoc_extra_args` given to Stitch.
+  --self-contained             Pandoc writer option. Store resources like
+                               images inside document instead of external
+                               files. The option is added to
+                               `pandoc_extra_args` given to Stitch.
+  --dir-name TEXT              Manually name Knitty data folder (instead of
+                               default auto-naming).
+  --to-ipynb                   Additionally run Pandoc filter that prepares
+                               code blocks for md to ipynb conversion via
+                               Notedown. Code blocks for cells should have
+                               `input=True` key word attribute. Default value
+                               can be set in metadata section like `input:
+                               True`. Intended to be later used with
+                               `knotedown --match=in`. Another match value for
+                               knotedown can be set in metadata section like
+                               `match: in`.
+  --help                       Show this message and exit.
+```
 
 Examples:
 
@@ -105,6 +132,8 @@ pandoc %reader_args% -t json | ^
 knitty %input_file% %reader_args% %writer_args% | ^
 pandoc -f json %writer_args% -o %input_file%.html
 ```
+
+### knotedown
 
 `knotedown` - [patched Notedown module](https://github.com/kiwi0fruit/notedown) by Aaron O'Leary (aaren) was added to Knitty and available via `knotedown` CLI - same API as in `notedown` CLI. Patched version support Pandoc metadata that is then set in notebook metadata. For example:
 
@@ -148,6 +177,10 @@ jupyter nbconvert --to notebook --execute %input_file%.ipynb
 ```
 
 (`--standalone --self-contained` are necessary for conversion, `--nomagic` is necessary for R kernel conversion, `%jupymd%` is a Markdown flavor compatible with *pandoc-crossref* and with Jupyter markdown cells).
+
+### knotr
+
+`knotr` - same CLI as `stitch` from [Stitch](https://github.com/pystitch/stitch). It doesn't support most of Knitty new features.
 
 
 ## 1.2 Alternative settings placement
@@ -204,9 +237,13 @@ Specifics:
 
 ## 1.3 Support files with Atom/Hydrogen code cells
 
-Added support for files with Atom/Hydrogen code cells (**.py** extension). You can split the file into code cells via in-line comments with <code> %% </code>:
+Added support for files with Atom/Hydrogen code cells (**.py** extension). You can split the file into code cells via in-line comments with `%%` (there **must** be space or new line after `%%`):
 ```py
 # %% {chunk=chunk2, echo=False} comment text
+...
+
+#%% or without space between
+...
 ```
 (for python). Knitty will convert such python code cells to markdown code chunks and then convert to output format (md / html / pdf).
 
@@ -287,6 +324,24 @@ It works because of the `results=pandoc` option and `sugartex` Pandoc filter.
 
 # 2. New code chunks options
 
+Note that default chunk options can be set in the document metadata section like:
+```yaml
+---
+echo: False
+...
+```
+
+````py
+@{echo=True}
+```py
+pass  # this is echoed
+```
+
+```py
+pass  # this is not echoed
+```
+````
+
 ## 2.1 Original code chunk options
 
 See Knotr/Stitch code chunks options [here](https://pystitch.github.io/api.html#chunk-options).
@@ -318,6 +373,15 @@ Because of the automatic adding of `eval=True` as was said in *1.2 Alternative s
 Added `chunk=name` new keyword argument option. It's an alternative way to specify code chunk name (together with second positional argument. Keyword argument has a priority over it).
 
 This option is exclusive to Knitty.
+
+## 2.4 Input keyword argument
+
+For `knitty` CLI flag `--to-ipynb` and for `knotedown` CLI flag `--match`, the code blocks for cells can have `input=True` (or `False`) key word attribute. Default value can be set in metadata section like
+```yaml
+---
+input: True
+...
+```
 
 
 # 3. New document options
@@ -360,6 +424,15 @@ styles-map:
 ...
 ```
 
+## 3.4 Match metadata option
+
+For `knitty` CLI flag `--to-ipynb` and for `knotedown` CLI flag `--match`, another match value that would be later used by `knotedown` can be set in metadata section like:
+```yaml
+---
+match: in
+...
+```
+
 
 # 4. API description
 
@@ -375,7 +448,8 @@ class Stitch(HasTraits):
                  error: str='continue',
                  prompt: str=None,
                  use_prompt: bool=False,
-                 pandoc_extra_args: list=None):
+                 pandoc_extra_args: list=None,
+                 pandoc_format: str="markdown"):
         """
         Parameters
         ----------
@@ -395,7 +469,10 @@ class Stitch(HasTraits):
             Whether to use prompt prefixes in code chunks
         pandoc_extra_args : list of str, default None
             Pandoc extra args for converting text from markdown
-            to JSON AST.
+            to JSON AST
+        pandoc_format : str, default ``markdown``
+            Pandoc format option for converting text from markdown
+            to JSON AST
         """
         ...
 
