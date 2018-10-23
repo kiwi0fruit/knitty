@@ -41,8 +41,8 @@ def dir_ext(to):
 @click.command(
     context_settings=dict(ignore_unknown_options=True,
                           allow_extra_args=True),
-    help="Knitty is a Pandoc filter with arguments. It reads from stdin and writes to stdout. It accepts all possible pandoc arguments and " +
-    "two knitty only argumetns. INPUT_FILE is optional but it helps to auto-name Knitty data folder in some cases."
+    help="Knitty is a Pandoc AST filter with options. It reads from stdin and writes to stdout. It accepts all possible pandoc options and " +
+    "two knitty-only options. INPUT_FILE is optional but it helps to auto-name Knitty data folder in some cases."
 )
 @click.pass_context
 @click.argument('input_file', type=str, default=None, required=False)
