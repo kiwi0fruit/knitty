@@ -301,6 +301,20 @@ It works because of the `results=pandoc` option and `sugartex` Pandoc filter.
 
 # 2. New code chunks options
 
+Note that default chunk options can be set in the document metadata section like:
+```yaml
+---
+echo: True
+...
+```
+
+````py
+@{echo=True}
+```py
+pass
+```
+````
+
 ## 2.1 Original code chunk options
 
 See Knotr/Stitch code chunks options [here](https://pystitch.github.io/api.html#chunk-options).
