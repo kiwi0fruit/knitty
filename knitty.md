@@ -54,9 +54,13 @@ New interfaces are exclusive to Knitty.
 
 ## 1.1 New command line interfaces
 
+### pre-knitty
+
 `pre-knitty` - CLI app that reads from stdin. Transforms markdown source code from Knitty format to Pandoc format (replaces Knitty-format code chunk options with Pandoc-format code chunk options). And writes to stdout.
 
 * first argument is optional input file path (`pre-knitty` reads it's extension that is needed for [code cells][code_cells] mode).
+
+### knitty
 
 `knitty` - CLI app that is a Pandoc AST filter that reads from stdin and writes to stdout (but it has arguments and options).
 
@@ -106,6 +110,8 @@ knitty %input_file% %reader_args% %writer_args% | ^
 pandoc -f json %writer_args% -o %input_file%.html
 ```
 
+### knotedown
+
 `knotedown` - [patched Notedown module](https://github.com/kiwi0fruit/notedown) by Aaron O'Leary (aaren) was added to Knitty and available via `knotedown` CLI - same API as in `notedown` CLI. Patched version support Pandoc metadata that is then set in notebook metadata. For example:
 
 ```yaml
@@ -148,6 +154,10 @@ jupyter nbconvert --to notebook --execute %input_file%.ipynb
 ```
 
 (`--standalone --self-contained` are necessary for conversion, `--nomagic` is necessary for R kernel conversion, `%jupymd%` is a Markdown flavor compatible with *pandoc-crossref* and with Jupyter markdown cells).
+
+### knotr
+
+`knotr` - same CLI as `stitch` from [Stitch](https://github.com/pystitch/stitch). It doesn't support most of Knitty new features.
 
 
 ## 1.2 Alternative settings placement
