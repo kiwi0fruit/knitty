@@ -41,25 +41,32 @@ def dir_ext(to):
 @click.command(
     context_settings=dict(ignore_unknown_options=True,
                           allow_extra_args=True),
-    help="Knitty is a Pandoc filter with arguments. It reads from stdin and writes to stdout." +
-    "INPUT_FILE is optional but it helps to auto-name Knitty data folder in some cases."
+    help="Knitty is a Pandoc filter with arguments. It reads from stdin and writes to stdout. It accepts all possible pandoc arguments and " +
+    "two knitty only argumetns. INPUT_FILE is optional but it helps to auto-name Knitty data folder in some cases."
 )
 @click.pass_context
 @click.argument('input_file', type=str, default=None, required=False)
-@click.option('-f', '-r', '--from', '--read', type=str, default="markdown",
+@click.option('-f', '-r', '--from', '--read', 'read', type=str, default="markdown",
               help='Pandoc reader option. Specify input format.')
 @click.option('-o', '--output', type=str, default=None,
               help='Pandoc writer option. Optional but it helps to auto-name Knitty data folder in some cases.')
-@click.option('-w', '-t', '--write', '--to', type=str, default=None,
-              help='Pandoc writer option. Optional but it helps to auto-name Knitty data folder in some cases.')
+@click.option('-w', '-t', '--write', '--to', 'to', type=str, default=None,
+              help="Pandoc writer option. Optional but it helps to auto-name Knitty data folder in some cases. " +
+              "Also the `-t` and `-o` options -> extension -> passed to Stitch that uses it in: " +
+              "`if self.to in ('latex', 'pdf', 'beamer')`.")
 @click.option('--standalone', is_flag=True, default=False,
-              help='Pandoc writer option. Produce a standalone document instead of fragment.')
+              help='Pandoc writer option. Produce a standalone document instead of fragment. ' +
+              'The option is added to `pandoc_extra_args` given to Stitch.')
 @click.option('--self-contained', is_flag=True, default=False,
-              help='Pandoc writer option. Store resources like images inside document instead of external files.')
+              help='Pandoc writer option. Store resources like images inside document instead of external files. ' +
+              'The option is added to `pandoc_extra_args` given to Stitch.')
 @click.option('--dir-name', type=str, default=None,
               help='Manually name Knitty data folder (instead of default auto-naming).')
 @click.option('--to-ipynb', is_flag=True, default=False,
-              help='Additionally run Pandoc filter that prepares code blocks for md to ipynb conversion via Notedown.')
+              help='Additionally run Pandoc filter that prepares code blocks for md to ipynb conversion via Notedown. ' +
+              'Code blocks for cells should have `input=True` key word attribute. Default value can be set in metadata section ' +
+              'like `input: True`. Intended to be later used with `knotedown --match=in`. Another match value for knotedown can be ' +
+              'set in metadata section like `match: in`.')
 def main(ctx, input_file, read, output, to, standalone, self_contained, dir_name, to_ipynb):
     if sys.stdin.isatty():
         raise Exception('The app is not meant to wait for user input.')
