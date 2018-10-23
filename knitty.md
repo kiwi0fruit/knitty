@@ -64,21 +64,43 @@ New interfaces are exclusive to Knitty.
 
 ### knitty
 
-`knitty` - CLI app that is a Pandoc AST filter that reads from stdin and writes to stdout (but it has arguments and options).
+```
+Usage: knitty [OPTIONS] [INPUT_FILE]
 
-* first argument is an optional input file path that helps to auto-name Knitty data folder in some cases.
-* Options:
-    * `-f TEXT`, `-r TEXT`, `--from TEXT`, `--read TEXT` – Pandoc reader option. Specify input format,
-    * `-o TEXT`, `--output TEXT` – Pandoc writer option. Optional but it helps to auto-name Knitty data folder in some cases,
-    * `-t TEXT`, `--to TEXT`, `-w TEXT`, `--write TEXT` – Pandoc writer option. Optional but it helps to auto-name Knitty data folder in some cases. Option is also used by Stitch in the if statement: `if self.to in ('latex', 'pdf', 'beamer')`,
-    * `--standalone` – Pandoc writer option. Produce a standalone document instead of fragment,
-    * `--self-contained` – Pandoc writer option. Store resources like images inside document instead of external files,
-    * `--dir-name TEXT` – Manually name Knitty data folder (instead of default auto-naming).
-    * `--to-ipynb` – Additionally run Pandoc filter that prepares code blocks for md to ipynb conversion via Notedown. Code blocks for cells should have `input=True` key word attribute. Default value can be set in metadata section like `input: True`. Intended to be later used with `knotedown --match=in`. Another match value for `knotedown` can be set in metadata section like `match: in`.  
-    Example:
-    ```bat
-    pandoc -f json --standalone --self-contained -t gfm | knotedown --match=in --nomagic
-    ```
+  Knitty is a Pandoc AST filter with options. It reads from stdin and writes
+  to stdout. It accepts all possible pandoc options and two knitty-only
+  options. INPUT_FILE is optional but it helps to auto-name Knitty data
+  folder in some cases.
+
+Options:
+  -f, -r, --from, --read TEXT  Pandoc reader option. Specify input format.
+  -o, --output TEXT            Pandoc writer option. Optional but it helps to
+                               auto-name Knitty data folder in some cases.
+  -w, -t, --write, --to TEXT   Pandoc writer option. Optional but it helps to
+                               auto-name Knitty data folder in some cases.
+                               Also the `-t` and `-o` options -> extension ->
+                               passed to Stitch that uses it in: `if self.to
+                               in ('latex', 'pdf', 'beamer')`.
+  --standalone                 Pandoc writer option. Produce a standalone
+                               document instead of fragment. The option is
+                               added to `pandoc_extra_args` given to Stitch.
+  --self-contained             Pandoc writer option. Store resources like
+                               images inside document instead of external
+                               files. The option is added to
+                               `pandoc_extra_args` given to Stitch.
+  --dir-name TEXT              Manually name Knitty data folder (instead of
+                               default auto-naming).
+  --to-ipynb                   Additionally run Pandoc filter that prepares
+                               code blocks for md to ipynb conversion via
+                               Notedown. Code blocks for cells should have
+                               `input=True` key word attribute. Default value
+                               can be set in metadata section like `input:
+                               True`. Intended to be later used with
+                               `knotedown --match=in`. Another match value for
+                               knotedown can be set in metadata section like
+                               `match: in`.
+  --help                       Show this message and exit.
+```
 
 Examples:
 
