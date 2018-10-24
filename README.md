@@ -14,7 +14,7 @@ Or install on Windows (if you use conda package manager (Anaconda/Miniconda) the
 conda install -c defaults -c conda-forge "pip>=10.0.1" "pandoc>=2.2.1" jupyter_core ^
 traitlets ipython jupyter_client nbconvert pandocfilters pypandoc click psutil nbformat ^
 pandoc-attributes six pyyaml
-pip install --progress-bar off knitty
+pip install knitty
 ```
 
 If pip install fails try to change codepage: `chcp 1252`.
