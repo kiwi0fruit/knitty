@@ -221,7 +221,7 @@ print('Hello!')
 ```
 `````
 
-**Please note** that Knitty converts Knitty-style and Stitch-style options (that are originally not supported by Pandoc parser) to Pandoc-style options. When converting Knitty also add `eval=True` like: <code>\`\`\`{python}</code> to <code>\`\`\`{.python eval=True}</code> (except in case of the simple form like <code>\`\`\`python</code>).
+**Please note** that Knitty converts Knitty-style and Stitch-style options (that are originally not supported by Pandoc parser) to Pandoc-style options.
 
 Specifics:
 
@@ -355,8 +355,6 @@ Notable options:
 eval: True
 ...
 ```
-
-Because of the automatic adding of `eval=True` as was said in *1.2 Alternative settings placement* this global option works only on all simple options like <code>\`\`\`python</code>.
 
 
 ## 2.2 Results Pandoc chunk option

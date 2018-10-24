@@ -27,7 +27,6 @@ DEC = '@'
 # ---------------------------------
 DEFAULT_EXT = 'py'
 CHUNK_NAME = 'chunk'
-EVAL = 'eval'
 MARKDOWN_KERNEL = 'md'
 
 # Regexps:
@@ -334,16 +333,13 @@ def check_and_change(args, kwargs):
     -------
     transformed: args, kwargs
     """
-    chunk, has_eval = None, False
+    chunk = None
 
     def check(kwarg):
         key, val = kwarg
-        nonlocal args, chunk, has_eval
+        nonlocal args, chunk
         if key == CHUNK_NAME and chunk is None:
             chunk = val
-        elif key == EVAL:
-            has_eval = True
-            return True
         elif key == 'class':
             n = len(val)
             val = val.strip('"')
@@ -360,9 +356,6 @@ def check_and_change(args, kwargs):
         return False
 
     kwargs = [kwarg for kwarg in kwargs if check(kwarg)]
-    # add `eval=True` if `eval` was not specified:
-    if not has_eval:
-        kwargs.append((EVAL, 'True'))
     # move `chunk` option:
     if chunk is not None:
         args = [args[0], chunk] + args[1:]
