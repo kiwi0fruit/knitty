@@ -27,7 +27,7 @@ DEC = '@'
 # ---------------------------------
 DEFAULT_EXT = 'py'
 CHUNK_NAME = 'chunk'
-MARKDOWN_KERNEL = 'md'
+MARKDOWN_KERNELS = ('md', 'markdown')
 
 # Regexps:
 # ---------------------------------
@@ -222,7 +222,7 @@ class Replacer:
 
         #    process next code chunk:
         if not last:
-            if lang == MARKDOWN_KERNEL:
+            if lang in MARKDOWN_KERNELS:
                 post += '\n'
                 self.prev_was_md = True
             else:
