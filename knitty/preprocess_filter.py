@@ -35,9 +35,9 @@ MARKDOWN_KERNELS = ('md', 'markdown')
 # VAL: `val`, `"val"`, `'val'`
 # SPACE: All whitespace characters except `\r` and `\n`
 #                                    language=PythonRegExp
-KEY = r'[^\W\d](?:[-.\w]*[-\w])?'  # language=PythonRegExp
+KEY = '[^\\W\\d](?:[-.\\w]*[-\\w])?'  # language=PythonRegExp
 VAL = '(?:"[^"]*"|\'[^\']*\'|[^\\s,{}"\'][^\\s,{}]*)'  # language=PythonRegExp
-SPACE = r'[^\S\r\n]*'
+SPACE = '[^\\S\\r\\n]*'
 
 
 # -----------------------------------
@@ -94,30 +94,31 @@ class SEARCH:
     _GFM_LANG2 = _LANG.format(alt='').replace('<LANG>', '<LANG2>')
     _RMARK_LANG = _LANG.format(alt=f'{_KWARG}{_},{_}{_KWARG}'
                                ).replace('<LANG>', '<RMARK_LANG>')  # language=PythonRegExp
-    _OPT = f'{{{_}(?P<OPT>{{lang}}({_},{_}{_ARG})*){_}\}}'
-    # Note: {{ \{{ \}} are escaped { } in regex + .format()
+    _OPT = f'{{{_}(?P<OPT>{{lang}}({_},{_}{_ARG})*){_}\\}}'
+    # Note: {{ \\{{ \\}} are escaped { } in regex + f""
+    # Note: {{ \{{ \}} are escaped { } in regex + r""
     _GFM_OPT = _OPT.replace('{lang}', _GFM_LANG)
     _RMARK_OPT = _OPT.replace('{lang}', _RMARK_LANG).replace('<OPT>', '<RMARK_OPT>')  # language=PythonRegExp
 
-    _HYDRO_LINE = f'{{comm}} *{CELL}( +{{opt}})?{{block_def}}( .*)?\r?\n'
-    _RMARK = f'{CHUNK}{_}{_RMARK_OPT}{_}'
-    _GFM = f'{DEC}{_GFM_OPT}{_}\r?\n{CHUNK}{_}{_GFM_LANG2}{_}'  # language=PythonRegExp
-    _HYDRO = r'((?P<FIRST>^)|\r?\n){{end}}\s*((?P<LAST>$)|{line}{{begin}})'.format(
+    _HYDRO_LINE = f'{{comm}} *{CELL}( +{{opt}})?{{block_def}}( .*)?\\r?\\n'
+    _RMARK = f'{CHUNK}{_}{_RMARK_OPT}{_}'  # language=PythonRegExp
+    _GFM = f'{DEC}{_GFM_OPT}{_}\\r?\\n{CHUNK}{_}{_GFM_LANG2}{_}'  # language=PythonRegExp
+    _HYDRO = '((?P<FIRST>^)|\\r?\\n){{end}}\\s*((?P<LAST>$)|{line}{{begin}})'.format(
         line=_HYDRO_LINE.format(comm='{comm}', opt='{opt}', block_def='')
     )
     # Public attributes:
     # ------------------
-    PATTERN = re.compile(f'((\r?\n|^)({_GFM}|{_RMARK})(\r?\n|$))')
+    PATTERN = re.compile(f'((\\r?\\n|^)({_GFM}|{_RMARK})(\\r?\\n|$))')
     HYDRO = _HYDRO.format(begin='', end='', comm='{comm}', opt='{opt}')  # language=PythonRegExp
     HYDRO_BLOCK_COMM = _HYDRO.format(
-        begin=r'(?P<BEGIN>{begin}\r?\n)?',
-        end=r'(?P<END>{end}\r?\n)?',
+        begin='(?P<BEGIN>{begin}\\r?\\n)?',
+        end='(?P<END>{end}\\r?\\n)?',
         comm='{comm}', opt='{opt}'
     )  # language=PythonRegExp
     HYDRO_FIRST_LINE = re.compile(_HYDRO_LINE.format(
-        comm=r'^(?P<COMM>[^\s]{1,3})',
+        comm='^(?P<COMM>[^\\s]{1,3})',
         opt=_GFM_OPT,
-        block_def=f'( (?P<BEGIN>[^\s]{{1,6}}) {BLOCK_COMM_DEF} (?P<END>[^\s]{{1,6}}))?'
+        block_def=f'( (?P<BEGIN>[^\\s]{{1,6}}) {BLOCK_COMM_DEF} (?P<END>[^\\s]{{1,6}}))?'
     ))
     OPT = _GFM_OPT
 
