@@ -90,10 +90,10 @@ class SEARCH:
     _ARG = rf'{KEY}({_}={_}{VAL})?'  # language=PythonRegExp
 
     _LANG = rf'((?P<LANG>{KEY})|{{alt}})'
-    _GFM_LANG = _LANG.format(alt=_KWARG)
-    _GFM_LANG2 = _LANG.format(alt='').replace('<LANG>', '<LANG2>')
-    _RMARK_LANG = _LANG.format(alt=rf'{_KWARG}{_},{_}{_KWARG}'
-                               ).replace('<LANG>', '<RMARK_LANG>')  # language=PythonRegExp
+    _GFM_LANG = _LANG.replace('{alt}', _KWARG)
+    _GFM_LANG2 = _LANG.replace('{alt}', '').replace('<LANG>', '<LANG2>')
+    _RMARK_LANG = _LANG.replace('{alt}', rf'{_KWARG}{_},{_}{_KWARG}').replace('<LANG>', '<RMARK_LANG>')
+    #   language=PythonRegExp
     _OPT = rf'{{{_}(?P<OPT>{{lang}}({_},{_}{_ARG})*){_}\}}'
     # Note: {{ \{{ \}} are escaped { } in regex + rf""
     _GFM_OPT = _OPT.replace('{lang}', _GFM_LANG)
