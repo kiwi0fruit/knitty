@@ -85,34 +85,29 @@ class SEARCH:
         * Doesn't have `.format()` slots
         * Same as _GFM_OPT
     """
-    #                            language=PythonRegExp
-    _KWARG = r'{key}{_}={_}{val}'.format(key=KEY, val=VAL, _=SPACE)  # language=PythonRegExp
-    _ARG = r'{key}({_}={_}{val})?'.format(key=KEY, val=VAL, _=SPACE)  # language=PythonRegExp
+    _ = SPACE
+    _KWARG = f'{KEY}{_}={_}{VAL}'  # language=PythonRegExp
+    _ARG = f'{KEY}({_}={_}{VAL})?'  # language=PythonRegExp
 
-    _LANG = r'((?P<LANG>{key})|{alt})'.format(key=KEY, val=VAL, alt='{alt}', _=SPACE)  # language=PythonRegExp
-    _GFM_LANG = _LANG.replace('{alt}', _KWARG)  # language=PythonRegExp
-    _GFM_LANG2 = _LANG.replace('{alt}', '').replace('<LANG>', '<LANG2>')  # language=PythonRegExp
-    _RMARK_LANG = _LANG.replace('<LANG>', '<RMARK_LANG>').replace(
-                                '{alt}', '{kwarg}{_},{_}{kwarg}'.format(kwarg=_KWARG, _=SPACE))  # language=PythonRegExp
-
-    _OPT = r'{{{_}(?P<OPT>{lang}({_},{_}{arg})*){_}\}}'.format(lang='{lang}', arg=_ARG, _=SPACE)
-    # language=PythonRegExp    ##    Note: {{ \{{ \}} are escaped { } in regex + .format()
-    _GFM_OPT = _OPT.replace('{lang}', _GFM_LANG)  # language=PythonRegExp
+    _LANG = f'((?P<LANG>{KEY})|{{alt}})'
+    _GFM_LANG = _LANG.format(alt=_KWARG)
+    _GFM_LANG2 = _LANG.format(alt='').replace('<LANG>', '<LANG2>')
+    _RMARK_LANG = _LANG.format(alt=f'{_KWARG}{_},{_}{_KWARG}'
+                               ).replace('<LANG>', '<RMARK_LANG>')  # language=PythonRegExp
+    _OPT = f'{{{_}(?P<OPT>{{lang}}({_},{_}{_ARG})*){_}\}}'
+    # Note: {{ \{{ \}} are escaped { } in regex + .format()
+    _GFM_OPT = _OPT.replace('{lang}', _GFM_LANG)
     _RMARK_OPT = _OPT.replace('{lang}', _RMARK_LANG).replace('<OPT>', '<RMARK_OPT>')  # language=PythonRegExp
 
-    _HYDRO_LINE = (
-        r'{comm} *{cell}( {opt})?{block_def}( .*)?\r?\n').format(cell=CELL, opt='{opt}', block_def='{block_def}',
-                                                                comm='{comm}')  # language=PythonRegExp
-    _RMARK = r'{chunk}{_}{opt}{_}'.format(chunk=CHUNK, _=SPACE, opt=_RMARK_OPT)  # language=PythonRegExp
-    _GFM = r'{dec}{opt}{_}\r?\n{chunk}{_}{lang2}{_}'.format(dec=DEC, chunk=CHUNK, opt=_GFM_OPT, lang2=_GFM_LANG2,
-                                                            _=SPACE)  # language=PythonRegExp
-    _HYDRO = r'((?P<FIRST>^)|\r?\n){end}\s*((?P<LAST>$)|{line}{begin})'.format(
-        line=_HYDRO_LINE.format(comm='{comm}', opt='{opt}', block_def=''),
-        begin='{begin}', end='{end}'
+    _HYDRO_LINE = f'{{comm}} *{CELL}( +{{opt}})?{{block_def}}( .*)?\r?\n'
+    _RMARK = f'{CHUNK}{_}{_RMARK_OPT}{_}'
+    _GFM = f'{DEC}{_GFM_OPT}{_}\r?\n{CHUNK}{_}{_GFM_LANG2}{_}'  # language=PythonRegExp
+    _HYDRO = r'((?P<FIRST>^)|\r?\n){{end}}\s*((?P<LAST>$)|{line}{{begin}})'.format(
+        line=_HYDRO_LINE.format(comm='{comm}', opt='{opt}', block_def='')
     )
     # Public attributes:
     # ------------------
-    PATTERN = re.compile(r'((\r?\n|^)({GFM}|{RMark})(\r?\n|$))'.format(GFM=_GFM, RMark=_RMARK))
+    PATTERN = re.compile(f'((\r?\n|^)({_GFM}|{_RMARK})(\r?\n|$))')
     HYDRO = _HYDRO.format(begin='', end='', comm='{comm}', opt='{opt}')  # language=PythonRegExp
     HYDRO_BLOCK_COMM = _HYDRO.format(
         begin=r'(?P<BEGIN>{begin}\r?\n)?',
@@ -122,7 +117,7 @@ class SEARCH:
     HYDRO_FIRST_LINE = re.compile(_HYDRO_LINE.format(
         comm=r'^(?P<COMM>[^\s]{1,3})',
         opt=_GFM_OPT,
-        block_def=r'( (?P<BEGIN>[^\s]{{1,6}}) {} (?P<END>[^\s]{{1,6}}))?'.format(BLOCK_COMM_DEF)
+        block_def=f'( (?P<BEGIN>[^\s]{{1,6}}) {BLOCK_COMM_DEF} (?P<END>[^\s]{{1,6}}))?'
     ))
     OPT = _GFM_OPT
 
