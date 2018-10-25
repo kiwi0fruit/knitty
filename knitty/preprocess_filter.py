@@ -6,6 +6,7 @@ https://github.com/pystitch/stitch
 that originally comes from *Python Cookbook* 3E, recipie 2.18
 """
 import re
+import yaml
 from collections import namedtuple
 
 
@@ -28,6 +29,7 @@ DEC = '@'
 DEFAULT_EXT = 'py'
 CHUNK_NAME = 'chunk'
 MARKDOWN_KERNELS = ('md', 'markdown')
+LANG_COMMENTS_META = 'lang-comments'
 
 # Regexps:
 # ---------------------------------
@@ -241,6 +243,13 @@ def knitty_preprosess(source: str, lang: str=None) -> str:
     :return: str
         New source
     """
+    # Read metadata:
+    m = re.search(r'(?:^|\n)---\n(.+?\n)(?:---|\.\.\.)(?:\n|$)', source, re.DOTALL)
+    metadata = yaml.load(m.group(1)) if m else None
+    lang_comments = metadata.get(LANG_COMMENTS_META, None) if isinstance(metadata, dict) else None
+    if not isinstance(lang_comments, list):
+        pass  # TODO
+
     rep = Replacer(lang)
     cells_mode = SEARCH.HYDRO_FIRST_LINE.match(source)
     if cells_mode:
