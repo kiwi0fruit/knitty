@@ -30,7 +30,7 @@ def main(input_file, yaml_file):
     if input_file:
         ext = p.splitext(p.basename(input_file))[1].lstrip('.')
     if yaml_file:
-        with open(yaml, 'r', encoding='utf-8') as y:
+        with open(yaml_file, 'r', encoding='utf-8') as y:
             yaml_string = y.read()
     sys.stdout.write(knitty_preprosess(sys.stdin.read(), ext, yaml_string))
 
