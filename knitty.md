@@ -62,6 +62,30 @@ New interfaces are exclusive to Knitty.
 
 * first argument is optional input file path (`pre-knitty` reads it's extension that is needed for [code cells][code_cells] mode).
 
+```
+Usage: pre-knitty [OPTIONS] [INPUT_FILE]
+
+  A text filter that reads from stdin and writes to stdout. INPUT_FILE is
+  optional but it helps to determine language and hence a Jupyter kernel.
+
+  Some settings can be set in document metadata:
+
+  ---
+
+  comments-map:
+
+    py: ['#', "\'\'\'", "\'\'\'", '\"\"\"', '\"\"\"']
+
+    js: ["//", "/*", "*/"]
+
+  ...
+
+Options:
+  -y, --yaml PATH  yaml file with settings for pre-knitty.
+  --help           Show this message and exit.
+```
+
+
 ### knitty
 
 ```
