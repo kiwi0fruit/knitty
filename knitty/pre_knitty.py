@@ -15,10 +15,10 @@ INPUT_FILE is optional but it helps to determine language and hence a Jupyter ke
 Some settings can be set in document metadata:\n
 ---\n
 comments-map:\n
-  py: ['#', {}]\n
+  py: ['#', "'''", "'''", "\\\"\\\"\\\"", "\\\"\\\"\\\""]\n
   js: ["//", "/*", "*/"]\n
 ...\n
-""".format(r""""\'\'\'", "\'\'\'", '\"\"\"', '\"\"\"'""")
+"""
 
 
 @click.command(help=help_str)
