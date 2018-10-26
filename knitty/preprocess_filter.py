@@ -8,7 +8,7 @@ that originally comes from *Python Cookbook* 3E, recipie 2.18
 import re
 import yaml
 from collections import namedtuple
-
+from typing import Tuple, List
 
 # -------------------------------------------
 # Python text preprocess filter
@@ -29,7 +29,9 @@ DEC = '@'
 DEFAULT_EXT = 'py'
 CHUNK_NAME = 'chunk'
 MARKDOWN_KERNELS = ('md', 'markdown')
-LANG_COMMENTS_META = 'lang-comments'
+META_LANG_COMMENTS = 'knitty-cells'
+META_COMMENTS_MAP = 'comments-map'
+META_CODE_LANGUAGE = 'code-language'
 
 # Regexps:
 # ---------------------------------
@@ -132,7 +134,7 @@ class Replacer:
             Default language. Must be string of positive length,
             otherwise it would be DEFAULT_EXT.
         """
-        self._lang = lang if isinstance(lang, str) and lang != '' else DEFAULT_EXT
+        self._lang = lang if isinstance(lang, str) and lang else DEFAULT_EXT
         self.use_block_comm = False
         self.opened_block_comm = False
         self.prev_was_md = False
@@ -230,7 +232,7 @@ class Replacer:
         return (pre + post).format(opt=preprocess_options(opt))
 
 
-def knitty_preprosess(source: str, lang: str=None) -> str:
+def knitty_preprosess(source: str, lang: str=None, yaml_meta: str=None) -> str:
     """
     Stitch options preprocess function.
 
@@ -240,21 +242,46 @@ def knitty_preprosess(source: str, lang: str=None) -> str:
     :param source: str
     :param lang: str
         Default language
+    :param yaml_meta: str
+        pre-knitty settings
     :return: str
         New source
     """
-    # Read metadata:
-    m = re.search(r'(?:^|\n)---\n(.+?\n)(?:---|\.\.\.)(?:\n|$)', source, re.DOTALL)
-    metadata = yaml.load(m.group(1)) if m else None
-    lang_comments = metadata.get(LANG_COMMENTS_META, None) if isinstance(metadata, dict) else None
-    if not isinstance(lang_comments, list):
-        pass  # TODO
+    def load_yaml(string):
+        m = re.search(r'(?:^|\n)---\n(.+?\n)(?:---|\.\.\.)(?:\n|$)', string, re.DOTALL)
+        return yaml.load(m.group(1)) if m else None
 
+    # Read metadata:
+    metadata = load_yaml(source)
+    _lang = metadata.get(META_CODE_LANGUAGE, None) if isinstance(metadata, dict) else None
+    lang = _lang if _lang and isinstance(_lang, str) else lang
     rep = Replacer(lang)
-    cells_mode = SEARCH.HYDRO_FIRST_LINE.match(source)
+
+    def _comments() -> Tuple[bool, List[str]]:
+        """ returns (cells_mode, comments) """
+        comments = metadata.get(META_LANG_COMMENTS, None) if isinstance(metadata, dict) else None
+        if isinstance(comments, list):
+            if len(comments) % 2 == 1:
+                if all(isinstance(s, str) for s in comments):
+                    return True, comments
+        yml = load_yaml(yaml_meta)
+        com_map = yml.get(META_COMMENTS_MAP, None) if isinstance(yml, dict) else None
+        comments = com_map.get(lang, None) if isinstance(com_map, dict) else None
+        if isinstance(comments, list):
+            if len(comments) % 2 == 1:
+                if all(isinstance(s, str) for s in comments):
+                    return False, comments
+        raise ValueError(f"Knitty wasn't able to find *proper* comments settings for '{lang}' language.")
+
+    cells_mode, hydro_comments = _comments()
+    cells_mode = SEARCH.HYDRO_FIRST_LINE.match(source) if not cells_mode else True
     if cells_mode:
-        comm = re.escape(cells_mode.group('COMM'))
-        block_begin = cells_mode.group('BEGIN')
+        if isinstance(cells_mode, bool):
+            comm = hydro_comments[0]
+        else:
+            comm = re.escape(cells_mode.group('COMM'))
+        print(lang, cells_mode, hydro_comments, file=open(r'D:\debug.txt', 'w', encoding='utf-8'))  # TODO
+        block_begin = cells_mode.group('BEGIN')  # TODO bool doesn't have .group() + remove %%% from first line
         block_end = cells_mode.group('END')
         if block_begin is None:
             hydro_regex = SEARCH.HYDRO.format(comm=comm, opt=SEARCH.OPT)
