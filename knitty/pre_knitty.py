@@ -12,7 +12,11 @@ import click
 
 help_str = """A text filter that reads from stdin and writes to stdout.
 INPUT_FILE is optional but it helps to determine language and hence a Jupyter kernel.\n
-Some settings can be set in document metadata:\n
+Settings that can be set in INPUT_FILE:\n
+---\n
+knitty-cells: ['#', "'''", "'''", "\\\"\\\"\\\"", "\\\"\\\"\\\""]\n
+...\n
+Settings that can be set in the --yaml file:\n
 ---\n
 comments-map:\n
   py: ['#', "'''", "'''", "\\\"\\\"\\\"", "\\\"\\\"\\\""]\n

@@ -68,16 +68,18 @@ Usage: pre-knitty [OPTIONS] [INPUT_FILE]
   A text filter that reads from stdin and writes to stdout. INPUT_FILE is
   optional but it helps to determine language and hence a Jupyter kernel.
 
-  Some settings can be set in document metadata:
+  Settings that can be set in INPUT_FILE:
 
   ---
+  knitty-cells: ['#', "'''", "'''", "\"\"\"", "\"\"\""]
+  ...
 
+  Settings that can be set in the --yaml file:
+
+  ---
   comments-map:
-
     py: ['#', "'''", "'''", "\"\"\"", "\"\"\""]
-
     js: ["//", "/*", "*/"]
-
   ...
 
 Options:
