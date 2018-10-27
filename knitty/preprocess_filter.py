@@ -117,17 +117,19 @@ class SEARCH:
 
 
 class Replacer:
-    def __init__(self, lang: str=None):
+    def __init__(self, lang: str=None, block_comm: any=False):
         """
         Sets default language. Initiates some bool vars.
         :param lang: str
             Default language. Must be string of positive length,
             otherwise it would be DEFAULT_EXT.
+        :param block_comm: any
+            Would be converted to bool.
         """
         self._lang = lang if isinstance(lang, str) and lang else DEFAULT_EXT
-        self.use_block_comm = False
-        self.opened_block_comm = False
-        self.prev_was_md = False
+        self._use_block_comm = bool(block_comm)
+        self._opened_block_comm = False
+        self._prev_was_md = False
 
     def replace(self, m) -> str:
         """
@@ -193,19 +195,19 @@ class Replacer:
         first, last = (m.group('FIRST') is not None), (m.group('LAST') is not None)
         #    add the closing block comment to the end of the code
         #    if opening block comment wasn't removed:
-        if self.use_block_comm:
+        if self._use_block_comm:
             begin, end = m.group('BEGIN'), m.group('END')
-            if (end is not None) and (end != '') and (not self.opened_block_comm):
+            if (end is not None) and (end != '') and (not self._opened_block_comm):
                 pre += end
             if (begin is not None) and (begin != ''):
-                self.opened_block_comm = True
+                self._opened_block_comm = True
             else:
-                self.opened_block_comm = False
+                self._opened_block_comm = False
 
         #    process previous code chunk:
         if not first:
             pre += '\n'
-            if self.prev_was_md:
+            if self._prev_was_md:
                 pre += '\n'
             else:
                 pre += '```\n\n'
@@ -214,10 +216,10 @@ class Replacer:
         if not last:
             if lang in MARKDOWN_KERNELS:
                 post += '\n'
-                self.prev_was_md = True
+                self._prev_was_md = True
             else:
                 post += '```{{{opt}}}\n'
-                self.prev_was_md = False
+                self._prev_was_md = False
 
         # process output pattern:
         return (pre + post).format(opt=preprocess_options(opt))
@@ -249,7 +251,6 @@ def knitty_preprosess(source: str, lang: str=None, yaml_meta: str=None) -> str:
     # Read code language:
     _lang = get(_knitty, META_KNITTY_LANGUAGE)
     lang = _lang if _lang and isinstance(_lang, str) else lang
-    rep = Replacer(lang)
 
     def _comments() -> List[str] or None:
         """Returns comments list if found them in right format."""
@@ -284,12 +285,12 @@ def knitty_preprosess(source: str, lang: str=None, yaml_meta: str=None) -> str:
                 return rf"(?P<{group_name}>{'|'.join(map(re.escape, it))})?"
             begin = escaped_regex((begin for begin, e in block_comm), 'BEGIN')
             end = escaped_regex((end for b, end in block_comm), 'END')
-            rep.use_block_comm = True
 
         source = re.sub(SEARCH.HYDRO.format(comm=comm, begin=begin, end=end),
-                        rep.replace_cells,
+                        Replacer(lang, block_comm).replace_cells,
                         source + '\n')  # regex assumes new line at the end
-    return re.sub(SEARCH.PATTERN, rep.replace, source)
+
+    return re.sub(SEARCH.PATTERN, Replacer(lang).replace, source)
 
 
 # -----------------------------------
