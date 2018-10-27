@@ -74,44 +74,54 @@ class SEARCH:
         * Has groups: COMM
         * ``# %% {lang, chunk, key=val, id=id1} comment text``
           Specifies inline comments patterns in Hydrogen documents's first line (cell blocks mode)
-    3. HYDRO: str
-        * Has groups: FIRST, LAST, LANG (later BEGIN, END groups should be added)
+    3. hydro_regex: returns compiled regex
+        * Has groups: FIRST, LAST, LANG (later BEGIN, END groups might be added)
         * Has format slots: comm, opt, begin, end
-        * Search pattern in Hydrogen document. Block comments can be specified if turned on.
+        * Search pattern in Hydrogen document. Block comments can be specified if they are turned on.
     """
-    #                                    language=PythonRegExp
+    # language=PythonRegExp
     KEY = r'[^\W\d](?:[-.\w]*[-\w])?'  # language=PythonRegExp
     VAL = '(?:"[^"]*"|\'[^\']*\'|[^\\s,{}"\'][^\\s,{}]*)'  # language=PythonRegExp
     SPACE = r'[^\S\r\n]*'
 
     _ = SPACE
-    _KWARG = rf'{KEY}{_}={_}{VAL}'  # language=PythonRegExp
-    _ARG = rf'{KEY}({_}={_}{VAL})?'  # language=PythonRegExp
+    _KWARG = rf'{KEY}{_}={_}{VAL}'
+    _ARG = rf'{KEY}({_}={_}{VAL})?'
 
-    _LANG = rf'((?P<LANG>{KEY})|{{alt}})'
+    _LANG = re.compile(rf'((?P<LANG>{KEY})|{{alt}})').pattern
     _GFM_LANG = _LANG.format(alt=_KWARG)
     _GFM_LANG2 = _LANG.format(alt='').replace('<LANG>', '<LANG2>')
     _RMARK_LANG = _LANG.format(alt=rf'{_KWARG}{_},{_}{_KWARG}').replace('<LANG>', '<RMARK_LANG>')
-    #   language=PythonRegExp
-    _OPT = rf'{{{_}(?P<OPT>{{lang}}({_},{_}{_ARG})*){_}\}}'
-    # Note: {{ \{{ \}} are escaped { } in regex + rf""
+
+    _OPT = re.compile(rf'{{{_}(?P<OPT>{{lang}}({_},{_}{_ARG})*){_}\}}').pattern  # {{ \}} are escaped { } in regex + rf
     _GFM_OPT = _OPT.replace('{lang}', _GFM_LANG)
-    _RMARK_OPT = _OPT.replace('{lang}', _RMARK_LANG).replace('<OPT>', '<RMARK_OPT>')  # language=PythonRegExp
+    _RMARK_OPT = _OPT.replace('{lang}', _RMARK_LANG).replace('<OPT>', '<RMARK_OPT>')
 
-    _HYDRO_LINE = rf'{{comm}} *{CELL}( +{{opt}})?( .*)?\r?\n'
-    _RMARK = rf'{CHUNK}{_}{_RMARK_OPT}{_}'  # language=PythonRegExp
-    _GFM = rf'{DEC}{_GFM_OPT}{_}\r?\n{CHUNK}{_}{_GFM_LANG2}{_}'
+    _HYDRO_LINE = re.compile(rf'{{comm}} *{CELL}( +{{opt}})?( .*)?(\r?\n|$)').pattern
+    _RMARK = rf'{CHUNK}{_}{_RMARK_OPT}{_}'
+    _GFM = re.compile(rf'{DEC}{_GFM_OPT}{_}\r?\n{CHUNK}{_}{_GFM_LANG2}{_}').pattern
 
-    # Public attributes:
+    # Public:
     # ------------------
-    PATTERN = re.compile(rf'((\r?\n|^)({_GFM}|{_RMARK})(\r?\n|$))')  # language=PythonRegExp
-    HYDRO = r'((?P<FIRST>^)|{{end}}\r?\n)\s*((?P<LAST>$)|{line}{{begin}})'.format(
-        line=_HYDRO_LINE.format(comm='{comm}', opt=rf'{{{_GFM_OPT}}}')
-    )  # TODO I moved {end} and removed \n so behaviour changed
+    PATTERN = re.compile(rf'((\r?\n|^)({_GFM}|{_RMARK})(\r?\n|$))')
     HYDRO_FIRST_LINE = re.compile(_HYDRO_LINE.format(  # language=PythonRegExp
         comm=r'^(?P<COMM>[^\s]{1,3})',
         opt=_GFM_OPT
     ))
+
+    @staticmethod
+    def hydro_regex(comm: str, begins: Iterable[str]=None, ends: Iterable[str]=None):
+        def del_named_groups(regex: str):
+            return re.sub(r'\?P<\w+>', '', regex)
+
+        def escaped_regex(it: Iterable[str], group_name: str):
+            return re.compile(rf"(?P<{group_name}>{'|'.join(map(re.escape, it))})?").pattern
+
+        _line = SEARCH._HYDRO_LINE.format(comm=comm, opt=SEARCH._GFM_OPT)
+        begins = escaped_regex(begins, 'BEGIN') if begins else ''
+        ends = escaped_regex(ends, 'END') if ends else ''
+        return re.compile(rf'(^|((?<=\n)|^){_line}){begins}(.*?){ends}\s*(?={del_named_groups(_line)}|^)',
+                          re.DOTALL)
 
 
 class Replacer:
@@ -274,21 +284,19 @@ def knitty_preprosess(source: str, lang: str=None, yaml_meta: str=None) -> str:
     if cells_mode:
         block_comm = None
         if isinstance(cells_mode, list):
-            comm = cells_mode[0]
+            comm = re.escape(cells_mode[0])
             if len(cells_mode) > 1:
                 block_comm = [(cells_mode[i], cells_mode[i + 1])
                               for i in range(1, len(cells_mode), 2)]
         else:
             comm = re.escape(cells_mode.group('COMM'))
 
-        begin, end = '', ''
+        begins, ends = None, None
         if block_comm:
-            def escaped_regex(it: Iterable[str], group_name: str):
-                return rf"(?P<{group_name}>{'|'.join(map(re.escape, it))})?"
-            begin = escaped_regex((begin for begin, e in block_comm), 'BEGIN')
-            end = escaped_regex((end for b, end in block_comm), 'END')
+            begins = (begin for begin, e in block_comm)
+            ends = (end for b, end in block_comm)
 
-        source = re.sub(SEARCH.HYDRO.format(comm=comm, begin=begin, end=end),
+        source = re.sub(SEARCH.hydro_regex(comm=comm, begins=begins, ends=ends),
                         Replacer(lang, bool(block_comm)).replace_cells,
                         source + '\n')  # regex assumes new line at the end
 
