@@ -117,17 +117,16 @@ class SEARCH:
 
 
 class Replacer:
-    def __init__(self, lang: str=None, block_comm: any=False):
+    def __init__(self, lang: str=None, block_comm: bool=False):
         """
         Sets default language. Initiates some bool vars.
         :param lang: str
-            Default language. Must be string of positive length,
+            Default language. Must non-empty string,
             otherwise it would be DEFAULT_EXT.
-        :param block_comm: any
-            Would be converted to bool.
+        :param block_comm
         """
         self._lang = lang if isinstance(lang, str) and lang else DEFAULT_EXT
-        self._use_block_comm = bool(block_comm)
+        self._use_block_comm = block_comm
         self._opened_block_comm = False
         self._prev_was_md = False
 
@@ -287,7 +286,7 @@ def knitty_preprosess(source: str, lang: str=None, yaml_meta: str=None) -> str:
             end = escaped_regex((end for b, end in block_comm), 'END')
 
         source = re.sub(SEARCH.HYDRO.format(comm=comm, begin=begin, end=end),
-                        Replacer(lang, block_comm).replace_cells,
+                        Replacer(lang, bool(block_comm)).replace_cells,
                         source + '\n')  # regex assumes new line at the end
 
     return re.sub(SEARCH.PATTERN, Replacer(lang).replace, source)
