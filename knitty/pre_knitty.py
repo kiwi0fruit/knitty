@@ -9,12 +9,13 @@ from .preprocess_filter import knitty_preprosess
 import click
 
 
-
 help_str = """A text filter that reads from stdin and writes to stdout.
 INPUT_FILE is optional but it helps to determine language and hence a Jupyter kernel.\n
 Settings that can be set in stdin:\n
 ---\n
-knitty-cells: ['#', "'''", "'''", "\\\"\\\"\\\"", "\\\"\\\"\\\""]\n
+knitty:\n
+  language: 'py'\n
+  comments: ['#', "'''", "'''", "\\\"\\\"\\\"", "\\\"\\\"\\\""]\n
 ...\n
 Settings that can be set in the --yaml file:\n
 ---\n
@@ -28,7 +29,7 @@ comments-map:\n
 @click.command(help=help_str)
 @click.argument('input_file', type=click.Path(), default=None, required=False)
 @click.option('-y', '--yaml', 'yaml_file', type=click.Path(), default=None, required=False,
-                help='yaml metadata file (wrapped in ---... like in pandoc) with settings for pre-knitty. ')
+              help='yaml metadata file (wrapped in ---... like in pandoc) with settings for pre-knitty. ')
 def main(input_file, yaml_file):
     ext, yaml_meta = None, None
     if input_file:

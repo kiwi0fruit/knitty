@@ -71,7 +71,9 @@ Usage: pre-knitty [OPTIONS] [INPUT_FILE]
   Settings that can be set in stdin:
 
   ---
-  knitty-cells: ['#', "'''", "'''", "\"\"\"", "\"\"\""]
+  knitty:
+    language: 'py'
+    comments: ['#', "'''", "'''", "\"\"\"", "\"\"\""]
   ...
 
   Settings that can be set in the --yaml file:
