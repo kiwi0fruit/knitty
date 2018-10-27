@@ -8,7 +8,7 @@ that originally comes from *Python Cookbook* 3E, recipie 2.18
 import re
 import yaml
 from collections import namedtuple
-from typing import List, Iterable
+from typing import List, Tuple, Iterable
 
 # -------------------------------------------
 # Python text preprocess filter
@@ -21,7 +21,6 @@ Token = namedtuple("Token", ['kind', 'value'])
 # Grammar:
 # ---------------------------------
 CELL = '%%'
-BLOCK_COMM_DEF = '%%%'
 CHUNK = '```'
 DEC = '@'
 # Chunk options:
@@ -29,20 +28,12 @@ DEC = '@'
 DEFAULT_EXT = 'py'
 CHUNK_NAME = 'chunk'
 MARKDOWN_KERNELS = ('md', 'markdown')
+# Metadata options:
+# ---------------------------------
 META_COMMENTS_MAP = 'comments-map'
 META_KNITTY = 'knitty'
 META_KNITTY_COMMENTS = 'comments'
 META_KNITTY_LANGUAGE = 'language'
-
-# Regexps:
-# ---------------------------------
-# KEY: Starts with alphabetic or `_`
-# VAL: `val`, `"val"`, `'val'`
-# SPACE: All whitespace characters except `\r` and `\n`
-#                                    language=PythonRegExp
-KEY = r'[^\W\d](?:[-.\w]*[-\w])?'  # language=PythonRegExp
-VAL = '(?:"[^"]*"|\'[^\']*\'|[^\\s,{}"\'][^\\s,{}]*)'  # language=PythonRegExp
-SPACE = r'[^\S\r\n]*'
 
 
 # -----------------------------------
@@ -52,40 +43,47 @@ class SEARCH:
     """
     Regex constants for Search and replace.
 
+    Public:
+
+    * KEY: Starts with alphabetic or ``_``
+    * VAL: ``val``, ``"val"``, ``'val'``
+    * SPACE: All whitespace characters except ``\\r`` and ``\\n``
+
     Private:
-    --------
-    _KWARG: `key=val`
-    _ARG: `key` or `key=val`
 
-    _GFM_LANG: `lang` or `key=val`
-    _GFM_LANG2: `lang` or nothing
-    _RMARK_LANG: `lang` or `key=val, k=v`
+    * _KWARG: ``key=val``
+    * _ARG: ``key`` or ``key=val``
 
-    _GFM_OPT: `lang, chunk, key=val, id=ID` or `key=val`
-    _RMARK_OPT: `lang, chunk, key=val, id=ID` or `key=val, k=v`
+    * _GFM_LANG: ``lang`` or ``key=val``
+    * _GFM_LANG2: ``lang`` or nothing
+    * _RMARK_LANG: ``lang`` or ``key=val, k=v``
 
-    _GFM (GitHub Flavoured Markdown): "@{lang, chunk, key=val, id=id1}\n```lang2" or "@{key=val}\n```"
-    _RMARK (RMarkdown): "```{lang, chunk, key=val, id=id1}"
-    _HYDRO_LINE (Atom Hydrogen): "# %% {lang, chunk, key=val, id=id1} comment text"
+    * _GFM_OPT: ``lang, chunk, key=val, id=ID`` or ``key=val``
+    * _RMARK_OPT: ``lang, chunk, key=val, id=ID`` or ``key=val, k=v``
+
+    * _GFM (GitHub Flavoured Markdown): ``@{lang, chunk, key=val, id=id1}\\n```lang2`` or ``@{key=val}\\n`````
+    * _RMARK (RMarkdown): ``"```{lang, chunk, key=val, id=id1}"``
+    * _HYDRO_LINE (Atom Hydrogen): ``# %% {lang, chunk, key=val, id=id1} comment text``
 
     Public:
-    -------
-    PATTERN: compiled regex
+
+    1. PATTERN: compiled regex
         * Has groups: OPT, RMARK_OPT, LANG, LANG2, RMARK_LANG
         * Search pattern for Stitch-markdown doc
-    HYDRO_FIRST_LINE: compiled regex
+    2. HYDRO_FIRST_LINE: compiled regex
         * Has groups: COMM
-        * "# %% {lang, chunk, key=val, id=id1} comment text"
+        * ``# %% {lang, chunk, key=val, id=id1} comment text``
           Specifies inline comments patterns in Hydrogen documents's first line (cell blocks mode)
-    HYDRO: str
+    3. HYDRO: str
         * Has groups: FIRST, LAST, LANG (later BEGIN, END groups should be added)
-        * Has `.format()` slots: comm, opt, begin, end
+        * Has format slots: comm, opt, begin, end
         * Search pattern in Hydrogen document. Block comments can be specified if turned on.
-    OPT: str
-        * Has groups: OPT
-        * Doesn't have `.format()` slots
-        * Same as _GFM_OPT
     """
+    #                                    language=PythonRegExp
+    KEY = r'[^\W\d](?:[-.\w]*[-\w])?'  # language=PythonRegExp
+    VAL = '(?:"[^"]*"|\'[^\']*\'|[^\\s,{}"\'][^\\s,{}]*)'  # language=PythonRegExp
+    SPACE = r'[^\S\r\n]*'
+
     _ = SPACE
     _KWARG = rf'{KEY}{_}={_}{VAL}'  # language=PythonRegExp
     _ARG = rf'{KEY}({_}={_}{VAL})?'  # language=PythonRegExp
@@ -120,10 +118,14 @@ class Replacer:
     def __init__(self, lang: str=None, block_comm: bool=False):
         """
         Sets default language. Initiates some bool vars.
-        :param lang: str
+
+        Parameters
+        ----------
+        lang :
             Default language. Must non-empty string,
             otherwise it would be DEFAULT_EXT.
-        :param block_comm
+        block_comm :
+            ...
         """
         self._lang = lang if isinstance(lang, str) and lang else DEFAULT_EXT
         self._use_block_comm = block_comm
@@ -134,21 +136,21 @@ class Replacer:
         """
         Replaces options in Stitch format with options in Pandoc format.
         Takes language from the following GFM code chunk if it wasn't
-        provided like in `@{key=value}`. If no language provided then
-        takes default from `self._lang`.
+        provided like in ``@{key=value}``. If no language provided then
+        takes default from ``self._lang``.
 
-        Then options line is processed by `preprocess_options()` function.
+        Then options line is processed by ``preprocess_options()`` function.
 
-        Note: in Stitch format ```{lang, key=val} the options are to be
-        replaced only if they start with a name without a dot `{lang}`
-        or if they separated with a comma `{key=val, k=v}`. Otherwise
+        Note: in Stitch format `````{lang, key=val}`` the options are to be
+        replaced only if they start with a name without a dot ``{lang}``
+        or if they separated with a comma ``{key=val, k=v}``. Otherwise
         they are considered standard Pandoc options and are not
         replaced.
 
-        :param m:
+        Parameters
+        ----------
+        m :
             Regex match
-        :return: str
-            New string
         """
         gfm, rmark = m.group('OPT'), m.group('RMARK_OPT')
         if gfm is not None:
@@ -166,17 +168,17 @@ class Replacer:
     def replace_cells(self, m) -> str:
         """
         Converts document with Hydrogen code cells
-        (`%%` format only) to markdown document with
+        (``%%`` format only) to markdown document with
         code chunks. Separators should be of the format:
-        `# %% {lang, arg, kwarg=val} something else`,
-        Stitch options are optional. Instead of `#` there
+        ``# %% {lang, arg, kwarg=val} something else``,
+        Stitch options are optional. Instead of ``#`` there
         can be language specific inline comment symbol.
         The input document for example is a valid python file.
 
-        :param m:
+        Parameters
+        ----------
+        m :
             Regex match
-        :return: str
-            New string
         """
         # print(lang, cells_mode, file=open(r'D:\debug.txt', 'w', encoding='utf-8'))  # TODO
         # read options and fix them:
@@ -226,18 +228,19 @@ class Replacer:
 
 def knitty_preprosess(source: str, lang: str=None, yaml_meta: str=None) -> str:
     """
-    Stitch options preprocess function.
+    Stitch options preprocess function. Transforms document.
 
     Also converts document with Hydrogen code cells
     to markdown document with code chunks.
 
-    :param source: str
-    :param lang: str
+    Parameters
+    ----------
+    source :
+        ...
+    lang :
         Default language
-    :param yaml_meta: str
+    yaml_meta :
         pre-knitty settings
-    :return: str
-        New source
     """
     def load_yaml(string):
         m = re.search(r'(?:^|\n)---\n(.+?\n)(?:---|\.\.\.)(?:\n|$)', string, re.DOTALL)
@@ -299,38 +302,35 @@ class OPT:
     """
     Regex constants for validating and parsing options.
 
-    _ARG: str
-        `key`
-    _DELIM: str
-        `,`
-    KWARG: str
-        `key=val`, `key="val"`, `key='val'`
-    PATTERN: compiled regex
+    * _ARG: str
+        ``key``
+    * _DELIM: str
+        ``,``
+    * KWARG: str
+        ``key=val``, ``key="val"``, ``key='val'``
+    * PATTERN: compiled regex
         KWARG or _ARG or _DELIM
         Pattern with valid tokens
-    NAME: compiled regex
-        `^key$` where ^/$ mark begin/end of the string
+    * NAME: compiled regex
+        ``^key$`` where ``^``/``$`` mark begin/end of the string
     """
-    _ = SPACE  # language=PythonRegExp
+    KEY, _ = SEARCH.KEY, SEARCH.SPACE  # language=PythonRegExp
     _ARG = rf'(?P<ARG>{KEY})'  # language=PythonRegExp
     _DELIM = rf'(?P<DELIM>{_},{_})'  # language=PythonRegExp
-    KWARG = rf'(?P<KWARG>(?P<KEY>{KEY}){_}={_}(?P<VAL>{VAL}))'
+    KWARG = rf'(?P<KWARG>(?P<KEY>{KEY}){_}={_}(?P<VAL>{SEARCH.VAL}))'
 
     PATTERN = re.compile('|'.join([KWARG, _ARG, _DELIM]))
     NAME = re.compile(rf'^{KEY}$')
 
 
-def tokenize(options_line):
+def tokenize(options_line: str) -> List[Token]:
     """
     Break an options line into a list of tokens.
 
-    Parameters
-    ----------
-    options_line : str
-
     Returns
     -------
-    tokens : list of tuples
+    tokens :
+        list of named tuples
     """
     def generate_tokens(pat, text):
         scanner = pat.scanner(text)
@@ -342,24 +342,30 @@ def tokenize(options_line):
     return tok
 
 
-def check_and_change(args, kwargs):
+def check_and_change(args: List[str],
+                     kwargs: List[Tuple[str, str]]
+                     ) -> Tuple[List[str], List[Tuple[str, str]]]:
     """
-    * Adds `eval=True` if `eval` was not specified
+    Transform args and kwargs.
+
     * Checks classes names
     * Checks values format of keys:
-      `id`
-      `class`
-      `chunk`
+      ``id``,
+      ``class``,
+      ``chunk``
     * Sets chunk value the second positional argument
 
     Parameters
     ----------
-    args: list of str
-    kwargs: list of tuples (key: str, val: str)
+    args :
+        ...
+    kwargs :
+        [(key, val), ...]
 
-    Returns
-    -------
-    transformed: args, kwargs
+    Return
+    ------
+    tuple :
+        (args, kwargs)
     """
     chunk = None
 
@@ -395,19 +401,11 @@ def check_and_change(args, kwargs):
     return args, kwargs
 
 
-def preprocess_options(options_line):
+def preprocess_options(options_line: str) -> str:
     """
-    Transform a code-chunk options line to allow
-    `lang, chunk, key=val, id = ID` instead of pandoc-style
-    `.lang .chunk key=val id=ID` (also removes extra whitespaces).
-
-    Parameters
-    ----------
-    options_line: str
-
-    Returns
-    -------
-    transformed: str
+    Transform a code-chunk options line to allow\n
+    ``lang, chunk, key=val, id = ID`` instead of pandoc-style\n
+    ``.lang .chunk key=val id=ID`` (also removes extra whitespaces).
     """
     args, kwargs = [], []
 
