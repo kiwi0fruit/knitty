@@ -74,17 +74,13 @@ class SEARCH:
         * Has groups: OPT, RMARK_OPT, LANG, LANG2, RMARK_LANG
         * Search pattern for Stitch-markdown doc
     HYDRO_FIRST_LINE: compiled regex
-        * Has groups: COMM, BEGIN, END
-        * "# %% {lang, chunk, key=val, id=id1} ''' %%% ''' comment text"
-          Specifies inline and block comments patterns in Hydrogen doc's first line (cell blocks mode)
-    HYDRO_BLOCK_COMM: str
-        * Has groups: CODE, FIRST, LAST, BEGIN, END, LANG
-        * Has `.format()` slots: comm, opt, begin, end
-        * Search pattern in Hydrogen doc when block comments were specified in the first line
+        * Has groups: COMM
+        * "# %% {lang, chunk, key=val, id=id1} comment text"
+          Specifies inline comments patterns in Hydrogen documents's first line (cell blocks mode)
     HYDRO: str
-        * Has groups: CODE, FIRST, LAST, LANG
-        * Has `.format()` slots: comm, opt
-        * Search pattern in Hydrogen doc when block comments were **not** specified in the first line
+        * Has groups: FIRST, LAST, LANG (later BEGIN, END groups should be added)
+        * Has `.format()` slots: comm, opt, begin, end
+        * Search pattern in Hydrogen document. Block comments can be specified if turned on.
     OPT: str
         * Has groups: OPT
         * Doesn't have `.format()` slots
@@ -106,20 +102,15 @@ class SEARCH:
 
     _HYDRO_LINE = rf'{{comm}} *{CELL}( +{{opt}})?( .*)?\r?\n'
     _RMARK = rf'{CHUNK}{_}{_RMARK_OPT}{_}'  # language=PythonRegExp
-    _GFM = rf'{DEC}{_GFM_OPT}{_}\r?\n{CHUNK}{_}{_GFM_LANG2}{_}'  # language=PythonRegExp
-    _HYDRO = r'((?P<FIRST>^)|\r?\n){{end}}\s*((?P<LAST>$)|{line}{{begin}})'.format(
-        line=_HYDRO_LINE.format(comm='{comm}', opt='{opt}')
-    )
+    _GFM = rf'{DEC}{_GFM_OPT}{_}\r?\n{CHUNK}{_}{_GFM_LANG2}{_}'
+
     # Public attributes:
     # ------------------
-    PATTERN = re.compile(rf'((\r?\n|^)({_GFM}|{_RMARK})(\r?\n|$))')
-    HYDRO = _HYDRO.format(begin='', end='', comm='{comm}', opt=rf'{{{_GFM_OPT}}}')  # language=PythonRegExp
-    HYDRO_BLOCK_COMM = _HYDRO.format(
-        begin=r'(?P<BEGIN>{begin}\r?\n)?',
-        end=r'(?P<END>{end}\r?\n)?',
-        comm='{comm}', opt=rf'{{{_GFM_OPT}}}'
-    )  # language=PythonRegExp
-    HYDRO_FIRST_LINE = re.compile(_HYDRO_LINE.format(
+    PATTERN = re.compile(rf'((\r?\n|^)({_GFM}|{_RMARK})(\r?\n|$))')  # language=PythonRegExp
+    HYDRO = r'((?P<FIRST>^)|{{end}}\r?\n)\s*((?P<LAST>$)|{line}{{begin}})'.format(
+        line=_HYDRO_LINE.format(comm='{comm}', opt=rf'{{{_GFM_OPT}}}')
+    )  # TODO I moved {end} and removed \n so behaviour changed
+    HYDRO_FIRST_LINE = re.compile(_HYDRO_LINE.format(  # language=PythonRegExp
         comm=r'^(?P<COMM>[^\s]{1,3})',
         opt=_GFM_OPT
     ))
@@ -287,20 +278,18 @@ def knitty_preprosess(source: str, lang: str=None, yaml_meta: str=None) -> str:
         else:
             comm = re.escape(cells_mode.group('COMM'))
 
+        begin, end = '', ''
         if block_comm:
-            def escaped_or_regex(it: Iterable[str]):
-                return rf"(?:{'|'.join(map(re.escape, it))})"
-            hydro_regex = SEARCH.HYDRO_BLOCK_COMM.format(
-                begin=escaped_or_regex(begin for begin, e in block_comm),
-                end=escaped_or_regex(end for b, end in block_comm),
-                comm=comm)
+            def escaped_regex(it: Iterable[str], group_name: str):
+                return rf"(?P<{group_name}>{'|'.join(map(re.escape, it))})?"
+            begin = escaped_regex((begin for begin, e in block_comm), 'BEGIN')
+            end = escaped_regex((end for b, end in block_comm), 'END')
             rep.use_block_comm = True
-        else:
-            hydro_regex = SEARCH.HYDRO.format(comm=comm)
-        # regex assumes new line at the end:
-        return re.sub(hydro_regex, rep.replace_cells, source + '\n')
-    else:
-        return re.sub(SEARCH.PATTERN, rep.replace, source)
+
+        source = re.sub(SEARCH.HYDRO.format(comm=comm, begin=begin, end=end),
+                        rep.replace_cells,
+                        source + '\n')  # regex assumes new line at the end
+    return re.sub(SEARCH.PATTERN, rep.replace, source)
 
 
 # -----------------------------------
