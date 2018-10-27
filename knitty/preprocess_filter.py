@@ -27,7 +27,7 @@ DEC = '@'
 # ---------------------------------
 DEFAULT_EXT = 'py'
 CHUNK_NAME = 'chunk'
-MARKDOWN_KERNELS = ('md', 'markdown')
+MARKDOWN_KERNELS = ('markdown', 'md')
 # Metadata options:
 # ---------------------------------
 META_COMMENTS_MAP = 'comments-map'
@@ -57,6 +57,7 @@ class SEARCH:
     * _GFM_LANG: ``lang`` or ``key=val``
     * _GFM_LANG2: ``lang`` or nothing
     * _RMARK_LANG: ``lang`` or ``key=val, k=v``
+        (to make them distinct from pandoc options we need at least one comma)
 
     * _GFM_OPT: ``lang, chunk, key=val, id=ID`` or ``key=val``
     * _RMARK_OPT: ``lang, chunk, key=val, id=ID`` or ``key=val, k=v``
@@ -71,19 +72,21 @@ class SEARCH:
         * Has groups: OPT, RMARK_OPT, LANG, LANG2, RMARK_LANG
         * Search pattern for Stitch-markdown doc
     2. HYDRO_FIRST_LINE: compiled regex
-        * Has groups: COMM
+        * Has significant groups: COMM
         * ``# %% {lang, chunk, key=val, id=id1} comment text``
           Specifies inline comments patterns in Hydrogen documents's first line (cell blocks mode)
     3. hydro_regex: returns compiled regex
-        * Has groups: FIRST, LAST, LANG (later BEGIN, END groups might be added)
+        * Has groups: OPT, LANG, BODY (later BEGIN, END groups might be added)
         * Has format slots: comm, opt, begin, end
         * Search pattern in Hydrogen document. Block comments can be specified if they are turned on.
     """
+    # Public: --------------------------------
     # language=PythonRegExp
     KEY = r'[^\W\d](?:[-.\w]*[-\w])?'  # language=PythonRegExp
     VAL = '(?:"[^"]*"|\'[^\']*\'|[^\\s,{}"\'][^\\s,{}]*)'  # language=PythonRegExp
     SPACE = r'[^\S\r\n]*'
 
+    # Private: --------------------------------
     _ = SPACE
     _KWARG = rf'{KEY}{_}={_}{VAL}'
     _ARG = rf'{KEY}({_}={_}{VAL})?'
@@ -101,8 +104,7 @@ class SEARCH:
     _RMARK = rf'{CHUNK}{_}{_RMARK_OPT}{_}'
     _GFM = re.compile(rf'{DEC}{_GFM_OPT}{_}\r?\n{CHUNK}{_}{_GFM_LANG2}{_}').pattern
 
-    # Public:
-    # ------------------
+    # Public: --------------------------------
     PATTERN = re.compile(rf'((\r?\n|^)({_GFM}|{_RMARK})(\r?\n|$))')
     HYDRO_FIRST_LINE = re.compile(_HYDRO_LINE.format(  # language=PythonRegExp
         comm=r'^(?P<COMM>[^\s]{1,3})',
@@ -110,22 +112,23 @@ class SEARCH:
     ))
 
     @staticmethod
-    def hydro_regex(comm: str, begins: Iterable[str]=None, ends: Iterable[str]=None):
+    def hydro_regex(comm: str, begins: Tuple[str]=None, ends: Tuple[str]=None):
         def del_named_groups(regex: str):
             return re.sub(r'\?P<\w+>', '', regex)
 
         def escaped_regex(it: Iterable[str], group_name: str):
             return re.compile(rf"(?P<{group_name}>{'|'.join(map(re.escape, it))})?").pattern
 
-        _line = SEARCH._HYDRO_LINE.format(comm=comm, opt=SEARCH._GFM_OPT)
-        begins = escaped_regex(begins, 'BEGIN') if begins else ''
-        ends = escaped_regex(ends, 'END') if ends else ''
-        return re.compile(rf'(^|((?<=\n)|^){_line}){begins}(.*?){ends}\s*(?={del_named_groups(_line)}|^)',
-                          re.DOTALL)
+        _line = SEARCH._HYDRO_LINE.format(comm=comm, opt=SEARCH._GFM_OPT)  # language=PythonRegExp
+        begins = escaped_regex(begins, 'BEGIN') + r'\r?\n?' if begins else ''  # language=PythonRegExp
+        ends = r'\r?\n?' + escaped_regex(ends, 'END') if ends else ''
+        return re.compile(
+            rf'(^|((?<=\n)|^){_line}){begins}(?P<BODY>.*?){ends}\s*(?=\n{del_named_groups(_line)}|^)',
+            re.DOTALL)
 
 
 class Replacer:
-    def __init__(self, lang: str=None, block_comm: bool=False):
+    def __init__(self, lang: str=None, block_comm: Tuple[str]=()):
         """
         Sets default language. Initiates some bool vars.
 
@@ -138,9 +141,7 @@ class Replacer:
             ...
         """
         self._lang = lang if isinstance(lang, str) and lang else DEFAULT_EXT
-        self._use_block_comm = block_comm
-        self._opened_block_comm = False
-        self._prev_was_md = False
+        self._block_comm = block_comm
 
     def replace(self, m) -> str:
         """
@@ -177,6 +178,9 @@ class Replacer:
 
     def replace_cells(self, m) -> str:
         """
+        Converts text piece starting from ``# %%`` or BOF
+        and ending right before next ``# %%`` or EOF.
+
         Converts document with Hydrogen code cells
         (``%%`` format only) to markdown document with
         code chunks. Separators should be of the format:
@@ -190,50 +194,40 @@ class Replacer:
         m :
             Regex match
         """
-        # print(lang, cells_mode, file=open(r'D:\debug.txt', 'w', encoding='utf-8'))  # TODO
-        # read options and fix them:
-        opt, lang = m.group('OPT'), m.group('LANG')
-        if opt is not None:
-            if lang is None:
-                lang = self._lang
+        def read(group: str):
+            group = m.group(group)
+            if group is None:
+                group = ''
+            return group
+
+        body = read('BODY')
+
+        # deal with begin/end block comments:
+        block_comm = False
+        if self._block_comm:
+            begin, end = read('BEGIN'), read('END')
+            if (begin, end) in self._block_comm:
+                if not re.search(rf"{re.escape(begin)}|{re.escape(end)}", body):
+                    block_comm = True
+            if not block_comm:
+                body = begin + body + end
+
+        # read options and fallback them:
+        opt, lang = read('OPT'), read('LANG')
+        lang_fallback = MARKDOWN_KERNELS[0] if block_comm else self._lang
+        if opt:
+            if not lang:
+                lang = lang_fallback
                 opt = lang + ', ' + opt
         else:
-            lang = self._lang
+            lang = lang_fallback
             opt = lang
 
-        # prepare output pattern:
-        pre, post = '', ''
-        first, last = (m.group('FIRST') is not None), (m.group('LAST') is not None)
-        #    add the closing block comment to the end of the code
-        #    if opening block comment wasn't removed:
-        if self._use_block_comm:
-            begin, end = m.group('BEGIN'), m.group('END')
-            if (end is not None) and (end != '') and (not self._opened_block_comm):
-                pre += end
-            if (begin is not None) and (begin != ''):
-                self._opened_block_comm = True
-            else:
-                self._opened_block_comm = False
-
-        #    process previous code chunk:
-        if not first:
-            pre += '\n'
-            if self._prev_was_md:
-                pre += '\n'
-            else:
-                pre += '```\n\n'
-
-        #    process next code chunk:
-        if not last:
-            if lang in MARKDOWN_KERNELS:
-                post += '\n'
-                self._prev_was_md = True
-            else:
-                post += '```{{{opt}}}\n'
-                self._prev_was_md = False
-
-        # process output pattern:
-        return (pre + post).format(opt=preprocess_options(opt))
+        # prepare output:
+        if lang in MARKDOWN_KERNELS:
+            return '\n\n' + body + '\n\n'
+        else:
+            return f'\n\n```{{{preprocess_options(opt)}}}\n{body}\n```\n\n'
 
 
 def knitty_preprosess(source: str, lang: str=None, yaml_meta: str=None) -> str:
@@ -258,46 +252,44 @@ def knitty_preprosess(source: str, lang: str=None, yaml_meta: str=None) -> str:
 
     def get(maybe_dict, key: str):
         return maybe_dict.get(key, None) if isinstance(maybe_dict, dict) else None
+
     # Read metadata:
     _knitty = get(load_yaml(source), META_KNITTY)
     # Read code language:
     _lang = get(_knitty, META_KNITTY_LANGUAGE)
     lang = _lang if _lang and isinstance(_lang, str) else lang
 
-    def _comments() -> List[str] or None:
+    def comments() -> List[str] or None:
         """Returns comments list if found them in right format."""
-        comments = get(_knitty, META_KNITTY_COMMENTS)
-        if isinstance(comments, list):
-            if len(comments) % 2 == 1:
-                if all(isinstance(s, str) and s for s in comments):
-                    return comments
+        _comments = get(_knitty, META_KNITTY_COMMENTS)
+        if isinstance(_comments, list):
+            if len(_comments) % 2 == 1:
+                if all(isinstance(s, str) and s for s in _comments):
+                    return _comments
         comments_map = get(load_yaml(yaml_meta), META_COMMENTS_MAP)
-        comments = get(comments_map, lang)
-        if isinstance(comments, list):
-            if len(comments) % 2 == 1:
-                if all(isinstance(s, str) and s for s in comments):
-                    return comments
+        _comments = get(comments_map, lang)
+        if isinstance(_comments, list):
+            if len(_comments) % 2 == 1:
+                if all(isinstance(s, str) and s for s in _comments):
+                    return _comments
         return None
 
-    cells_mode = _comments()
-    cells_mode = SEARCH.HYDRO_FIRST_LINE.match(source) if not cells_mode else cells_mode
-    if cells_mode:
-        block_comm = None
-        if isinstance(cells_mode, list):
-            comm = re.escape(cells_mode[0])
-            if len(cells_mode) > 1:
-                block_comm = [(cells_mode[i], cells_mode[i + 1])
-                              for i in range(1, len(cells_mode), 2)]
+    comments = comments()
+    first_line = SEARCH.HYDRO_FIRST_LINE.match(source)
+    if comments or first_line:
+        block_comm = tuple()
+        if comments:
+            comm = re.escape(comments[0])
+            if len(comments) > 2:
+                block_comm = tuple((comments[i], comments[i + 1])
+                                   for i in range(1, len(comments), 2))
         else:
-            comm = re.escape(cells_mode.group('COMM'))
+            comm = re.escape(first_line.group('COMM'))
 
-        begins, ends = None, None
-        if block_comm:
-            begins = (begin for begin, e in block_comm)
-            ends = (end for b, end in block_comm)
-
-        source = re.sub(SEARCH.hydro_regex(comm=comm, begins=begins, ends=ends),
-                        Replacer(lang, bool(block_comm)).replace_cells,
+        source = re.sub(SEARCH.hydro_regex(comm=comm,
+                                           begins=tuple(str(begin) for begin, e in block_comm),
+                                           ends=tuple(str(end) for b, end in block_comm)),
+                        Replacer(lang, block_comm).replace_cells,
                         source + '\n')  # regex assumes new line at the end
 
     return re.sub(SEARCH.PATTERN, Replacer(lang).replace, source)
