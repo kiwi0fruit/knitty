@@ -253,10 +253,6 @@ def knitty_preprosess(source: str, lang: str=None, yaml_meta: str=None) -> str:
 
     def get(maybe_dict, key: str):
         return maybe_dict.get(key, None) if isinstance(maybe_dict, dict) else None
-
-    def esc_or_regex(it: Iterable[str]):
-        return rf"(?:{'|'.join(map(re.escape, it))})"
-
     # Read metadata:
     _knitty = get(load_yaml(source), META_KNITTY)
     # Read code language:
@@ -292,11 +288,13 @@ def knitty_preprosess(source: str, lang: str=None, yaml_meta: str=None) -> str:
             comm = re.escape(cells_mode.group('COMM'))
 
         if block_comm:
-            rep.use_block_comm = True
+            def escaped_or_regex(it: Iterable[str]):
+                return rf"(?:{'|'.join(map(re.escape, it))})"
             hydro_regex = SEARCH.HYDRO_BLOCK_COMM.format(
-                begin=esc_or_regex(beg for beg, end in block_comm),
-                end=esc_or_regex(end for beg, end in block_comm),
+                begin=escaped_or_regex(begin for begin, e in block_comm),
+                end=escaped_or_regex(end for b, end in block_comm),
                 comm=comm)
+            rep.use_block_comm = True
         else:
             hydro_regex = SEARCH.HYDRO.format(comm=comm)
         # regex assumes new line at the end:
