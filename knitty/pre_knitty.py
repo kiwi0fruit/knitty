@@ -28,14 +28,12 @@ comments-map:\n
 
 @click.command(help=help_str)
 @click.argument('input_file', type=click.Path(), default=None, required=False)
-@click.option('-y', '--yaml', 'yaml_file', type=click.Path(), default=None, required=False,
+@click.option('-y', '--yaml', 'yaml_meta', type=click.Path(), default=None, required=False,
               help='yaml metadata file (wrapped in ---... like in pandoc) with settings for pre-knitty. ')
-def main(input_file, yaml_file):
-    ext, yaml_meta = None, None
-    if input_file:
-        ext = p.splitext(p.basename(input_file))[1].lstrip('.')
-    if yaml_file:
-        with open(yaml_file, 'r', encoding='utf-8') as y:
+def main(input_file, yaml_meta):
+    ext = p.splitext(p.basename(input_file))[1].lstrip('.') if input_file else None
+    if yaml_meta:
+        with open(yaml_meta, 'r', encoding='utf-8') as y:
             yaml_meta = y.read()
     sys.stdout.write(knitty_preprosess(sys.stdin.read(), ext, yaml_meta))
 

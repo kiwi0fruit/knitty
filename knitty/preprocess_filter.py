@@ -194,13 +194,14 @@ class Replacer:
         m :
             Regex match
         """
-        def read(group: str):
-            group = m.group(group)
+        def read(group_name: str):
+            group = m.group(group_name)
             if group is None:
                 group = ''
             return group
 
         body = read('BODY')
+        out = body
 
         # deal with begin/end block comments:
         block_comm = False
@@ -210,7 +211,7 @@ class Replacer:
                 if not re.search(rf"{re.escape(begin)}|{re.escape(end)}", body):
                     block_comm = True
             if not block_comm:
-                body = begin + body + end
+                out = begin + body + end
 
         # read options and fallback them:
         opt, lang = read('OPT'), read('LANG')
@@ -223,11 +224,17 @@ class Replacer:
             lang = lang_fallback
             opt = lang
 
+        print('\n\n----------\n\n', block_comm, '|', lang, '|', opt, '|', body, '|', m.group(0),
+              file=open(r'D:\debug.txt', 'a', encoding='utf-8'))  # TODO
+
         # prepare output:
-        if lang in MARKDOWN_KERNELS:
-            return '\n\n' + body + '\n\n'
+        if out:
+            if lang in MARKDOWN_KERNELS:
+                return out + '\n\n'
+            else:
+                return f'```{{{preprocess_options(opt)}}}\n{out}\n```\n\n'
         else:
-            return f'\n\n```{{{preprocess_options(opt)}}}\n{body}\n```\n\n'
+            return ''
 
 
 def knitty_preprosess(source: str, lang: str=None, yaml_meta: str=None) -> str:
@@ -246,9 +253,14 @@ def knitty_preprosess(source: str, lang: str=None, yaml_meta: str=None) -> str:
     yaml_meta :
         pre-knitty settings
     """
-    def load_yaml(string):
-        m = re.search(r'(?:^|\n)---\n(.+?\n)(?:---|\.\.\.)(?:\n|$)', string, re.DOTALL)
-        return yaml.load(m.group(1)) if m else None
+    def load_yaml(string: str or None):
+        if isinstance(string, str) and string:
+            found = re.search(r'(?:^|\n)---\n(.+?\n)(?:---|\.\.\.)(?:\n|$)', string, re.DOTALL)
+            if found:
+                loaded = yaml.load(found.group(1))
+                if isinstance(loaded, dict):
+                    return loaded
+        return None
 
     def get(maybe_dict, key: str):
         return maybe_dict.get(key, None) if isinstance(maybe_dict, dict) else None
@@ -266,6 +278,7 @@ def knitty_preprosess(source: str, lang: str=None, yaml_meta: str=None) -> str:
             if len(_comments) % 2 == 1:
                 if all(isinstance(s, str) and s for s in _comments):
                     return _comments
+
         comments_map = get(load_yaml(yaml_meta), META_COMMENTS_MAP)
         _comments = get(comments_map, lang)
         if isinstance(_comments, list):
