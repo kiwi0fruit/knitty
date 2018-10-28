@@ -11,6 +11,10 @@ Modified version of Knotr/Stitch by Tom Augspurger is included in Knitty. [Origi
 * [Differences from original Stitch:](#differences-from-original-stitch)
 1. [New interfaces](#1-new-interfaces)
     * [1.1 New command line interfaces][new_cli]
+        * [pre-knitty](#pre-knitty)
+        * [knitty](#knitty)
+        * [knotedown](#knotedown)
+        * [knotr](#knotr)
     * [1.2 Alternative settings placement][alt_settings]
     * [1.3 Support files with Atom/Hydrogen code cells][code_cells]
     * [1.4 Turn ON code cells mode](#14-turn-on-code-cells-mode)
