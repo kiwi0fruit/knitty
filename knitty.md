@@ -345,7 +345,7 @@ puts 1
 
 Example python file. Assuming you specified `pre-knitty --yaml <...>` or using pandoctools so you don't need the first line to be `# %%`:
 
-```python
+````python
 """
 ---
 kernels-map:
@@ -399,7 +399,7 @@ Acually `stex.pre` is redundant here but it is needed when the text is imported
 or read from somewhere instead of being written the same document.
 
 '''))
-```
+````
 
 
 # 2. New code chunks options
