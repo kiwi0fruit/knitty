@@ -288,9 +288,30 @@ Such files for example can be edited in Atom/Hydrogen or in PyCharm.
 
 ## 1.4 Turn ON code cells mode
 
-In order to tell Knitty that the file should be treated as raw code you should do the following: The first line should start with 1-3 symbols of the in-line comment (except white spaces), then single white space, then `%%`, then single white space or end of line. So you actually tell Knitty what symbols are used as in-line comments.
+In order to tell Knitty that the file should be treated as raw code you should do the following:
 
-For python it would be `# %%` comments. Also you can specify Knitty settings: `# %% {python, echo=False}`. If no settings specified or no language specified - `# %% {echo=False}` - then the language would be the file extension.
+*  Either set `knitty` > `comments` metadata (shoud be in pandoc-like format in between `---...`):
+```yaml
+---
+knitty:
+  language: 'py'
+  comments: ['#', "'''", "'''", "\"\"\"", "\"\"\""]
+...
+```
+  * `language: 'py2'` can change the document language that otherwise is a file extension.
+
+* Or set yaml settings file in pre-knitty CLI that maps language name (that can also be automatically taken from file extension) with comments specs: `pre-knitty --yaml file.yaml`.
+```yaml
+---
+comments-map:
+  py: ['#', "'''", "'''", "\"\"\"", "\"\"\""]
+  js: ["//", "/*", "*/"]
+...
+```
+
+* Or the first line should start with 1-3 symbols of the in-line comment (except white spaces), then single white space or nothing, then `%%`, then single white space or end of line. So you actually tell Knitty what symbols are used as in-line comments. For python it would be `# %%` comments. But this way you can only specify in-line comments not block comments.
+
+Also you can specify Knitty settings: `# %% {python, echo=False}`. If no settings specified or no language specified - `# %% {echo=False}` - then the language would be the one specified in `knitty` > `language` metadata or the file extension or Markdown (the last one depends on where there are block comments at the next line or not - see the next paragraph).
 
 
 ## 1.5 Other languages in code cells mode
@@ -308,7 +329,7 @@ For example for python: if after `# %%` line the very next one is `"""` then tha
 
 ## 1.6 Markdown in code cells mode
 
-Code cell can be in markdown as well. It's the `md` language. You can use them to define Knitty metadata.
+Code cell can be in markdown as well. It's the `markdown` or `md` language. You can use them to define Knitty metadata.
 
 ## 1.7 Example python file in code cells mode
 
