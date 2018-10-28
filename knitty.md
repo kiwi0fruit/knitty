@@ -396,7 +396,7 @@ print(stex.pre(f'''
 Another markdown text. Now with SugarTeX formula: ˎα^˱{math.pi:1.3f}˲ˎ.
 It works because of the `results=pandoc` option and `sugartex` Pandoc filter.
 Acually `stex.pre` is redundant here but it is needed when the text is imported
-or read from somewhere instead of being written the same document.
+or read from somewhere instead of being written in the same document.
 
 '''))
 ````
