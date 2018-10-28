@@ -100,7 +100,7 @@ class SEARCH:
     _GFM_OPT = _OPT.replace('{lang}', _GFM_LANG)
     _RMARK_OPT = _OPT.replace('{lang}', _RMARK_LANG).replace('<OPT>', '<RMARK_OPT>')
 
-    _HYDRO_LINE = re.compile(rf'{{comm}} *{CELL}( +{{opt}})?( .*?)?(\r?\n|$)').pattern
+    _HYDRO_LINE = re.compile(rf'{{comm}} *{CELL}( +{{opt}})?( [^\r\n]*?)?(\r?\n|$)').pattern
     _RMARK = rf'{CHUNK}{_}{_RMARK_OPT}{_}'
     _GFM = re.compile(rf'{DEC}{_GFM_OPT}{_}\r?\n{CHUNK}{_}{_GFM_LANG2}{_}').pattern
 
