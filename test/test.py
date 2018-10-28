@@ -1,25 +1,34 @@
-# %%
-print(1)
-# %%
 """
 ---
+# test start with and without r'^# %%'
 knitty:
   comments: ['#', "'''", "'''", "\"\"\"", "\"\"\""]
-pandoctools:
-  profile: Kiwi
 ...
 """
 
 # %% {r, echo=False}
-"""print(0)"""
+'''print(0)'''
 
 # %% {r}
 """
 print(0)
+# import os
+# print(0, file=open(os.path.expanduser('~/__debug.txt'), 'a', encoding='utf-8'))
 """
 
 # %%
 print(2)
+
+
+# %%
+"""
+# Header
+
+@{echo=False}
+```py
+print(0)
+```
+"""
 
 # %% {echo=False}
 """print(0)"""
@@ -28,6 +37,21 @@ print(2)
 """
 print(0)
 """
+
+# %% {r}
+""""""
+
+# %%
+"""
+"""
+
+# %% {r}
+""" """
+
+# %%
+"""
+print(0)
+'''
 
 # %%
 print(1)

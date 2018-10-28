@@ -123,7 +123,7 @@ class SEARCH:
         begins = escaped_regex(begins, 'BEGIN') + r'\r?\n?' if begins else ''  # language=PythonRegExp
         ends = r'\r?\n?' + escaped_regex(ends, 'END') if ends else ''
         return re.compile(
-            rf'(^|((?<=\n)|^){_line}){begins}(?P<BODY>.*?){ends}\s*(?=\n{del_named_groups(_line)}|^)',
+            rf'(((?<=\n)|^){_line}|^){begins}(?P<BODY>.*?){ends}\s*(?=\n{del_named_groups(_line)}|$)',
             re.DOTALL)
 
 
@@ -223,9 +223,6 @@ class Replacer:
         else:
             lang = lang_fallback
             opt = lang
-
-        print('\n\n----------\n\n', block_comm, '|', lang, '|', opt, '|', body, '|', m.group(0),
-              file=open(r'D:\debug.txt', 'a', encoding='utf-8'))  # TODO
 
         # prepare output:
         if out:
