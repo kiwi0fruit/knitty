@@ -335,7 +335,7 @@ If cell is block-commented **and** doesn't have language specified then it's a M
 Example file with language which comments are not in pandoctools settings. Like `file.rb`:
 
 ```rb
-# %% this comments is necessary
+# %% this comments with `%%` is necessary
 puts 0
 
 # %%
@@ -346,7 +346,6 @@ puts 1
 Example python file. Assuming you specified `pre-knitty --yaml <...>` or using pandoctools so you don't need the first line to be `# %%`:
 
 ```python
-# %% {md} Markdown cell that doesn't affect PyCharm code inspection and Hydrogen `Run All`:
 """
 ---
 kernels-map:
@@ -359,17 +358,20 @@ kernels-map:
 Here is some markdown text.
 """
 
+
 # %% {echo=False} `py` cell, language name is taken from file extension:
 import math
+import sugartex as stex
 print('This was {py, echo=False} cell')
+
 
 # %%
 
 """
-Comment that stays after Knitty
+Comment that stays after Knitty and would be a `py` code chunk
 because it's not right after `# %%`
 """
-print('Block comments test')
+
 
 # %% {r} R cell:
 """
@@ -377,13 +379,26 @@ x <- c(10, 20)
 x[1]
 """
 
+
+# %% Markdown cell with R code block:
+"""
+# Header
+
+```r
+x <- c(10, 20)
+```
+"""
+
+
 # %% {results=pandoc}
-print('''
+print(stex.pre(f'''
 
-Another markdown text. Now with SugarTeX formula: ˎα^˱{pi:1.3f}˲ˎ.
+Another markdown text. Now with SugarTeX formula: ˎα^˱{math.pi:1.3f}˲ˎ.
 It works because of the `results=pandoc` option and `sugartex` Pandoc filter.
+Acually `stex.pre` is redundant here but it is needed when the text is imported
+or read from somewhere instead of being written the same document.
 
-'''.replace('ˎ', '$').format(pi=math.pi))
+'''))
 ```
 
 
