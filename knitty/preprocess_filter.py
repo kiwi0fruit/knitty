@@ -100,7 +100,7 @@ class SEARCH:
     _GFM_OPT = _OPT.replace('{lang}', _GFM_LANG)
     _RMARK_OPT = _OPT.replace('{lang}', _RMARK_LANG).replace('<OPT>', '<RMARK_OPT>')
 
-    _HYDRO_LINE = re.compile(rf'{{comm}} *{CELL}( +{{opt}})?( .*)?(\r?\n|$)').pattern
+    _HYDRO_LINE = re.compile(rf'{{comm}} *{CELL}( +{{opt}})?( .*?)?(\r?\n|$)').pattern
     _RMARK = rf'{CHUNK}{_}{_RMARK_OPT}{_}'
     _GFM = re.compile(rf'{DEC}{_GFM_OPT}{_}\r?\n{CHUNK}{_}{_GFM_LANG2}{_}').pattern
 
@@ -202,7 +202,8 @@ class Replacer:
 
         body = read('BODY')
         out = body
-
+        import os  # TODO
+        print('\n----\n', body, '|', m.group(0), file=open(os.path.expanduser('~/__debug.txt'), 'a', encoding='utf-8'))
         # deal with begin/end block comments:
         block_comm = False
         if self._block_comm:
