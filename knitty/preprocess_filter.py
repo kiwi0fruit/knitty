@@ -76,7 +76,7 @@ class SEARCH:
         * ``# %% {lang, chunk, key=val, id=id1} comment text``
           Specifies inline comments patterns in Hydrogen documents's first line (cell blocks mode)
     3. hydro_regex: returns compiled regex
-        * Has groups: OPT, LANG, BODY (later BEGIN, END groups might be added)
+        * Has groups: OPT, LANG, BODY (later BEGIN, END, NL_POST_BEGIN, NL_PRE_END groups might be added)
         * Has format slots: comm, opt, begin, end
         * Search pattern in Hydrogen document. Block comments can be specified if they are turned on.
     """
@@ -120,8 +120,8 @@ class SEARCH:
             return re.compile(rf"(?P<{group_name}>{'|'.join(map(re.escape, it))})?").pattern
 
         _line = SEARCH._HYDRO_LINE.format(comm=comm, opt=SEARCH._GFM_OPT)  # language=PythonRegExp
-        begins = escaped_regex(begins, 'BEGIN') + r'\r?\n?' if begins else ''  # language=PythonRegExp
-        ends = r'\r?\n?' + escaped_regex(ends, 'END') if ends else ''
+        begins = escaped_regex(begins, 'BEGIN')+r'(?P<NL_POST_BEGIN>\r?\n?)' if begins else ''  # language=PythonRegExp
+        ends = r'(?P<NL_PRE_END>\r?\n?)'+escaped_regex(ends, 'END') if ends else ''
         return re.compile(
             rf'(((?<=\n)|^){_line}|^){begins}(?P<BODY>.*?){ends}\s*(?=\n{del_named_groups(_line)}|$)',
             re.DOTALL)
@@ -207,11 +207,15 @@ class Replacer:
         block_comm = False
         if self._block_comm:
             begin, end = read('BEGIN'), read('END')
+            nl_post_begin, nl_pre_end = read('NL_POST_BEGIN'), read('NL_PRE_END')
             if (begin, end) in self._block_comm:
                 if not re.search(rf"{re.escape(begin)}|{re.escape(end)}", body):
                     block_comm = True
             if not block_comm:
-                out = begin + body + end
+                if begin:
+                    out = begin + nl_post_begin + out
+                if end:
+                    out = out + nl_pre_end + end
 
         # read options and fallback them:
         opt, lang = read('OPT'), read('LANG')
