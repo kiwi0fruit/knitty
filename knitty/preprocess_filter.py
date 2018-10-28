@@ -202,8 +202,7 @@ class Replacer:
 
         body = read('BODY')
         out = body
-        import os  # TODO
-        print('\n----\n', body, '|', m.group(0), file=open(os.path.expanduser('~/__debug.txt'), 'a', encoding='utf-8'))
+
         # deal with begin/end block comments:
         block_comm = False
         if self._block_comm:
