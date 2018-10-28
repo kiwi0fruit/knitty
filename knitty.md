@@ -298,7 +298,7 @@ knitty:
   comments: ['#', "'''", "'''", "\"\"\"", "\"\"\""]
 ...
 ```
-  * `language: 'py2'` can change the document language that otherwise is a file extension.
+    * `language: 'py2'` can change the document language that otherwise is a file extension.
 
 * Or set yaml settings file in pre-knitty CLI that maps language name (that can also be automatically taken from file extension) with comments specs: `pre-knitty --yaml file.yaml`.
 ```yaml
