@@ -20,7 +20,7 @@ Modified version of Knotr/Stitch by Tom Augspurger is included in Knitty. [Origi
     * [1.4 Turn ON code cells mode](#14-turn-on-code-cells-mode)
     * [1.5 Other languages in code cells mode](#15-other-languages-in-code-cells-mode)
     * [1.6 Markdown in code cells mode](#16-markdown-in-code-cells-mode)
-    * [1.7 Example python file in code cells mode][code_cells_example]
+    * [1.7 Example files in code cells mode][code_cells_example]
 2. [New code chunks options](#2-new-code-chunks-options)
     * [2.1 Original code chunk options](#21-original-code-chunk-options)
     * [2.2 Results Pandoc chunk option](#22-results-pandoc-chunk-option)
@@ -39,7 +39,7 @@ Modified version of Knotr/Stitch by Tom Augspurger is included in Knitty. [Origi
 [alt_settings]: #12-alternative-settings-placement
 [new_cli]: #11-new-command-line-interfaces
 [code_cells]: #13-support-files-with-atomhydrogen-code-cells
-[code_cells_example]: #17-example-python-file-in-code-cells-mode
+[code_cells_example]: #17-example-files-in-code-cells-mode
 
 
 # Knitty usage
@@ -290,7 +290,7 @@ Such files for example can be edited in Atom/Hydrogen or in PyCharm.
 
 In order to tell Knitty that the file should be treated as raw code you should do the following:
 
-*  Either set `knitty` > `comments` metadata (shoud be in pandoc-like format in between `---...`):
+*  Either set `knitty:` > `comments:` metadata (shoud be in pandoc-like format in between `---...`):
 ```yaml
 ---
 knitty:
@@ -298,7 +298,7 @@ knitty:
   comments: ['#', "'''", "'''", "\"\"\"", "\"\"\""]
 ...
 ```
-    * `language: 'py2'` can change the document language that otherwise is a file extension.
+* (`language: 'py2'` can change the document language that otherwise is a file extension.)
 
 * Or set yaml settings file in pre-knitty CLI that maps language name (that can also be automatically taken from file extension) with comments specs: `pre-knitty --yaml file.yaml`.
 ```yaml
@@ -311,32 +311,42 @@ comments-map:
 
 * Or the first line should start with 1-3 symbols of the in-line comment (except white spaces), then single white space or nothing, then `%%`, then single white space or end of line. So you actually tell Knitty what symbols are used as in-line comments. For python it would be `# %%` comments. But this way you can only specify in-line comments not block comments.
 
-Also you can specify Knitty settings: `# %% {python, echo=False}`. If no settings specified or no language specified - `# %% {echo=False}` - then the language would be the one specified in `knitty` > `language` metadata or the file extension or Markdown (the last one depends on where there are block comments at the next line or not - see the next paragraph).
+Also you can specify Knitty settings: `# %% {python, echo=False}`. If no settings specified or no language specified - `# %% {echo=False}` - then the language would be the one specified in `knitty:` > `language:` metadata (see above), or the file extension, or Markdown (the last one depends on where there are block comments at the next line or not - see the next paragraph).
 
 
 ## 1.5 Other languages in code cells mode
 
-You can insert code cells of other languages to the **.py** file with python main language (for example via `# %% {r}`). They optionally may be put inside block comments. In order to automatically remove such comments first you should specify block comments settings in the very first line of the file. Python example:
+You can insert code cells of other languages to the **.py** file with python main language: for example via `# %% {r}` or `# %% {markdown}` (actually this can be done with any language file not only Python). They optionally may be put inside block comments. In order to automatically remove such comments first you should specify block comments settings either in `knitty:` > `comments:` yaml in the document itself or in `--yaml` option of `pre-knitty` CLI (see previous section).
 
-```python
-# %% {md} """ %%% """
-```
+And ror example for Python to put code cell into block comments you need:
 
-That should be valid code cell line with optional but valid Knitty options. Then space, then 1-6 symbols of block comment opening (except white spaces), then single white space, then `%%%`, then single white space, then 1-6 symbols of block comment closing (except white spaces), then white space or end of line. So you actually tell Stitch what symbols are used as block comments.
-
-For example for python: if after `# %%` line the very next one is `"""` then that next one is omitted. If the opening block comment was omitted then the closing block comment is omitted if after `"""` line there are only white spaces or newlines before new `# %%` or the end of file (but there should be at least one newline).
+* right after `# %%` line the very next one line should start with `"""` (or `'''`) and the last non-whitespace characters before new line char and next `# %%` line should be `"""` (or `'''`). And the block comments should match. And there should not be the same block comments between them.
 
 
 ## 1.6 Markdown in code cells mode
 
 Code cell can be in markdown as well. It's the `markdown` or `md` language. You can use them to define Knitty metadata.
 
-## 1.7 Example python file in code cells mode
+If cell is block-commented **and** doesn't have language specified then it's a Markdown cell. 
 
-Example python file:
+
+## 1.7 Example files in code cells mode
+
+Example file with language which comments are not in pandoctools settings. Like `file.rb`:
+
+```rb
+# %% this comments is necessary
+puts 0
+
+# %%
+puts 1
+```
+
+
+Example python file. Assuming you specified `pre-knitty --yaml <...>` or using pandoctools so you don't need the first line to be `# %%`:
 
 ```python
-# %% {md} """ %%% """ Markdown cell that doesn't affect PyCharm code inspection and Hydrogen `Run All`:
+# %% {md} Markdown cell that doesn't affect PyCharm code inspection and Hydrogen `Run All`:
 """
 ---
 kernels-map:
