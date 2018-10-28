@@ -38,7 +38,7 @@ Modified version of Knotr/Stitch by Tom Augspurger is included in Knitty. [Origi
 
 [alt_settings]: #12-alternative-settings-placement
 [new_cli]: #11-new-command-line-interfaces
-[code_cells]: #13-support-files-with-atom-hydrogen-code-cells
+[code_cells]: #13-support-files-with-atomhydrogen-code-cells
 [code_cells_example]: #17-example-python-file-in-code-cells-mode
 
 
