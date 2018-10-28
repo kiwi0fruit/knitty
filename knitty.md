@@ -12,7 +12,7 @@ Modified version of Knotr/Stitch by Tom Augspurger is included in Knitty. [Origi
 1. [New interfaces](#1-new-interfaces)
     * [1.1 New command line interfaces][new_cli]
         * [pre-knitty](#pre-knitty)
-        * [knitty](#knitty)
+        * [knitty](#knitty-cli)
         * [knotedown](#knotedown)
         * [knotr](#knotr)
     * [1.2 Alternative settings placement][alt_settings]
@@ -96,7 +96,7 @@ Options:
 ```
 
 
-### knitty
+### knitty CLI
 
 ```
 Usage: knitty [OPTIONS] [INPUT_FILE]
