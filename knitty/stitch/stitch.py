@@ -20,6 +20,7 @@ from jupyter_client.manager import start_new_kernel
 from nbconvert.utils.base import NbConvertBase
 from pandocfilters import RawBlock, Div, CodeBlock, Image, Str, Para
 import pypandoc
+import argparse
 
 from .exc import StitchError
 from . import options as opt
@@ -64,38 +65,43 @@ class Stitch(HasTraits):
         The name of the output document.
     date : str
     author : str
-    self_contained : bool, default True
+    self_contained : bool, default ``True``
         Whether to publish a self-contained document, where
         things like images or CSS stylesheets are inlined as ``data``
         attributes.
     standalone : bool
-        Whether to publish a standalone document (True) or fragment (False).
+        Whether to publish a standalone document (``True``) or fragment (``False``).
         Standalone documents include items like ``<head>`` elements, whereas
         non-standlone documents are just the ``<body>`` element.
-    warning : bool, default True
+    warning : bool, default ``True``
         Whether to include text printed to stderr in the output
-    error : str, default 'continue'
+    error : str, default ``'continue'``
         How to handle exceptions in the executed code-chunks.
     prompt : str, optional
         String to put before each line of the input code. Defaults to 
         IPython-style counters. If you specify ``prompt`` option for a code
         chunk then it would have a prompt even if ``use_prompt`` is ``False``.
-    echo : bool, default True
+    echo : bool, default ``True``
         Whether to include the input code-chunk in the output document.
-    eval : bool, default True
+    eval : bool, default ``True``
         Whether to execute the code-chunk.
 
     fig.width : str
     fig.height : str
 
-    use_prompt : bool, default False
+    use_prompt : bool, default ``False``
         Whether to use prompt.
-    results : str, default 'default'
-        * 'default': default behaviour
-        * 'pandoc': same as 'default' but some Jupyter output is parsed
-          as markdown: if the output is a stdout message that is
-          not warning/error or if it has 'text/plain' key.
-        * 'hide': evaluate chunk but hide results
+    results : str, default ``'default'``
+        * ``'default'``: default Stitch behaviour
+        * ``'pandoc'``: same as 'default' but plain text is parsed via Pandoc:
+          if the output is a stdout message that is
+          not warning/error or if it has ``'text/plain'`` key.
+          Pandoc setings can be set like
+          ``{results='pandoc -f markdown-link_attributes --flag'}``
+          (defaults are taken from knitty CLI).
+          Markdown, HTML and LaTeX outputs are also parsed by Pandoc
+          (with appropriate settigns).
+        * ``'hide'``: evaluate chunk but hide results
 
 
     Notes
@@ -347,7 +353,21 @@ class Stitch(HasTraits):
 
         The result should be pandoc JSON AST compatible.
         """
-        pandoc = True if (self.get_option('results', attrs) == 'pandoc') else False
+        # set parser options
+        results = self.get_option('results', attrs)
+        pandoc_format = self.pandoc_format
+        pandoc_extra_args = self.pandoc_extra_args
+        pandoc = False
+
+        if re.match(r'^pandoc(\s|$)', results):
+            pandoc = True
+            results_args = results[7:].split()  # this also removes all \s after pandoc
+            if results_args:
+                parser = argparse.ArgumentParser()
+                parser.add_argument('-r', '-f', '--read', '--from')
+                read, context = parser.parse_known_args(results_args)
+                pandoc_format = read.read if read.read else pandoc_format
+                pandoc_extra_args = context if context else None
 
         # messsage_pairs can come from stdout or the io stream (maybe others?)
         output_messages = [x for x in messages if not is_execute_input(x)]
@@ -358,14 +378,14 @@ class Stitch(HasTraits):
 
         # Handle all stdout first...
         for message in output_messages:
-            warning = self.get_option('warning', attrs)
-            if is_stdout(message) or (is_stderr(message) and warning):
+            is_warning = is_stderr(message) and self.get_option('warning', attrs)
+            if is_stdout(message) or is_warning:
                 text = message['content']['text']
                 output_blocks += plain_output(
                     text,
-                    self.pandoc_format,
-                    self.pandoc_extra_args,
-                    not (is_stderr(message) and warning) and pandoc
+                    pandoc_format,
+                    pandoc_extra_args,
+                    pandoc and not is_warning
                 )
 
         priority = list(enumerate(NbConvertBase().display_data_priority))
@@ -397,22 +417,35 @@ class Stitch(HasTraits):
 
                 if key == 'text/plain':
                     # ident, classes, kvs
-                    blocks = plain_output(data, self.pandoc_format,
-                                          self.pandoc_extra_args, pandoc)
+                    blocks = plain_output(data, pandoc_format, pandoc_extra_args, pandoc)
                 elif key == 'text/latex':
-                    blocks = [RawBlock('latex', data)]
+                    _latex = pandoc_format.startswith('latex')
+                    if pandoc:
+                        blocks = tokenize_block(data,
+                                                pandoc_format if _latex else 'latex',
+                                                pandoc_extra_args if _latex else None)
+                    else:
+                        blocks = [RawBlock('latex', data)]
                 elif key == 'text/html':
-                    blocks = [RawBlock('html', data)]
+                    _html = pandoc_format.startswith('html')
+                    if pandoc:
+                        blocks = tokenize_block(data,
+                                                pandoc_format if _html else 'html',
+                                                pandoc_extra_args if _html else None)
+                    else:
+                        blocks = [RawBlock('html', data)]
                 elif key == 'application/javascript':
-                    script = '<script type=text/javascript>{}</script>'.format(
-                        data)
+                    script = f'<script type=text/javascript>{data}</script>'
                     blocks = [RawBlock('html', script)]
                 elif key.startswith('image') or key == 'application/pdf':
-                    blocks = [self.wrap_image_output(chunk_name, data, key,
-                                                     attrs)]
+                    blocks = [self.wrap_image_output(chunk_name, data, key, attrs)]
+                elif key == 'text/markdown':
+                    _md = re.match(r'^(markdown|gfm|commonmark)', pandoc_format)
+                    blocks = tokenize_block(data,
+                                            pandoc_format if _md else self.pandoc_format,
+                                            pandoc_extra_args if _md else self.pandoc_extra_args)
                 else:
-                    blocks = tokenize_block(data, self.pandoc_format,
-                                            self.pandoc_extra_args)
+                    blocks = tokenize_block(data, pandoc_format, pandoc_extra_args)
 
             output_blocks += blocks
         return output_blocks
