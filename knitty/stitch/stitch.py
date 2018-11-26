@@ -369,6 +369,13 @@ class Stitch(HasTraits):
                 pandoc_format = read.read if read.read else pandoc_format
                 pandoc_extra_args = context if context else None
 
+        if re.match(r'^(markdown|gfm|commonmark)', pandoc_format):
+            md_format, md_extra_args = pandoc_format, pandoc_extra_args
+        elif re.match(r'^(markdown|gfm|commonmark)', self.pandoc_format):
+            md_format, md_extra_args = self.pandoc_format, self.pandoc_extra_args
+        else:
+            md_format, md_extra_args = 'markdown', None
+
         # messsage_pairs can come from stdout or the io stream (maybe others?)
         output_messages = [x for x in messages if not is_execute_input(x)]
         display_messages = [x for x in output_messages if not is_stdout(x) and
@@ -440,10 +447,7 @@ class Stitch(HasTraits):
                 elif key.startswith('image') or key == 'application/pdf':
                     blocks = [self.wrap_image_output(chunk_name, data, key, attrs)]
                 elif key == 'text/markdown':
-                    _md = re.match(r'^(markdown|gfm|commonmark)', pandoc_format)
-                    blocks = tokenize_block(data,
-                                            pandoc_format if _md else self.pandoc_format,
-                                            pandoc_extra_args if _md else self.pandoc_extra_args)
+                    blocks = tokenize_block(data, md_format, md_extra_args)
                 else:
                     blocks = tokenize_block(data, pandoc_format, pandoc_extra_args)
 
