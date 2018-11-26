@@ -360,6 +360,7 @@ Here is some markdown text.
 
 
 # %% {echo=False} `py` cell, language name is taken from file extension:
+from IPython.display import Markdown
 import math
 import sugartex as stex
 print('This was {py, echo=False} cell')
@@ -390,11 +391,11 @@ x <- c(10, 20)
 """
 
 
-# %% {results=pandoc}
-print(stex.pre(f'''
+# %%
+Markdown(stex.pre(f'''
 
 Another markdown text. Now with SugarTeX formula: ˎα^˱{math.pi:1.3f}˲ˎ.
-It works because of the `results=pandoc` option and `sugartex` Pandoc filter.
+It works because of the `Markdown` display option and `sugartex` Pandoc filter.
 Acually `stex.pre` is redundant here but it is needed when the text is imported
 or read from somewhere instead of being written in the same document.
 
@@ -518,7 +519,65 @@ match: in
 
 ```py
 class Stitch(HasTraits):
+    """
+    Helper class for managing the execution of a document.
+    Stores configuration variables.
+
+    Attributes
+    ----------
+    to : str
+        The output file format. Optionally inferred by the output file
+        file extension.
+    title : str
+        The name of the output document.
+    date : str
+    author : str
+    self_contained : bool, default ``True``
+        Whether to publish a self-contained document, where
+        things like images or CSS stylesheets are inlined as ``data``
+        attributes.
+    standalone : bool
+        Whether to publish a standalone document (``True``) or fragment (``False``).
+        Standalone documents include items like ``<head>`` elements, whereas
+        non-standlone documents are just the ``<body>`` element.
+    warning : bool, default ``True``
+        Whether to include text printed to stderr in the output
+    error : str, default ``'continue'``
+        How to handle exceptions in the executed code-chunks.
+    prompt : str, optional
+        String to put before each line of the input code. Defaults to 
+        IPython-style counters. If you specify ``prompt`` option for a code
+        chunk then it would have a prompt even if ``use_prompt`` is ``False``.
+    echo : bool, default ``True``
+        Whether to include the input code-chunk in the output document.
+    eval : bool, default ``True``
+        Whether to execute the code-chunk.
+
+    fig.width : str
+    fig.height : str
+
+    use_prompt : bool, default ``False``
+        Whether to use prompt.
+    results : str, default ``'default'``
+        * ``'default'``: default Stitch behaviour
+        * ``'pandoc'``: same as 'default' but plain text is parsed via Pandoc:
+          if the output is a stdout message that is
+          not warning/error or if it has ``'text/plain'`` key.
+          Pandoc setings can be set like
+          ``{results='pandoc -f markdown-link_attributes --flag'}``
+          (defaults are taken from knitty CLI).
+          Markdown, HTML and LaTeX outputs are also parsed by Pandoc
+          (with appropriate settigns).
+        * ``'hide'``: evaluate chunk but hide results
+
+
+    Notes
+    -----
+    Attirbutes can be set via the command-line, document YAML metadata,
+    or (where appropriate) the chunk-options line.
+    """
     ...
+
     def __init__(self, name: str, to: str='html',
                  standalone: bool=True,
                  self_contained: bool=True,
