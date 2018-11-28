@@ -443,7 +443,10 @@ eval: True
 `results` code chunk option was modified:
 
 * default is `results=default` (same as in the original Stitch),
-* `results=pandoc`: same as `default` but some Jupyter output is parsed as markdown: if the output is a stdout message that is not warning/error or if it has `text/plain` key. For example python `print()` output.
+* `results=pandoc`: same as `default` but plain text is parsed via Pandoc:
+  - if the output is a stdout message that is not warning/error or if it has `'text/plain'` key.
+  - Pandoc setings can be set like `{results='pandoc -f markdown-link_attributes --flag'}` (defaults are taken from knitty CLI).
+  - Markdown, HTML and LaTeX outputs are also parsed by Pandoc (with appropriate settigns).
 * `results=hide`: evaluate chunk but hide results (same as in the original Stitch).
 
 
