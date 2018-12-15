@@ -214,7 +214,7 @@ jupyter nbconvert --to notebook --execute --stdin --stdout > \
 "${input_file}.ipynb"
 ```
 
-(`--standalone --self-contained` are necessary for conversion, `--nomagic` is necessary for R kernel conversion, `%jupymd%` is a Markdown flavor compatible with *pandoc-crossref* and with Jupyter markdown cells).
+(`--standalone --self-contained` are necessary for conversion, `--nomagic` is necessary for R kernel conversion, `$jupymd` is a Markdown flavor compatible with *pandoc-crossref* and with Jupyter markdown cells).
 
 ### knotr
 
