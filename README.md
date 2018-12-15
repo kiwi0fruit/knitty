@@ -37,11 +37,12 @@ Unix:
 export PYTHONIOENCODING=utf-8
 
 input_file="doc.md"
+metadata="metadata.yml"
 reader_args=(-f markdown)
 writer_args=(-t html --standalone --self-contained)
 
 cat "${input_file}" | \
-pre-knitty "${input_file}" | \
+pre-knitty "${input_file}" --yaml "$metadata" | \
 pandoc "${reader_args[@]}" -t json | \
 knitty "${input_file}" "${reader_args[@]}" "${writer_args[@]}" | \
 pandoc -f json "${writer_args[@]}" -o "${input_file}.html"
@@ -53,14 +54,15 @@ chcp 65001 > NUL
 set PYTHONIOENCODING=utf-8
 
 set input_file=doc.md
+set metadata=metadata.yml
 set reader_args=-f markdown
 set writer_args=-t html --standalone --self-contained
 
-type %input_file% | ^
-pre-knitty %input_file% | ^
+type "%input_file%" | ^
+pre-knitty "%input_file%" --yaml "%metadata%" | ^
 pandoc %reader_args% -t json | ^
-knitty %input_file% %reader_args% %writer_args% | ^
-pandoc -f json %writer_args% -o %input_file%.html
+knitty "%input_file%" %reader_args% %writer_args% | ^
+pandoc -f json %writer_args% -o "%input_file%.html"
 ```
 
 Jupyter kernel specification in metadata section:
