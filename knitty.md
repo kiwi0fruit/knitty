@@ -193,7 +193,7 @@ kernelspec:
 
 Export to Jupyter notebook with cross-references (using [pandoc-crossref](https://github.com/lierdakil/pandoc-crossref): [download](https://github.com/lierdakil/pandoc-crossref/releases)) and execute it:
 
-```bat
+```bash
 export PYTHONIOENCODING=utf-8
 
 input_file="doc.md"
