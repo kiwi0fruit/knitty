@@ -75,23 +75,23 @@ kernelspec:
 
 Export to Jupyter notebook with cross-references (using [pandoc-crossref](https://github.com/lierdakil/pandoc-crossref): [download](https://github.com/lierdakil/pandoc-crossref/releases)) and execute it:
 
-```bat
-chcp 65001 > NUL
-set PYTHONIOENCODING=utf-8
+```bash
+export PYTHONIOENCODING=utf-8
 
-set input_file=doc.md
-set reader_args=-f markdown
-set jupymd=markdown-bracketed_spans-fenced_divs-link_attributes-simple_tables^
--multiline_tables-grid_tables-pipe_tables-fenced_code_attributes^
--markdown_in_html_blocks-table_captions-smart
-set writer_args=-t %jupymd% --standalone --self-contained --filter pandoc-crossref
+input_file="doc.md"
+metadata="metadata.yml"
+reader_args=(-f markdown)
+jupymd="markdown-bracketed_spans-fenced_divs-link_attributes-simple_tables\
+-multiline_tables-grid_tables-pipe_tables-fenced_code_attributes\
+-markdown_in_html_blocks-table_captions-smart"
+writer_args=(-t "$jupymd" --standalone --self-contained --filter pandoc-crossref)
 
-type %input_file% | ^
-pre-knitty %input_file% | ^
-pandoc %reader_args% -t json | ^
-knitty %input_file% %reader_args% %writer_args% --to-ipynb | ^
-pandoc -f json %writer_args% | ^
-knotedown --match=in --nomagic > %input_file%.ipynb
-
-jupyter nbconvert --to notebook --execute %input_file%.ipynb
+cat "${input_file}" | \
+pre-knitty "${input_file}" --yaml "$metadata" | \
+pandoc "${reader_args[@]}" -t json | \
+knitty "${input_file}" "${reader_args[@]}" "${writer_args[@]}" --to-ipynb | \
+pandoc -f json "${writer_args}" | \
+knotedown --match=in --nomagic | \
+jupyter nbconvert --to notebook --execute --stdin --stdout > \
+"${input_file}.ipynb"
 ```
