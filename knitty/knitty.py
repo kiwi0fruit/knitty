@@ -2,9 +2,14 @@ import sys
 from .ast_filter import knitty_pandoc_filter
 import click
 import os
+import os.path as p
 import re
 import panflute as pf
 import io
+
+
+class KnittyError(Exception):
+    pass
 
 
 def action(elem, doc):
@@ -18,12 +23,12 @@ def action(elem, doc):
             id_ = ("#" + id_ + " ") if (id_ != "" and id_ is not None) else ""
             classes = " .".join(elem.classes)
             classes = ("." + classes + " ") if (classes != "") else ""
-            kwargs = " ".join(["{}={}".format(k, v) for k, v in elem.attributes.items()])
+            kwargs = " ".join([f"{k}={v}" for k, v in elem.attributes.items()])
             elem.classes[0] = "{" + id_ + classes + kwargs + "}"
 
 
 def hyphenized_basename(file_path: str) -> str:
-    return os.path.basename(file_path).replace('.', '-')
+    return p.basename(file_path).replace('.', '-')
 
 
 def dir_ext(to):
@@ -35,7 +40,7 @@ def dir_ext(to):
     if m:
         return formats.get(m.group(0), m.group(0))
     else:
-        raise Exception('Invalid -t/-w/--to/--write option: {}'.format(to))
+        raise KnittyError(f'Invalid -t/-w/--to/--write option: {to}')
 
 
 @click.command(
@@ -69,7 +74,14 @@ def dir_ext(to):
               'set in metadata section like `match: in`.')
 def main(ctx, input_file, read, output, to, standalone, self_contained, dir_name, to_ipynb):
     if sys.stdin.isatty():
-        raise Exception('The app is not meant to wait for user input.')
+        raise KnittyError('The app is not meant to wait for user input.')
+
+    if os.name == 'nt':
+        cwd = os.getcwd()
+        def cwd_pdc(ext): return p.isfile(p.join(cwd, f'pandoc.{ext}'))
+        if cwd_pdc('exe') or cwd_pdc('cmd') or cwd_pdc('bat'):
+            if cwd not in os.getenv('PATH', '').split(os.pathsep):
+                raise KnittyError('Error: On Windows Pandoc is in the CWD and the CWD is not in the $PATH')
 
     if dir_name is None:
         if output is not None:
@@ -83,7 +95,7 @@ def main(ctx, input_file, read, output, to, standalone, self_contained, dir_name
         # Knitty (Stitch) later checks if `to` is in ('latex', 'pdf', 'beamer') so using `dir_ext` is OK
         to = dir_ext(to)
     else:
-        ext = (os.path.splitext(output)[1].lstrip('.')
+        ext = (p.splitext(output)[1].lstrip('.')
                if output is not None
                else '')
         to = ext if (ext != '') else 'html'
