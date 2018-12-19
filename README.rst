@@ -24,7 +24,7 @@ Or install on Windows (if you use conda package manager
    conda install -c defaults -c conda-forge "pip>=10.0.1" "pandoc>=2.2.1" jupyter_core ^
    traitlets ipython jupyter_client nbconvert pandocfilters pypandoc click psutil nbformat ^
    pandoc-attributes six pyyaml
-   pip install --progress-bar off knitty
+   pip install knitty
 
 If pip install fails try to change codepage: ``chcp 1252``.
 
@@ -52,11 +52,12 @@ Unix:
    export PYTHONIOENCODING=utf-8
 
    input_file="doc.md"
+   metadata="metadata.yml"
    reader_args=(-f markdown)
    writer_args=(-t html --standalone --self-contained)
 
    cat "${input_file}" | \
-   pre-knitty "${input_file}" | \
+   pre-knitty "${input_file}" --yaml "$metadata" | \
    pandoc "${reader_args[@]}" -t json | \
    knitty "${input_file}" "${reader_args[@]}" "${writer_args[@]}" | \
    pandoc -f json "${writer_args[@]}" -o "${input_file}.html"
@@ -69,14 +70,15 @@ Windows:
    set PYTHONIOENCODING=utf-8
 
    set input_file=doc.md
+   set metadata=metadata.yml
    set reader_args=-f markdown
    set writer_args=-t html --standalone --self-contained
 
-   type %input_file% | ^
-   pre-knitty %input_file% | ^
+   type "%input_file%" | ^
+   pre-knitty "%input_file%" --yaml "%metadata%" | ^
    pandoc %reader_args% -t json | ^
-   knitty %input_file% %reader_args% %writer_args% | ^
-   pandoc -f json %writer_args% -o %input_file%.html
+   knitty "%input_file%" %reader_args% %writer_args% | ^
+   pandoc -f json %writer_args% -o "%input_file%.html"
 
 Jupyter kernel specification in metadata section:
 
@@ -94,23 +96,23 @@ Export to Jupyter notebook with cross-references (using
 `download <https://github.com/lierdakil/pandoc-crossref/releases>`__)
 and execute it:
 
-.. code:: bat
+.. code:: bash
 
-   chcp 65001 > NUL
-   set PYTHONIOENCODING=utf-8
+   export PYTHONIOENCODING=utf-8
 
-   set input_file=doc.md
-   set reader_args=-f markdown
-   set jupymd=markdown-bracketed_spans-fenced_divs-link_attributes-simple_tables^
-   -multiline_tables-grid_tables-pipe_tables-fenced_code_attributes^
-   -markdown_in_html_blocks-table_captions-smart
-   set writer_args=-t %jupymd% --standalone --self-contained --filter pandoc-crossref
+   input_file="doc.md"
+   metadata="metadata.yml"
+   reader_args=(-f markdown)
+   jupymd="markdown-bracketed_spans-fenced_divs-link_attributes-simple_tables\
+   -multiline_tables-grid_tables-pipe_tables-fenced_code_attributes\
+   -markdown_in_html_blocks-table_captions-smart"
+   writer_args=(-t "$jupymd" --standalone --self-contained --filter pandoc-crossref)
 
-   type %input_file% | ^
-   pre-knitty %input_file% | ^
-   pandoc %reader_args% -t json | ^
-   knitty %input_file% %reader_args% %writer_args% --to-ipynb | ^
-   pandoc -f json %writer_args% | ^
-   knotedown --match=in --nomagic > %input_file%.ipynb
-
-   jupyter nbconvert --to notebook --execute %input_file%.ipynb
+   cat "${input_file}" | \
+   pre-knitty "${input_file}" --yaml "$metadata" | \
+   pandoc "${reader_args[@]}" -t json | \
+   knitty "${input_file}" "${reader_args[@]}" "${writer_args[@]}" --to-ipynb | \
+   pandoc -f json "${writer_args}" | \
+   knotedown --match=in --nomagic | \
+   jupyter nbconvert --to notebook --execute --stdin --stdout > \
+   "${input_file}.ipynb"
