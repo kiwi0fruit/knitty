@@ -92,7 +92,7 @@ def main(ctx, input_file, read, output, to, standalone, self_contained, dir_name
             dir_name = 'stdout-' + dir_ext(to)
 
     if to is not None:
-        # Knitty (Stitch) later checks if `to` is in ('latex', 'pdf', 'beamer') so using `dir_ext` is OK
+        # TODO Knitty (Stitch) later checks if `to` is in ('latex', 'pdf', 'beamer') so using `dir_ext` is OK
         to = dir_ext(to)
     else:
         ext = (p.splitext(output)[1].lstrip('.')
@@ -105,7 +105,7 @@ def main(ctx, input_file, read, output, to, standalone, self_contained, dir_name
         pandoc_extra_args.append('--standalone')
     if self_contained:
         pandoc_extra_args.append('--self-contained')
-    # Knitty (Stitch) later do not need `to` in `pandoc_extra_args` so loosing it is OK
+    # TODO Knitty (Stitch) later do not need `to` in `pandoc_extra_args` so loosing it is OK
     out = knitty_pandoc_filter(sys.stdin.read(), name=dir_name, to=to, standalone=standalone,
                                self_contained=self_contained, pandoc_format=read,
                                pandoc_extra_args=pandoc_extra_args)
