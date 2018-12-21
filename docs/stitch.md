@@ -21,7 +21,7 @@ Examples
 ========
 
 See the project\'s [examples
-page](https://kiwi0fruit.github.io/pystitch/_downloads/side_by_side.html) for a
+page](https://kiwi0fruit.github.io/pystitch/index.html#examples) for a
 side-by-side comparison of input markdown and stitched HTML.
 
 More complex examples are linked to from there as well.
