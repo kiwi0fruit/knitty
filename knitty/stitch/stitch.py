@@ -487,7 +487,7 @@ class Stitch(HasTraits):
                                     "{}{}".format(chunk_name, ext))
             os.makedirs(self.resource_dir, exist_ok=True)
             if ext == '.svg':
-                with open(filepath, 'wt') as f:
+                with open(filepath, 'wt', encoding='utf-8') as f:
                     f.write(data)
             else:
                 with open(filepath, 'wb') as f:
