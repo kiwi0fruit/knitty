@@ -218,7 +218,7 @@ jupyter nbconvert --to notebook --execute --stdin --stdout > \
 
 ### knotr
 
-`knotr` - same CLI as `stitch` from original. It doesn't support most of Knitty new features.
+`knotr` - [same CLI](https://kiwi0fruit.github.io/pystitch/index.html#usage) as `stitch` from original Stitch. It doesn't support most of Knitty new features.
 
 
 ## 1.2 Alternative settings placement
@@ -429,7 +429,7 @@ pass  # this is not echoed
 
 ## 2.1 Original code chunk options
 
-See Knotr/Stitch code chunks options [here](https://pystitch.github.io/api.html#chunk-options).
+See Knotr/Stitch code chunks options [here](https://kiwi0fruit.github.io/pystitch/api.html#chunk-options).
 
 Notable options:
 
@@ -474,7 +474,7 @@ input: True
 
 ## 3.1 Original document options
 
-See Knotr/Stitch document options [here](https://pystitch.github.io/api.html#api) (some of the options are chunk options actually).
+See Knotr/Stitch document options [here](https://kiwi0fruit.github.io/pystitch/api.html) (some of the options are chunk options actually).
 
 
 ## 3.2 Disabled code chunks prompt prefixes
@@ -522,7 +522,7 @@ match: in
 
 # 4. API description
 
-`stitch.Stitch` class API description should be changed a bit:
+`knitty.stitch.Stitch` class API description should be changed a bit:
 
 ```py
 class Stitch(HasTraits):
