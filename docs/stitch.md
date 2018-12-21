@@ -39,8 +39,8 @@ pip install knitty
 I know, it\'s confusing. I\'ve filed a claim for `stitch` on PyPI, but I
 think the people working that support queue are over-worked. Once that
 gets processed, I\'ll put it up on conda-forge as well. If you need a
-mnemonic, it\'s \"I want knitr, but [not]{.title-ref} the one written in
-[R]{.title-ref}.\" Also I wanted to confuse R users. And knots are kind
+mnemonic, it\'s \"I want knitr, but not the one written in
+R.\" Also I wanted to confuse R users. And knots are kind
 of like a buggy version of knits.
 
 `stitch` requires pandoc\>=1.18. This can be installed using your system
@@ -88,6 +88,6 @@ Stitch\'s documentation has an odd build process, so standard tools like
 readthedocs weren\'t flexible enough. To make the docs, install stitch
 and all the extra dependencies. Clone [https://github.com/kiwi0fruit/pystitch](https://github.com/kiwi0fruit/pystitch)
 
-Checkout the [src]{.title-ref} branch.
+Checkout the src branch.
 
-Run [make html]{.title-ref}.
+Run Makefile.
