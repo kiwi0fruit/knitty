@@ -1,23 +1,31 @@
-name: stitch
+name: knitty
 channels:
+    - defaults
     - conda-forge
-    - pypi
 dependencies:
     - "python>=3.6,<3.7"
-    - matplotlib
-    - pandas
     - jupyter_core
     - traitlets
     - ipython
     - jupyter_client
     - nbconvert
+    - pandocfilters
     - pypandoc
     - click
+    - psutil
+    - nbformat
+    - pandoc-attributes
+    - six
+    - pyyaml
+
     - pytest
     - pytest-cov
     - sphinx
     - pandas
+    - matplotlib
     - sphinx_rtd_theme
+    - numpydoc
+
     - pip:
-        - pandocfilters
-        - numpydoc
+        - "panflute>=1.11.1"
+        - "git+https://github.com/kiwi0fruit/knitty"
