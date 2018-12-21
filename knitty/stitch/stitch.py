@@ -78,7 +78,7 @@ class Stitch(HasTraits):
     error : str, default ``'continue'``
         How to handle exceptions in the executed code-chunks.
     prompt : str, optional
-        String to put before each line of the input code. Defaults to 
+        String to put before each line of the input code. Defaults to
         IPython-style counters. If you specify ``prompt`` option for a code
         chunk then it would have a prompt even if ``use_prompt`` is ``False``.
     echo : bool, default ``True``
@@ -366,7 +366,7 @@ class Stitch(HasTraits):
                 parser = argparse.ArgumentParser()
                 parser.add_argument('-r', '-f', '--read', '--from')
                 read, context = parser.parse_known_args(results_args)
-                pandoc_format = read.read if read.read else pandoc_format
+                pandoc_format = read.read if read.read else "markdown"
                 pandoc_extra_args = context if context else None
 
         if re.match(r'^(markdown|gfm|commonmark)', pandoc_format):
@@ -388,11 +388,9 @@ class Stitch(HasTraits):
             is_warning = is_stderr(message) and self.get_option('warning', attrs)
             if is_stdout(message) or is_warning:
                 text = message['content']['text']
-                output_blocks += plain_output(
-                    text,
-                    pandoc_format,
-                    pandoc_extra_args,
-                    pandoc and not is_warning
+                output_blocks += (
+                    plain_output(text) if is_warning else
+                    plain_output(text, pandoc_format, pandoc_extra_args, pandoc)
                 )
 
         priority = list(enumerate(NbConvertBase().display_data_priority))
@@ -407,9 +405,7 @@ class Stitch(HasTraits):
                 if error == 'raise':
                     exc = StitchError(message['content']['traceback'])
                     raise exc
-                blocks = plain_output(
-                    '\n'.join(message['content']['traceback'])
-                )
+                blocks = plain_output('\n'.join(message['content']['traceback']))
             else:
                 all_data = message['content']['data']
                 if not all_data:  # some R output
@@ -426,21 +422,9 @@ class Stitch(HasTraits):
                     # ident, classes, kvs
                     blocks = plain_output(data, pandoc_format, pandoc_extra_args, pandoc)
                 elif key == 'text/latex':
-                    _latex = pandoc_format.startswith('latex')
-                    if pandoc:
-                        blocks = tokenize_block(data,
-                                                pandoc_format if _latex else 'latex',
-                                                pandoc_extra_args if _latex else None)
-                    else:
-                        blocks = [RawBlock('latex', data)]
+                    blocks = [RawBlock('latex', data)]
                 elif key == 'text/html':
-                    _html = pandoc_format.startswith('html')
-                    if pandoc:
-                        blocks = tokenize_block(data,
-                                                pandoc_format if _html else 'html',
-                                                pandoc_extra_args if _html else None)
-                    else:
-                        blocks = [RawBlock('html', data)]
+                    blocks = [RawBlock('html', data)]
                 elif key == 'application/javascript':
                     script = '<script type=text/javascript>{}</script>'.format(data)
                     blocks = [RawBlock('html', script)]
