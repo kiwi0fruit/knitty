@@ -2,7 +2,7 @@
 
 Knitty is Atom/Hydrogen friendly CLI for Stitch/Knotr: reproducible report generation tool via Jupyter, Pandoc and Markdown. Insert python code (or other Jupyter kernel code) to the Markdown document and have code's results in the output document.
 
-Modified version of Knotr/Stitch by Tom Augspurger is included in Knitty. [Original version](https://github.com/pystitch/stitch).
+Modified version of [Knotr/Stitch](stitch.md) by Tom Augspurger is included in Knitty. [Original version](https://github.com/pystitch/stitch).
 
 
 # Contents
