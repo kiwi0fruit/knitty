@@ -90,4 +90,4 @@ and all the extra dependencies. Clone [https://github.com/kiwi0fruit/pystitch](h
 
 Checkout the src branch.
 
-Run Makefile.
+Run make html.
