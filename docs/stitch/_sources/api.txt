@@ -1,0 +1,98 @@
+API
+===
+
+.. autoclass:: stitch.Stitch
+   :members:
+
+
+Languages / Kernels / Styles mappings in YAML metadata
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Mappings to markdown YAML metadata are added:
+
+-  from **language names** to **Jupyter kernels names**,
+-  from **language names** to **CSS classes names**,
+-  **language names** are used in Stitch code blocks settings.
+
+For example:
+
+.. code:: yaml
+
+    ---
+    kernels-map:
+      r: ir
+      py2: python2
+    styles-map:
+      py2: py
+    ...
+
+
+Chunk Options
+~~~~~~~~~~~~~
+
+Code chunks are blocks that look like
+
+.. code-block:: none
+
+   ```{kernel_name, [chunk_name], **kwargs}
+   # code
+   ```
+
+Example:
+
+.. code-block:: python
+
+   ```{python, chunk1, echo=False, results=pandoc}
+   print('# Hello header')
+   ```
+
+The ``kernel_name`` is required, and ``chunk_name`` is optional.
+All parameters are separated by a comma.
+
+   .. method:: kernel_name(name: str)
+
+      Name of the kernel to use for executing the code chunk.
+      Required. See ``jupyter kernelspec list``.
+
+   .. method:: chunk_name(chunk_name: str)
+
+      Name for the chunk. Controls the filename for supporting files
+      created by that chunk. Optional.
+
+   .. method:: echo(echo: bool=True)
+
+      Whether to include the input-code in the rendered output.
+      Default ``True``.
+
+   .. method:: eval(eval: bool=True)
+
+      Whether to execute the code cell. Default ``True``.
+
+   .. method:: results(results: str=default)
+
+      How to display the results. Default is ``default``.
+
+      * ``results=default``: default behaviour,
+      * ``results=pandoc``: same as ``default`` but some Jupyter output is parsed as markdown: if the output is a stdout message that is not warning/error or if it has ``text/plain`` key. For example python ``print()`` output,
+      * ``results=hide``: hide the chunk output (but still execute the chunk).
+
+   .. method:: warning(warning: bool=True)
+
+      Whether to include warnings (stderr) in the ouput. Default ``True``.
+
+   .. method:: width(w)
+
+      Width for output figure. See http://pandoc.org/MANUAL.html#images
+
+      .. warning::
+
+         This will probably change to ``fig.width`` in a future release.
+
+   .. method:: height(w)
+
+      Height for output figure. See http://pandoc.org/MANUAL.html#images
+
+      .. warning::
+
+         This will probably change to ``fig.height`` in a future release.
+
