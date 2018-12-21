@@ -86,8 +86,4 @@ Documentation
 
 Stitch\'s documentation has an odd build process, so standard tools like
 readthedocs weren\'t flexible enough. To make the docs, install stitch
-and all the extra dependencies. Clone [https://github.com/kiwi0fruit/pystitch](https://github.com/kiwi0fruit/pystitch)
-
-Checkout the src branch.
-
-Run make html.
+and all the extra dependencies. Clone [https://github.com/kiwi0fruit/pystitch](https://github.com/kiwi0fruit/pystitch) and follow instructions there.

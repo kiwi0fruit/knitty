@@ -45,7 +45,7 @@ setup(
     # install_requires=['knotr>0.4.1', 'click', 'psutil', 'panflute', 'notedown>1.5.1'],
 
     extras_require={
-        'dev': ['pytest', 'pytest-cov', 'sphinx', 'pandas', 'matplotlib', 'sphinx_rtd_theme', 'numpydoc'],
+        'dev': ['pytest', 'pytest-cov', 'sphinx', 'pandas', 'matplotlib', 'sphinx_rtd_theme', 'numpydoc', 'ghp-import'],
     },
 
     include_package_data=True,

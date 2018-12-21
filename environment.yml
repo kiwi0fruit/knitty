@@ -25,6 +25,7 @@ dependencies:
     - matplotlib
     - sphinx_rtd_theme
     - numpydoc
+    - ghp-import
 
     - pip:
         - "panflute>=1.11.1"
