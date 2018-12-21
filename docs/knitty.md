@@ -218,7 +218,7 @@ jupyter nbconvert --to notebook --execute --stdin --stdout > \
 
 ### knotr
 
-`knotr` - same CLI as `stitch` from [Stitch](https://github.com/pystitch/stitch). It doesn't support most of Knitty new features.
+`knotr` - same CLI as `stitch` from original. It doesn't support most of Knitty new features.
 
 
 ## 1.2 Alternative settings placement
