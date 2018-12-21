@@ -1,0 +1,15 @@
+name: knotr
+description: "Reproducible report generation tool."
+url: "https://github.com/tomaugspurger/stitch"
+author: "Tom Augspurger"
+author_email: "tom.augspurger88@gmail.com"
+license: 'MIT'
+install_requires:
+  - jupyter_core
+  - traitlets
+  - ipython
+  - jupyter_client
+  - nbconvert
+  - pandocfilters
+  - pypandoc
+  - click

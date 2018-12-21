@@ -1,0 +1,13 @@
+name: "notedown"
+version: "1.5.1"
+description: "Convert markdown to IPython notebook."
+url: "http://github.com/aaren/notedown"
+author: "Aaron O'Leary"
+author_email: "dev@aaren.me"
+license: 'BSD 2-Clause'
+install_requires:
+  - nbformat
+  - nbconvert
+  - pandoc-attributes
+  - six
+  - pyyaml
