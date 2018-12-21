@@ -7,7 +7,7 @@ Insert python code (or other Jupyter kernel code) to the Markdown
 document and have code’s results in the output document.
 
 See `Knitty
-documentation <https://github.com/kiwi0fruit/knitty/blob/master/knitty.md>`__.
+documentation <https://github.com/kiwi0fruit/knitty/blob/master/docs/knitty.md>`__.
 
 Install
 -------
