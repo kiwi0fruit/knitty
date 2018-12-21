@@ -33,7 +33,7 @@ Install
 installed from pip via
 
 ``` {.sourceCode .sh}
-pip install knotr
+pip install knitty
 ```
 
 I know, it\'s confusing. I\'ve filed a claim for `stitch` on PyPI, but I

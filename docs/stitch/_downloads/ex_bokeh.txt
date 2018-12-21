@@ -5,7 +5,7 @@
 This document can be compiled to HTML with
 
     ```
-    stitch ex_bokeh.txt -o ex_bokeh.html --no-self-contained
+    knotr ex_bokeh.txt -o ex_bokeh.html --no-self-contained
     ```
 
 The easiest way to use stitch & Bokeh together is with the ``Bokeh.output_notebook``

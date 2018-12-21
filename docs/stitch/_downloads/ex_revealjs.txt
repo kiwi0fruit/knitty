@@ -15,7 +15,7 @@ This document can be compiled to HTML by
 1. Saving [this](https://gist.githubusercontent.com/paultopia/0c57899407aed81f6932/raw/3c7b1fd8478ebcf41ca3c9041104bbff34d3abc4/revealjs.html) template to a file
 2. Running
 ```
-stitch ex_revealjs.txt -o ex_revealjs.html -t html5 \
+knotr ex_revealjs.txt -o ex_revealjs.html -t html5 \
     --template=revealjs.html --standalone \
     --variable theme="beige" \
     --no-hightlight --section-divs

@@ -6,7 +6,7 @@
 This document can be compiled to HTML with
 
     ```
-    stitch ex_holoviews.txt -o ex_holoviews.html --no-self-contained -H header.js
+    knotr ex_holoviews.txt -o ex_holoviews.html --no-self-contained -H header.js
     ```
 
 You'll need a file ``header.js`` with the required javascript libraries.

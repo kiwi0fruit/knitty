@@ -40,7 +40,7 @@ You can install stitch from PyPI via
 
 .. code-block:: sh
 
-   pip install knotr
+   pip install knitty
 
 I know, it's confusing.
 I've filed a claim for ``stitch`` on PyPI, but I think the people working that support queue are over-worked.
@@ -49,7 +49,7 @@ If you need a mnemonic, it's "I want knitr, but `not` the one written in `R`.
 Also I wanted to confuse R users.
 And knots are kind of like a buggy version of knits.
 
-But to be clear the package name and command-line tool is ``stitch``.
+But to be clear the package name and command-line tool is ``knotr``.
 
 You'll also need pandoc>=1.18.
 Either use your system package manager, or use the ``pypandoc`` provided on conda-forge, which includes
@@ -90,7 +90,7 @@ For the most part you call
 
 .. code-block:: sh
 
-   stitch input_file.md -o output_file.html
+   knotr input_file.md -o output_file.html
 
 You can use ``-t`` for the output type, or infer it from the file extension
 of ``-o``.

@@ -10,6 +10,4 @@ htmlcov/
 .RData
 .Rhistory
 
-*.html
-*.pdf
 _build/

@@ -1,0 +1,362 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="/Users/tom.augspurger/sandbox/stitch/stitch/static/default.css" type="text/css" />
+</head>
+<body>
+<h1 id="bokeh-integration">Bokeh Integration</h1>
+<blockquote>
+<p><a href="http://bokeh.pydata.org/en/latest/">Bokeh</a> is a Python interactive visualization library that targets modern web browsers for presentation.</p>
+</blockquote>
+<p>This document can be compiled to HTML with</p>
+<pre><code>```
+stitch ex_bokeh.txt -o ex_bokeh.html --no-self-contained
+```</code></pre>
+<p>The easiest way to use stitch &amp; Bokeh together is with the <code>Bokeh.output_notebook</code> method.</p>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python">In [<span class="dv">1</span>]: <span class="im">from</span> bokeh.plotting <span class="im">import</span> figure, show, output_notebook
+   ...:
+   ...: <span class="co"># prepare some data</span>
+   ...: x <span class="op">=</span> [<span class="fl">0.1</span>, <span class="fl">0.5</span>, <span class="fl">1.0</span>, <span class="fl">1.5</span>, <span class="fl">2.0</span>, <span class="fl">2.5</span>, <span class="fl">3.0</span>]
+   ...: y0 <span class="op">=</span> [i<span class="op">**</span><span class="dv">2</span> <span class="cf">for</span> i <span class="kw">in</span> x]
+   ...: y1 <span class="op">=</span> [<span class="dv">10</span><span class="op">**</span>i <span class="cf">for</span> i <span class="kw">in</span> x]
+   ...: y2 <span class="op">=</span> [<span class="dv">10</span><span class="op">**</span>(i<span class="op">**</span><span class="dv">2</span>) <span class="cf">for</span> i <span class="kw">in</span> x]
+   ...:
+   ...: output_notebook()</code></pre></div>
+
+    <div class="bk-root">
+        <a href="http://bokeh.pydata.org" target="_blank" class="bk-logo bk-logo-small bk-logo-notebook"></a>
+        <span id="3e169c63-bc42-45ca-8c52-d23d40695526">Loading BokehJS ...</span>
+    </div>
+<script type=text/javascript>
+(function(global) {
+  function now() {
+    return new Date();
+  }
+
+  var force = "1";
+
+  if (typeof (window._bokeh_onload_callbacks) === "undefined" || force !== "") {
+    window._bokeh_onload_callbacks = [];
+    window._bokeh_is_loading = undefined;
+  }
+
+
+  
+  if (typeof (window._bokeh_timeout) === "undefined" || force !== "") {
+    window._bokeh_timeout = Date.now() + 5000;
+    window._bokeh_failed_load = false;
+  }
+
+  var NB_LOAD_WARNING = {'data': {'text/html':
+     "<div style='background-color: #fdd'>\n"+
+     "<p>\n"+
+     "BokehJS does not appear to have successfully loaded. If loading BokehJS from CDN, this \n"+
+     "may be due to a slow or bad network connection. Possible fixes:\n"+
+     "</p>\n"+
+     "<ul>\n"+
+     "<li>re-rerun `output_notebook()` to attempt to load from CDN again, or</li>\n"+
+     "<li>use INLINE resources instead, as so:</li>\n"+
+     "</ul>\n"+
+     "<code>\n"+
+     "from bokeh.resources import INLINE\n"+
+     "output_notebook(resources=INLINE)\n"+
+     "</code>\n"+
+     "</div>"}};
+
+  function display_loaded() {
+    if (window.Bokeh !== undefined) {
+      Bokeh.$("#3e169c63-bc42-45ca-8c52-d23d40695526").text("BokehJS successfully loaded.");
+    } else if (Date.now() < window._bokeh_timeout) {
+      setTimeout(display_loaded, 100)
+    }
+  }
+
+  function run_callbacks() {
+    window._bokeh_onload_callbacks.forEach(function(callback) { callback() });
+    delete window._bokeh_onload_callbacks
+    console.info("Bokeh: all callbacks have finished");
+  }
+
+  function load_libs(js_urls, callback) {
+    window._bokeh_onload_callbacks.push(callback);
+    if (window._bokeh_is_loading > 0) {
+      console.log("Bokeh: BokehJS is being loaded, scheduling callback at", now());
+      return null;
+    }
+    if (js_urls == null || js_urls.length === 0) {
+      run_callbacks();
+      return null;
+    }
+    console.log("Bokeh: BokehJS not loaded, scheduling load and callback at", now());
+    window._bokeh_is_loading = js_urls.length;
+    for (var i = 0; i < js_urls.length; i++) {
+      var url = js_urls[i];
+      var s = document.createElement('script');
+      s.src = url;
+      s.async = false;
+      s.onreadystatechange = s.onload = function() {
+        window._bokeh_is_loading--;
+        if (window._bokeh_is_loading === 0) {
+          console.log("Bokeh: all BokehJS libraries loaded");
+          run_callbacks()
+        }
+      };
+      s.onerror = function() {
+        console.warn("failed to load library " + url);
+      };
+      console.log("Bokeh: injecting script tag for BokehJS library: ", url);
+      document.getElementsByTagName("head")[0].appendChild(s);
+    }
+  };var element = document.getElementById("3e169c63-bc42-45ca-8c52-d23d40695526");
+  if (element == null) {
+    console.log("Bokeh: ERROR: autoload.js configured with elementid '3e169c63-bc42-45ca-8c52-d23d40695526' but no matching script tag was found. ")
+    return false;
+  }
+
+  var js_urls = ['https://cdn.pydata.org/bokeh/release/bokeh-0.12.2.min.js', 'https://cdn.pydata.org/bokeh/release/bokeh-widgets-0.12.2.min.js', 'https://cdn.pydata.org/bokeh/release/bokeh-compiler-0.12.2.min.js'];
+
+  var inline_js = [
+    function(Bokeh) {
+      Bokeh.set_log_level("info");
+    },
+    
+    function(Bokeh) {
+      
+      Bokeh.$("#3e169c63-bc42-45ca-8c52-d23d40695526").text("BokehJS is loading...");
+    },
+    function(Bokeh) {
+      console.log("Bokeh: injecting CSS: https://cdn.pydata.org/bokeh/release/bokeh-0.12.2.min.css");
+      Bokeh.embed.inject_css("https://cdn.pydata.org/bokeh/release/bokeh-0.12.2.min.css");
+      console.log("Bokeh: injecting CSS: https://cdn.pydata.org/bokeh/release/bokeh-widgets-0.12.2.min.css");
+      Bokeh.embed.inject_css("https://cdn.pydata.org/bokeh/release/bokeh-widgets-0.12.2.min.css");
+    }
+  ];
+
+  function run_inline_js() {
+    
+    if ((window.Bokeh !== undefined) || (force === "1")) {
+      for (var i = 0; i < inline_js.length; i++) {
+        inline_js[i](window.Bokeh);
+      }if (force === "1") {
+        display_loaded();
+      }} else if (Date.now() < window._bokeh_timeout) {
+      setTimeout(run_inline_js, 100);
+    } else if (!window._bokeh_failed_load) {
+      console.log("Bokeh: BokehJS failed to load within specified timeout.");
+      window._bokeh_failed_load = true;
+    } else if (!force) {
+      var cell = $("#3e169c63-bc42-45ca-8c52-d23d40695526").parents('.cell').data().cell;
+      cell.output_area.append_execute_result(NB_LOAD_WARNING)
+    }
+
+  }
+
+  if (window._bokeh_is_loading === 0) {
+    console.log("Bokeh: BokehJS loaded, going straight to plotting");
+    run_inline_js();
+  } else {
+    load_libs(js_urls, function() {
+      console.log("Bokeh: BokehJS plotting callback run at", now());
+      run_inline_js();
+    });
+  }
+}(this));</script>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python">In [<span class="dv">2</span>]: <span class="co"># create a new plot</span>
+   ...: p <span class="op">=</span> figure(
+   ...:    tools<span class="op">=</span><span class="st">&quot;pan,box_zoom,reset,save&quot;</span>,
+   ...:    y_axis_type<span class="op">=</span><span class="st">&quot;log&quot;</span>, y_range<span class="op">=</span>[<span class="fl">0.001</span>, <span class="dv">10</span><span class="op">**</span><span class="dv">11</span>], title<span class="op">=</span><span class="st">&quot;log axis example&quot;</span>,
+   ...:    x_axis_label<span class="op">=</span><span class="st">&#39;sections&#39;</span>, y_axis_label<span class="op">=</span><span class="st">&#39;particles&#39;</span>
+   ...: )
+   ...:
+   ...: <span class="co"># add some renderers</span>
+   ...: p.line(x, x, legend<span class="op">=</span><span class="st">&quot;y=x&quot;</span>)
+   ...: p.circle(x, x, legend<span class="op">=</span><span class="st">&quot;y=x&quot;</span>, fill_color<span class="op">=</span><span class="st">&quot;white&quot;</span>, size<span class="op">=</span><span class="dv">8</span>)
+   ...: p.line(x, y0, legend<span class="op">=</span><span class="st">&quot;y=x^2&quot;</span>, line_width<span class="op">=</span><span class="dv">3</span>)
+   ...: p.line(x, y1, legend<span class="op">=</span><span class="st">&quot;y=10^x&quot;</span>, line_color<span class="op">=</span><span class="st">&quot;red&quot;</span>)
+   ...: p.circle(x, y1, legend<span class="op">=</span><span class="st">&quot;y=10^x&quot;</span>, fill_color<span class="op">=</span><span class="st">&quot;red&quot;</span>, line_color<span class="op">=</span><span class="st">&quot;red&quot;</span>, size<span class="op">=</span><span class="dv">6</span>)
+   ...: p.line(x, y2, legend<span class="op">=</span><span class="st">&quot;y=10^x^2&quot;</span>, line_color<span class="op">=</span><span class="st">&quot;orange&quot;</span>, line_dash<span class="op">=</span><span class="st">&quot;4 4&quot;</span>)
+   ...:
+   ...: <span class="co"># show the results</span>
+   ...: show(p)</code></pre></div>
+
+
+    <div class="bk-root">
+        <div class="plotdiv" id="35a36264-c585-48b5-a252-04876e8ad0a0"></div>
+    </div>
+<script type="text/javascript">
+  
+  (function(global) {
+    function now() {
+      return new Date();
+    }
+  
+    var force = "";
+  
+    if (typeof (window._bokeh_onload_callbacks) === "undefined" || force !== "") {
+      window._bokeh_onload_callbacks = [];
+      window._bokeh_is_loading = undefined;
+    }
+  
+  
+    
+    if (typeof (window._bokeh_timeout) === "undefined" || force !== "") {
+      window._bokeh_timeout = Date.now() + 0;
+      window._bokeh_failed_load = false;
+    }
+  
+    var NB_LOAD_WARNING = {'data': {'text/html':
+       "<div style='background-color: #fdd'>\n"+
+       "<p>\n"+
+       "BokehJS does not appear to have successfully loaded. If loading BokehJS from CDN, this \n"+
+       "may be due to a slow or bad network connection. Possible fixes:\n"+
+       "</p>\n"+
+       "<ul>\n"+
+       "<li>re-rerun `output_notebook()` to attempt to load from CDN again, or</li>\n"+
+       "<li>use INLINE resources instead, as so:</li>\n"+
+       "</ul>\n"+
+       "<code>\n"+
+       "from bokeh.resources import INLINE\n"+
+       "output_notebook(resources=INLINE)\n"+
+       "</code>\n"+
+       "</div>"}};
+  
+    function display_loaded() {
+      if (window.Bokeh !== undefined) {
+        Bokeh.$("#35a36264-c585-48b5-a252-04876e8ad0a0").text("BokehJS successfully loaded.");
+      } else if (Date.now() < window._bokeh_timeout) {
+        setTimeout(display_loaded, 100)
+      }
+    }
+  
+    function run_callbacks() {
+      window._bokeh_onload_callbacks.forEach(function(callback) { callback() });
+      delete window._bokeh_onload_callbacks
+      console.info("Bokeh: all callbacks have finished");
+    }
+  
+    function load_libs(js_urls, callback) {
+      window._bokeh_onload_callbacks.push(callback);
+      if (window._bokeh_is_loading > 0) {
+        console.log("Bokeh: BokehJS is being loaded, scheduling callback at", now());
+        return null;
+      }
+      if (js_urls == null || js_urls.length === 0) {
+        run_callbacks();
+        return null;
+      }
+      console.log("Bokeh: BokehJS not loaded, scheduling load and callback at", now());
+      window._bokeh_is_loading = js_urls.length;
+      for (var i = 0; i < js_urls.length; i++) {
+        var url = js_urls[i];
+        var s = document.createElement('script');
+        s.src = url;
+        s.async = false;
+        s.onreadystatechange = s.onload = function() {
+          window._bokeh_is_loading--;
+          if (window._bokeh_is_loading === 0) {
+            console.log("Bokeh: all BokehJS libraries loaded");
+            run_callbacks()
+          }
+        };
+        s.onerror = function() {
+          console.warn("failed to load library " + url);
+        };
+        console.log("Bokeh: injecting script tag for BokehJS library: ", url);
+        document.getElementsByTagName("head")[0].appendChild(s);
+      }
+    };var element = document.getElementById("35a36264-c585-48b5-a252-04876e8ad0a0");
+    if (element == null) {
+      console.log("Bokeh: ERROR: autoload.js configured with elementid '35a36264-c585-48b5-a252-04876e8ad0a0' but no matching script tag was found. ")
+      return false;
+    }
+  
+    var js_urls = [];
+  
+    var inline_js = [
+      function(Bokeh) {
+        Bokeh.$(function() {
+            var docs_json = {"21906bb0-df26-4911-9f81-9ed297777a78":{"roots":{"references":[{"attributes":{"plot":{"id":"18fa19b7-6e7e-476e-a284-815b8169b19f","subtype":"Figure","type":"Plot"}},"id":"3c784143-273d-400e-84ce-3b74922939c3","type":"PanTool"},{"attributes":{"below":[{"id":"82a85254-1807-415d-8872-0229e129286d","type":"LinearAxis"}],"left":[{"id":"77215f19-e432-4896-b2fd-dd27caea7b40","type":"LogAxis"}],"renderers":[{"id":"82a85254-1807-415d-8872-0229e129286d","type":"LinearAxis"},{"id":"e397e494-ad48-41b7-b312-07aa55eb9957","type":"Grid"},{"id":"77215f19-e432-4896-b2fd-dd27caea7b40","type":"LogAxis"},{"id":"8c3665d3-4f82-4f41-9e5e-e2972a30c233","type":"Grid"},{"id":"cc410a12-c50b-4824-9fcd-87391695479c","type":"BoxAnnotation"},{"id":"0bb5b991-513b-485b-ab10-5021c92a0778","type":"Legend"},{"id":"05c86fbe-a5fa-4d1f-8a24-4a8922ca3807","type":"GlyphRenderer"},{"id":"d1c2038f-f0d5-42bd-9293-265928fda22a","type":"GlyphRenderer"},{"id":"c0dd5bff-b366-427a-b561-d0316d37e4ed","type":"GlyphRenderer"},{"id":"77652674-5bf7-464d-a27f-d62ebf1dc4e0","type":"GlyphRenderer"},{"id":"056da387-7e2e-4b1c-ad1f-ee15aa72c43c","type":"GlyphRenderer"},{"id":"0c0de55f-8c52-46ab-aa95-a44253f209af","type":"GlyphRenderer"}],"title":{"id":"66b0c1e9-4f64-4399-aeaa-881862c2e92e","type":"Title"},"tool_events":{"id":"c643c4a6-bba1-4a65-96ba-ec7028a31669","type":"ToolEvents"},"toolbar":{"id":"265ee5a5-a46f-4ac9-9d80-1d2b56f752c1","type":"Toolbar"},"x_range":{"id":"1bcfbd6c-107a-4da8-974b-d2c323c5c518","type":"DataRange1d"},"y_mapper_type":"log","y_range":{"id":"6a01a06e-bbcc-4ec8-9d0c-8fa47c40ccff","type":"Range1d"}},"id":"18fa19b7-6e7e-476e-a284-815b8169b19f","subtype":"Figure","type":"Plot"},{"attributes":{"callback":null,"column_names":["x","y"],"data":{"x":[0.1,0.5,1.0,1.5,2.0,2.5,3.0],"y":[0.010000000000000002,0.25,1.0,2.25,4.0,6.25,9.0]}},"id":"f0b95c2b-7ea7-4aee-868e-35b29ada31bc","type":"ColumnDataSource"},{"attributes":{"callback":null,"column_names":["x","y"],"data":{"x":[0.1,0.5,1.0,1.5,2.0,2.5,3.0],"y":[1.023292992280754,1.7782794100389228,10.0,177.82794100389228,10000.0,1778279.410038923,1000000000.0]}},"id":"ef764652-8bd1-4ca8-bc8d-bb20caf48e01","type":"ColumnDataSource"},{"attributes":{"data_source":{"id":"f0b95c2b-7ea7-4aee-868e-35b29ada31bc","type":"ColumnDataSource"},"glyph":{"id":"400baf4d-2ec5-4e68-aa32-ca6619918119","type":"Line"},"hover_glyph":null,"nonselection_glyph":{"id":"99eb2ca5-8580-4feb-a586-2e9c519e246d","type":"Line"},"selection_glyph":null},"id":"c0dd5bff-b366-427a-b561-d0316d37e4ed","type":"GlyphRenderer"},{"attributes":{"line_color":{"value":"#1f77b4"},"line_width":{"value":3},"x":{"field":"x"},"y":{"field":"y"}},"id":"400baf4d-2ec5-4e68-aa32-ca6619918119","type":"Line"},{"attributes":{"callback":null,"column_names":["x","y"],"data":{"x":[0.1,0.5,1.0,1.5,2.0,2.5,3.0],"y":[1.2589254117941673,3.1622776601683795,10.0,31.622776601683793,100.0,316.22776601683796,1000.0]}},"id":"b5805263-0f3b-4d4e-a00a-da767247084c","type":"ColumnDataSource"},{"attributes":{"bottom_units":"screen","fill_alpha":{"value":0.5},"fill_color":{"value":"lightgrey"},"left_units":"screen","level":"overlay","line_alpha":{"value":1.0},"line_color":{"value":"black"},"line_dash":[4,4],"line_width":{"value":2},"plot":null,"render_mode":"css","right_units":"screen","top_units":"screen"},"id":"cc410a12-c50b-4824-9fcd-87391695479c","type":"BoxAnnotation"},{"attributes":{"fill_alpha":{"value":0.1},"fill_color":{"value":"#1f77b4"},"line_alpha":{"value":0.1},"line_color":{"value":"#1f77b4"},"size":{"units":"screen","value":8},"x":{"field":"x"},"y":{"field":"y"}},"id":"a90aaaec-0914-4e85-829a-60c610f5bcf9","type":"Circle"},{"attributes":{"ticker":null},"id":"89115a83-8a86-4230-938d-071ae4ab3c24","type":"LogTickFormatter"},{"attributes":{"num_minor_ticks":10},"id":"80d0f443-11fd-4003-8621-70cc0bcb6e9b","type":"LogTicker"},{"attributes":{"overlay":{"id":"cc410a12-c50b-4824-9fcd-87391695479c","type":"BoxAnnotation"},"plot":{"id":"18fa19b7-6e7e-476e-a284-815b8169b19f","subtype":"Figure","type":"Plot"}},"id":"6ccea72f-48ff-4f4a-9a1c-5a7a06419c18","type":"BoxZoomTool"},{"attributes":{"active_drag":"auto","active_scroll":"auto","active_tap":"auto","tools":[{"id":"3c784143-273d-400e-84ce-3b74922939c3","type":"PanTool"},{"id":"6ccea72f-48ff-4f4a-9a1c-5a7a06419c18","type":"BoxZoomTool"},{"id":"9bb6f45f-890f-4fe7-8c56-94259713d78e","type":"ResetTool"},{"id":"944ba7ad-ad5c-4faa-9538-eb238cc91b36","type":"SaveTool"}]},"id":"265ee5a5-a46f-4ac9-9d80-1d2b56f752c1","type":"Toolbar"},{"attributes":{},"id":"c643c4a6-bba1-4a65-96ba-ec7028a31669","type":"ToolEvents"},{"attributes":{"plot":{"id":"18fa19b7-6e7e-476e-a284-815b8169b19f","subtype":"Figure","type":"Plot"}},"id":"9bb6f45f-890f-4fe7-8c56-94259713d78e","type":"ResetTool"},{"attributes":{"data_source":{"id":"b5805263-0f3b-4d4e-a00a-da767247084c","type":"ColumnDataSource"},"glyph":{"id":"7beec61d-5011-49f4-90a2-ae3421b40586","type":"Circle"},"hover_glyph":null,"nonselection_glyph":{"id":"36ce2dd6-e2b8-4aa9-8ef2-7f886c3e594f","type":"Circle"},"selection_glyph":null},"id":"056da387-7e2e-4b1c-ad1f-ee15aa72c43c","type":"GlyphRenderer"},{"attributes":{"dimension":1,"plot":{"id":"18fa19b7-6e7e-476e-a284-815b8169b19f","subtype":"Figure","type":"Plot"},"ticker":{"id":"80d0f443-11fd-4003-8621-70cc0bcb6e9b","type":"LogTicker"}},"id":"8c3665d3-4f82-4f41-9e5e-e2972a30c233","type":"Grid"},{"attributes":{"data_source":{"id":"ef764652-8bd1-4ca8-bc8d-bb20caf48e01","type":"ColumnDataSource"},"glyph":{"id":"957f0930-6c0c-4f88-b757-10192172ceca","type":"Line"},"hover_glyph":null,"nonselection_glyph":{"id":"407cb76a-dbc1-4584-97ae-7246266fd96d","type":"Line"},"selection_glyph":null},"id":"0c0de55f-8c52-46ab-aa95-a44253f209af","type":"GlyphRenderer"},{"attributes":{"line_color":{"value":"#1f77b4"},"x":{"field":"x"},"y":{"field":"y"}},"id":"18cbd9a5-f929-4448-87ba-e536f318edb4","type":"Line"},{"attributes":{"line_alpha":{"value":0.1},"line_color":{"value":"#1f77b4"},"line_width":{"value":3},"x":{"field":"x"},"y":{"field":"y"}},"id":"99eb2ca5-8580-4feb-a586-2e9c519e246d","type":"Line"},{"attributes":{},"id":"0a057e96-f128-40b3-9266-57adf506a6da","type":"BasicTicker"},{"attributes":{"fill_color":{"value":"red"},"line_color":{"value":"red"},"size":{"units":"screen","value":6},"x":{"field":"x"},"y":{"field":"y"}},"id":"7beec61d-5011-49f4-90a2-ae3421b40586","type":"Circle"},{"attributes":{"callback":null,"column_names":["x","y"],"data":{"x":[0.1,0.5,1.0,1.5,2.0,2.5,3.0],"y":[0.1,0.5,1.0,1.5,2.0,2.5,3.0]}},"id":"c3662159-3a58-4ada-9992-7af4a8a36ae1","type":"ColumnDataSource"},{"attributes":{"legends":[["y=x",[{"id":"05c86fbe-a5fa-4d1f-8a24-4a8922ca3807","type":"GlyphRenderer"},{"id":"d1c2038f-f0d5-42bd-9293-265928fda22a","type":"GlyphRenderer"}]],["y=x^2",[{"id":"c0dd5bff-b366-427a-b561-d0316d37e4ed","type":"GlyphRenderer"}]],["y=10^x",[{"id":"77652674-5bf7-464d-a27f-d62ebf1dc4e0","type":"GlyphRenderer"},{"id":"056da387-7e2e-4b1c-ad1f-ee15aa72c43c","type":"GlyphRenderer"}]],["y=10^x^2",[{"id":"0c0de55f-8c52-46ab-aa95-a44253f209af","type":"GlyphRenderer"}]]],"plot":{"id":"18fa19b7-6e7e-476e-a284-815b8169b19f","subtype":"Figure","type":"Plot"}},"id":"0bb5b991-513b-485b-ab10-5021c92a0778","type":"Legend"},{"attributes":{"data_source":{"id":"c3662159-3a58-4ada-9992-7af4a8a36ae1","type":"ColumnDataSource"},"glyph":{"id":"18cbd9a5-f929-4448-87ba-e536f318edb4","type":"Line"},"hover_glyph":null,"nonselection_glyph":{"id":"e7ddc183-118e-480f-970c-c335a071a0d9","type":"Line"},"selection_glyph":null},"id":"05c86fbe-a5fa-4d1f-8a24-4a8922ca3807","type":"GlyphRenderer"},{"attributes":{"data_source":{"id":"233d169b-25f9-46aa-9bad-d9bbaf3c5d3c","type":"ColumnDataSource"},"glyph":{"id":"5d18d4ff-9b1c-4f01-9e23-615a5e88c5de","type":"Circle"},"hover_glyph":null,"nonselection_glyph":{"id":"a90aaaec-0914-4e85-829a-60c610f5bcf9","type":"Circle"},"selection_glyph":null},"id":"d1c2038f-f0d5-42bd-9293-265928fda22a","type":"GlyphRenderer"},{"attributes":{"callback":null,"column_names":["x","y"],"data":{"x":[0.1,0.5,1.0,1.5,2.0,2.5,3.0],"y":[0.1,0.5,1.0,1.5,2.0,2.5,3.0]}},"id":"233d169b-25f9-46aa-9bad-d9bbaf3c5d3c","type":"ColumnDataSource"},{"attributes":{"fill_color":{"value":"white"},"line_color":{"value":"#1f77b4"},"size":{"units":"screen","value":8},"x":{"field":"x"},"y":{"field":"y"}},"id":"5d18d4ff-9b1c-4f01-9e23-615a5e88c5de","type":"Circle"},{"attributes":{"callback":null},"id":"1bcfbd6c-107a-4da8-974b-d2c323c5c518","type":"DataRange1d"},{"attributes":{"plot":null,"text":"log axis example"},"id":"66b0c1e9-4f64-4399-aeaa-881862c2e92e","type":"Title"},{"attributes":{"line_alpha":{"value":0.1},"line_color":{"value":"#1f77b4"},"x":{"field":"x"},"y":{"field":"y"}},"id":"e7ddc183-118e-480f-970c-c335a071a0d9","type":"Line"},{"attributes":{"plot":{"id":"18fa19b7-6e7e-476e-a284-815b8169b19f","subtype":"Figure","type":"Plot"}},"id":"944ba7ad-ad5c-4faa-9538-eb238cc91b36","type":"SaveTool"},{"attributes":{"fill_alpha":{"value":0.1},"fill_color":{"value":"#1f77b4"},"line_alpha":{"value":0.1},"line_color":{"value":"#1f77b4"},"size":{"units":"screen","value":6},"x":{"field":"x"},"y":{"field":"y"}},"id":"36ce2dd6-e2b8-4aa9-8ef2-7f886c3e594f","type":"Circle"},{"attributes":{"data_source":{"id":"e4a5a825-c10d-47a8-8933-6bdfdb56591e","type":"ColumnDataSource"},"glyph":{"id":"1941773d-256c-4c8a-a17a-137c8830069e","type":"Line"},"hover_glyph":null,"nonselection_glyph":{"id":"cac41286-5933-465d-bf35-f7ce7df5a087","type":"Line"},"selection_glyph":null},"id":"77652674-5bf7-464d-a27f-d62ebf1dc4e0","type":"GlyphRenderer"},{"attributes":{"line_alpha":{"value":0.1},"line_color":{"value":"#1f77b4"},"line_dash":[4,4],"x":{"field":"x"},"y":{"field":"y"}},"id":"407cb76a-dbc1-4584-97ae-7246266fd96d","type":"Line"},{"attributes":{"axis_label":"particles","formatter":{"id":"89115a83-8a86-4230-938d-071ae4ab3c24","type":"LogTickFormatter"},"plot":{"id":"18fa19b7-6e7e-476e-a284-815b8169b19f","subtype":"Figure","type":"Plot"},"ticker":{"id":"80d0f443-11fd-4003-8621-70cc0bcb6e9b","type":"LogTicker"}},"id":"77215f19-e432-4896-b2fd-dd27caea7b40","type":"LogAxis"},{"attributes":{"line_color":{"value":"red"},"x":{"field":"x"},"y":{"field":"y"}},"id":"1941773d-256c-4c8a-a17a-137c8830069e","type":"Line"},{"attributes":{},"id":"acc5a847-aece-40e2-9b8b-274b7fc662bd","type":"BasicTickFormatter"},{"attributes":{"axis_label":"sections","formatter":{"id":"acc5a847-aece-40e2-9b8b-274b7fc662bd","type":"BasicTickFormatter"},"plot":{"id":"18fa19b7-6e7e-476e-a284-815b8169b19f","subtype":"Figure","type":"Plot"},"ticker":{"id":"0a057e96-f128-40b3-9266-57adf506a6da","type":"BasicTicker"}},"id":"82a85254-1807-415d-8872-0229e129286d","type":"LinearAxis"},{"attributes":{"callback":null,"column_names":["x","y"],"data":{"x":[0.1,0.5,1.0,1.5,2.0,2.5,3.0],"y":[1.2589254117941673,3.1622776601683795,10.0,31.622776601683793,100.0,316.22776601683796,1000.0]}},"id":"e4a5a825-c10d-47a8-8933-6bdfdb56591e","type":"ColumnDataSource"},{"attributes":{"line_alpha":{"value":0.1},"line_color":{"value":"#1f77b4"},"x":{"field":"x"},"y":{"field":"y"}},"id":"cac41286-5933-465d-bf35-f7ce7df5a087","type":"Line"},{"attributes":{"plot":{"id":"18fa19b7-6e7e-476e-a284-815b8169b19f","subtype":"Figure","type":"Plot"},"ticker":{"id":"0a057e96-f128-40b3-9266-57adf506a6da","type":"BasicTicker"}},"id":"e397e494-ad48-41b7-b312-07aa55eb9957","type":"Grid"},{"attributes":{"callback":null,"end":100000000000,"start":0.001},"id":"6a01a06e-bbcc-4ec8-9d0c-8fa47c40ccff","type":"Range1d"},{"attributes":{"line_color":{"value":"orange"},"line_dash":[4,4],"x":{"field":"x"},"y":{"field":"y"}},"id":"957f0930-6c0c-4f88-b757-10192172ceca","type":"Line"}],"root_ids":["18fa19b7-6e7e-476e-a284-815b8169b19f"]},"title":"Bokeh Application","version":"0.12.2"}};
+            var render_items = [{"docid":"21906bb0-df26-4911-9f81-9ed297777a78","elementid":"35a36264-c585-48b5-a252-04876e8ad0a0","modelid":"18fa19b7-6e7e-476e-a284-815b8169b19f"}];
+            
+            Bokeh.embed.embed_items(docs_json, render_items);
+        });
+      },
+      function(Bokeh) {
+      }
+    ];
+  
+    function run_inline_js() {
+      
+      if ((window.Bokeh !== undefined) || (force === "1")) {
+        for (var i = 0; i < inline_js.length; i++) {
+          inline_js[i](window.Bokeh);
+        }if (force === "1") {
+          display_loaded();
+        }} else if (Date.now() < window._bokeh_timeout) {
+        setTimeout(run_inline_js, 100);
+      } else if (!window._bokeh_failed_load) {
+        console.log("Bokeh: BokehJS failed to load within specified timeout.");
+        window._bokeh_failed_load = true;
+      } else if (!force) {
+        var cell = $("#35a36264-c585-48b5-a252-04876e8ad0a0").parents('.cell').data().cell;
+        cell.output_area.append_execute_result(NB_LOAD_WARNING)
+      }
+  
+    }
+  
+    if (window._bokeh_is_loading === 0) {
+      console.log("Bokeh: BokehJS loaded, going straight to plotting");
+      run_inline_js();
+    } else {
+      load_libs(js_urls, function() {
+        console.log("Bokeh: BokehJS plotting callback run at", now());
+        run_inline_js();
+      });
+    }
+  }(this));
+</script>
+<p>See also Bokeh's tools for <a href="http://bokeh.pydata.org/en/latest/docs/user_guide/embed.html">embedding</a> the HTML and javascript necessary to get a figure to show up in HTML output.</p>
+</body>
+</html>
