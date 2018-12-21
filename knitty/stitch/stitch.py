@@ -442,7 +442,7 @@ class Stitch(HasTraits):
                     else:
                         blocks = [RawBlock('html', data)]
                 elif key == 'application/javascript':
-                    script = f'<script type=text/javascript>{data}</script>'
+                    script = '<script type=text/javascript>{}</script>'.format(data)
                     blocks = [RawBlock('html', script)]
                 elif key.startswith('image') or key == 'application/pdf':
                     blocks = [self.wrap_image_output(chunk_name, data, key, attrs)]
