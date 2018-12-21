@@ -1,6 +1,6 @@
 # Knitty
 
-Knitty is Atom/Hydrogen friendly inrterface wrapper for Stitch/Knotr: reproducible report generation tool via Jupyter, Pandoc and Markdown. Insert python code (or other Jupyter kernel code) to the Markdown document and have code's results in the output document.
+Knitty is Atom/Hydrogen friendly inrterface wrapper for [Stitch/Knotr](https://github.com/kiwi0fruit/knitty/blob/master/docs/stitch.md): reproducible report generation tool via Jupyter, Pandoc and Markdown. Insert python code (or other Jupyter kernel code) to the Markdown document and have code's results in the output document.
 
 See [Knitty documentation](https://github.com/kiwi0fruit/knitty/blob/master/docs/knitty.md).
 

@@ -21,7 +21,7 @@ Examples
 ========
 
 See the project\'s [examples
-page](https://kiwi0fruit.github.io/pystitch/_downloads/side_by_side.html) for a
+page](https://kiwi0fruit.github.io/pystitch/index.html#examples) for a
 side-by-side comparison of input markdown and stitched HTML.
 
 More complex examples are linked to from there as well.
@@ -85,5 +85,5 @@ Documentation
 =============
 
 Stitch\'s documentation has an odd build process, so standard tools like
-readthedocs weren\'t flexible enough. To make the docs, install stitch
-and all the extra dependencies. Clone [https://github.com/kiwi0fruit/pystitch](https://github.com/kiwi0fruit/pystitch) and follow instructions there.
+readthedocs weren\'t flexible enough. To make the docs, install [knitty](../README.md)
+and all the extra dependencies. Clone [https://github.com/kiwi0fruit/pystitch](https://github.com/kiwi0fruit/pystitch/tree/src) and follow instructions there.
