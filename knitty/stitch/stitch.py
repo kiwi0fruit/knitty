@@ -99,7 +99,7 @@ class Stitch(HasTraits):
           Pandoc setings can be set like
           ``{results='pandoc -f markdown-link_attributes --flag'}``
           (defaults are taken from knitty CLI).
-          Markdown, HTML and LaTeX outputs are also parsed by Pandoc
+          Markdown outputs are also parsed by Pandoc
           (with appropriate settigns).
         * ``'hide'``: evaluate chunk but hide results
 
