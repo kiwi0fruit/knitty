@@ -27,5 +27,5 @@ install:
 
 # Run test
 script:
-  - "py.test tests --cov=stitch --cov-report html --run-slow tests/"
+  - "py.test tests --cov=knitty --cov-report html --run-slow tests/"
 

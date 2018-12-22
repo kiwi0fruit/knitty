@@ -11,3 +11,4 @@ htmlcov/
 .Rhistory
 
 _build/
+.pytest_cache
