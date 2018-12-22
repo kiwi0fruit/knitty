@@ -17,6 +17,8 @@ and stitch) is to make writing reproducible reports easier.
 
 Documentation is available [here](https://kiwi0fruit.github.io/pystitch/).
 
+This is a fork. See [original version](https://github.com/pystitch/stitch).
+
 Examples
 ========
 
