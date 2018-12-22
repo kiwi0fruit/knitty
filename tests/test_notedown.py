@@ -8,7 +8,7 @@ import nose.tools as nt
 
 import nbformat
 
-import notedown
+import knitty.notedown as notedown
 
 
 simple_backtick = """
@@ -92,7 +92,7 @@ Notebook.
 Usage:
 
 ```
-notedown input.md > output.ipynb
+knotedown input.md > output.ipynb
 ```
 
 It is really simple and separates your markdown into code and not
@@ -133,7 +133,7 @@ sample_notebook = r"""{
    "metadata": {},
    "outputs": [],
    "source": [
-    "notedown input.md > output.ipynb"
+    "knotedown input.md > output.ipynb"
    ]
   },
   {
@@ -152,7 +152,7 @@ sample_notebook = r"""{
    "metadata": {},
    "outputs": [],
    "source": [
-    "pip install notedown"
+    "pip install knitty"
    ]
   }
  ],
@@ -394,14 +394,14 @@ def test_R():
     as the reference (without output cells).
     """
     knitr = notedown.Knitr()
-    with open('r-examples/r-example.Rmd') as rmd:
+    with open('../examples/notedown/r-examples/r-example.Rmd') as rmd:
         knitted_markdown_file = knitr.knit(rmd)
 
     reader = notedown.MarkdownReader(precode=r"%load_ext rpy2.ipython",
                                      magic=True)
     notebook = reader.read(knitted_markdown_file)
 
-    with open('r-examples/r-example.ipynb') as f:
+    with open('../examples/notedown/r-examples/r-example.ipynb') as f:
         reference_notebook = nbformat.read(f, as_version=4)
 
     notedown.main.strip(notebook)
@@ -443,38 +443,38 @@ class TestCommandLine(object):
 
     def test_basic(self):
         args = self.default_args
-        args.input_file = 'example.md'
+        args.input_file = '../examples/notedown/example.md'
         self.run(args)
 
     def test_reverse(self):
         args = self.default_args
-        args.input_file = 'example.ipynb'
+        args.input_file = '../examples/notedown/example.ipynb'
         self.run(args)
 
     def test_markdown_to_notebook(self):
         args = self.default_args
-        args.input_file = 'example.md'
+        args.input_file = '../examples/notedown/example.md'
         args.informat = 'markdown'
         args.outformat = 'notebook'
         self.run(args)
 
     def test_markdown_to_markdown(self):
         args = self.default_args
-        args.input_file = 'example.md'
+        args.input_file = '../examples/notedown/example.md'
         args.informat = 'markdown'
         args.outformat = 'markdown'
         self.run(args)
 
     def test_notebook_to_markdown(self):
         args = self.default_args
-        args.input_file = 'example.ipynb'
+        args.input_file = '../examples/notedown/example.ipynb'
         args.informat = 'notebook'
         args.outformat = 'markdown'
         self.run(args)
 
     def test_notebook_to_notebook(self):
         args = self.default_args
-        args.input_file = 'example.ipynb'
+        args.input_file = '../examples/notedown/example.ipynb'
         args.informat = 'notebook'
         args.outformat = 'notebook'
         self.run(args)
