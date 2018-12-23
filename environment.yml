@@ -26,6 +26,7 @@ dependencies:
     - sphinx_rtd_theme
     - numpydoc
     - ghp-import
+    - nose
 
     - pip:
         - "panflute>=1.11.1"

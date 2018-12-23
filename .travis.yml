@@ -20,7 +20,7 @@ install:
   - conda update -q conda
   # Useful for debugging any issues with conda
   - conda info -a
-  - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION ipython pypandoc jupyter_core jupyter_client jupyter notebook matplotlib pandas doctr sphinx_rtd_theme bokeh holoviews altair numpydoc
+  - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION ipython pypandoc jupyter_core jupyter_client jupyter notebook matplotlib pandas doctr sphinx_rtd_theme bokeh holoviews altair numpydoc nose
   - source activate test-environment
   - jupyter kernelspec list
   - pip install -e .[dev]
@@ -28,4 +28,3 @@ install:
 # Run test
 script:
   - "py.test tests --cov=knitty --cov-report html --run-slow tests/"
-
