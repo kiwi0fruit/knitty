@@ -1,8 +1,4 @@
-"""
-CLI wrapper for stitch_preprosess function:
-(source: str, lang: str=None) -> str
-First argument is optional file extension.
-"""
+
 import sys
 from os import path as p
 from .preprocess_filter import knitty_preprosess
