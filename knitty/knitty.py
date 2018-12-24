@@ -6,6 +6,7 @@ import os.path as p
 import re
 import panflute as pf
 import io
+from .consts import META_CODECELL_MATCH
 
 
 class KnittyError(Exception):
@@ -16,7 +17,7 @@ def action(elem, doc):
     if isinstance(elem, pf.CodeBlock):
         input_ = elem.attributes.get('input', doc.get_metadata('input'))
         if str(input_).lower() == 'true':
-            match = str(doc.get_metadata('match', 'in'))
+            match = str(doc.get_metadata(META_CODECELL_MATCH, 'in'))
             if match not in elem.classes:
                 elem.classes.append(match)
             id_ = elem.identifier
@@ -71,7 +72,7 @@ def dir_ext(to):
               help='Additionally run Pandoc filter that prepares code blocks for md to ipynb conversion via Notedown. ' +
               'Code blocks for cells should have `input=True` key word attribute. Default value can be set in metadata section ' +
               'like `input: True`. Intended to be later used with `knotedown --match=in`. Another match value for knotedown can be ' +
-              'set in metadata section like `match: in`.')
+              'set in metadata section like `codecell-match-class: in`.')
 def main(ctx, input_file, read, output, to, standalone, self_contained, dir_name, to_ipynb):
     if sys.stdin.isatty():
         raise KnittyError('The app is not meant to wait for user input.')

@@ -6,9 +6,9 @@ https://github.com/pystitch/stitch
 that originally comes from *Python Cookbook* 3E, recipie 2.18
 """
 import re
-import yaml
 from collections import namedtuple
 from typing import List, Tuple, Iterable
+from .tools import load_yaml
 
 Token = namedtuple("Token", ['kind', 'value'])
 
@@ -256,15 +256,6 @@ def knitty_preprosess(source: str, lang: str=None, yaml_meta: str=None) -> str:
     yaml_meta :
         pre-knitty settings via read YAML file contents
     """
-    def load_yaml(string: str or None):
-        if isinstance(string, str) and string:
-            found = re.search(r'(?:^|\n)---\n(.+?\n)(?:---|\.\.\.)(?:\n|$)', string, re.DOTALL)
-            if found:
-                loaded = yaml.load(found.group(1))
-                if isinstance(loaded, dict):
-                    return loaded
-        return None
-
     def get(maybe_dict, key: str):
         return maybe_dict.get(key, None) if isinstance(maybe_dict, dict) else None
 
@@ -273,7 +264,7 @@ def knitty_preprosess(source: str, lang: str=None, yaml_meta: str=None) -> str:
         return maybe_str if maybe_str and isinstance(maybe_str, str) else None
 
     # Read metadata:
-    metadata = load_yaml(source)
+    metadata = load_yaml(source)[1]
     # Read lang extension used for getting comments spec from metadata:
     comment_lang = good_str(get(metadata, META_KNITTY_COMMENTS_EXT))
     if lang and not comment_lang:

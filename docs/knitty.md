@@ -129,7 +129,7 @@ Options:
                                True`. Intended to be later used with
                                `knotedown --match=in`. Another match value for
                                knotedown can be set in metadata section like
-                               `match: in`.
+                               `codecell-match-class: in`.
   --help                       Show this message and exit.
 ```
 
