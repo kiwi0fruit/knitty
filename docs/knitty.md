@@ -72,15 +72,7 @@ Usage: pre-knitty [OPTIONS] [INPUT_FILE]
   A text filter that reads from stdin and writes to stdout. INPUT_FILE is
   optional but it helps to determine language and hence a Jupyter kernel.
 
-  Settings that can be set in stdin:
-
-  ---
-  knitty:
-    language: 'py'
-    comments: ['#', "'''", "'''", "\"\"\"", "\"\"\""]
-  ...
-
-  Settings that can be set in the --yaml file:
+  Settings that can be set in stdin OR in the --yaml file:
 
   ---
   comments-map:
@@ -88,11 +80,16 @@ Usage: pre-knitty [OPTIONS] [INPUT_FILE]
     js: ["//", "/*", "*/"]
   ...
 
+  Extenstion to get from `comments-map` (can be set in stdin metadata only):
+
+  ---
+  knitty-comments-ext: 'py'
+  ...
+
 Options:
   -y, --yaml PATH  yaml metadata file (wrapped in ---... like in pandoc) with
                    settings for pre-knitty.
   --help           Show this message and exit.
-
 ```
 
 

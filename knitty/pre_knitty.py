@@ -1,4 +1,8 @@
-
+"""
+CLI wrapper for stitch_preprosess function:
+(source: str, lang: str=None) -> str
+First argument is optional file extension.
+"""
 import sys
 from os import path as p
 from .preprocess_filter import knitty_preprosess
@@ -7,17 +11,15 @@ import click
 
 help_str = """A text filter that reads from stdin and writes to stdout.
 INPUT_FILE is optional but it helps to determine language and hence a Jupyter kernel.\n
-Settings that can be set in stdin:\n
----\n
-knitty:\n
-  language: 'py'\n
-  comments: ['#', "'''", "'''", "\\\"\\\"\\\"", "\\\"\\\"\\\""]\n
-...\n
-Settings that can be set in the --yaml file:\n
+Settings that can be set in stdin OR in the --yaml file:\n
 ---\n
 comments-map:\n
   py: ['#', "'''", "'''", "\\\"\\\"\\\"", "\\\"\\\"\\\""]\n
   js: ["//", "/*", "*/"]\n
+...\n
+Extenstion to get from `comments-map` (can be set in stdin metadata only):\n
+---\n
+knitty-comments-ext: 'py'\n
 ...\n
 """
 

@@ -10,6 +10,8 @@ import yaml
 from collections import namedtuple
 from typing import List, Tuple, Iterable
 
+Token = namedtuple("Token", ['kind', 'value'])
+
 # -------------------------------------------
 # Python text preprocess filter
 # -------------------------------------------
@@ -17,7 +19,6 @@ from typing import List, Tuple, Iterable
 # -----------------------------------
 # Constants
 # -----------------------------------
-Token = namedtuple("Token", ['kind', 'value'])
 # Grammar:
 # ---------------------------------
 CELL = '%%'
@@ -31,9 +32,7 @@ MARKDOWN_KERNELS = ('markdown', 'md')
 # Metadata options:
 # ---------------------------------
 META_COMMENTS_MAP = 'comments-map'
-META_KNITTY = 'knitty'
-META_KNITTY_COMMENTS = 'comments'
-META_KNITTY_LANGUAGE = 'language'
+META_KNITTY_COMMENTS_EXT = 'knitty-comments-ext'
 
 
 # -----------------------------------
@@ -113,15 +112,16 @@ class SEARCH:
 
     @staticmethod
     def hydro_regex(comm: str, begins: Tuple[str]=None, ends: Tuple[str]=None):
-        def del_named_groups(regex: str):
+        def del_named_groups(regex: str) -> str:
             return re.sub(r'\?P<\w+>', '', regex)
 
-        def escaped_regex(it: Iterable[str], group_name: str):
+        def escaped_regex(it: Iterable[str], group_name: str) -> str:
             return re.compile(rf"(?P<{group_name}>{'|'.join(map(re.escape, it))})?").pattern
 
         _line = SEARCH._HYDRO_LINE.format(comm=comm, opt=SEARCH._GFM_OPT)  # language=PythonRegExp
-        begins = escaped_regex(begins, 'BEGIN')+r'(?P<NL_POST_BEGIN>\r?\n?)' if begins else ''  # language=PythonRegExp
-        ends = r'(?P<NL_PRE_END>\r?\n?)'+escaped_regex(ends, 'END') if ends else ''
+        ends = (r'(?P<NL_PRE_END>\r?\n?)' + escaped_regex(ends, 'END')) if ends else ''  # language=PythonRegExp
+        begins = (escaped_regex(begins, 'BEGIN') + r'(?P<NL_POST_BEGIN>\r?\n?)') if begins else ''
+
         return re.compile(
             rf'(((?<=\n)|^){_line}|^){begins}(?P<BODY>.*?){ends}\s*(?=\n{del_named_groups(_line)}|$)',
             re.DOTALL)
@@ -135,8 +135,8 @@ class Replacer:
         Parameters
         ----------
         lang :
-            Default language. Must non-empty string,
-            otherwise it would be DEFAULT_EXT.
+            Default language via extension. Must be non-empty string,
+            otherwise it would be DEFAULT_EXT (py).
         block_comm :
             ...
         """
@@ -250,9 +250,11 @@ def knitty_preprosess(source: str, lang: str=None, yaml_meta: str=None) -> str:
     source :
         ...
     lang :
-        Default language
+        Default language. When used with `pre-knitty` CLI the file's extension is passed.
+        If `lang` arg is `None` but `knitty-comments-ext` metadata key is set then uses the key.
+        Otherwise uses 'py' that is `Replacer` class default.
     yaml_meta :
-        pre-knitty settings
+        pre-knitty settings via read YAML file contents
     """
     def load_yaml(string: str or None):
         if isinstance(string, str) and string:
@@ -266,26 +268,28 @@ def knitty_preprosess(source: str, lang: str=None, yaml_meta: str=None) -> str:
     def get(maybe_dict, key: str):
         return maybe_dict.get(key, None) if isinstance(maybe_dict, dict) else None
 
+    def good_str(maybe_str) -> str or None:
+        """ :return: non-empty str or None """
+        return maybe_str if maybe_str and isinstance(maybe_str, str) else None
+
     # Read metadata:
-    _knitty = get(load_yaml(source), META_KNITTY)
-    # Read code language:
-    _lang = get(_knitty, META_KNITTY_LANGUAGE)
-    lang = _lang if _lang and isinstance(_lang, str) else lang
+    metadata = load_yaml(source)
+    # Read code language extension from metadata (overrides argument):
+    comment_lang = good_str(get(metadata, META_KNITTY_COMMENTS_EXT))
+    if lang and not comment_lang:
+        comment_lang = lang
+    elif not lang and comment_lang:
+        lang = comment_lang
 
     def comments() -> List[str] or None:
-        """Returns comments list if found them in right format."""
-        _comments = get(_knitty, META_KNITTY_COMMENTS)
-        if isinstance(_comments, list):
-            if len(_comments) % 2 == 1:
-                if all(isinstance(s, str) and s for s in _comments):
-                    return _comments
-
-        comments_map = get(load_yaml(yaml_meta), META_COMMENTS_MAP)
-        _comments = get(comments_map, lang)
-        if isinstance(_comments, list):
-            if len(_comments) % 2 == 1:
-                if all(isinstance(s, str) and s for s in _comments):
-                    return _comments
+        """ Returns comments list if found them in right format. """
+        for meta in (lambda: metadata, lambda: load_yaml(yaml_meta)):
+            comments_map = get(meta(), META_COMMENTS_MAP)
+            _comments = get(comments_map, comment_lang)
+            if isinstance(_comments, list):
+                if len(_comments) % 2 == 1:
+                    if all(isinstance(s, str) and s for s in _comments):
+                        return _comments
         return None
 
     comments = comments()
