@@ -7,7 +7,7 @@ that originally comes from *Python Cookbook* 3E, recipie 2.18
 """
 import re
 from collections import namedtuple
-from typing import List, Tuple, Iterable
+from typing import List, Tuple, Iterable, Union
 from .tools import load_yaml
 
 Token = namedtuple("Token", ['kind', 'value'])
@@ -259,22 +259,23 @@ def knitty_preprosess(source: str, lang: str=None, yaml_meta: str=None) -> str:
     def get(maybe_dict, key: str):
         return maybe_dict.get(key, None) if isinstance(maybe_dict, dict) else None
 
-    def good_str(maybe_str) -> str or None:
-        """ :return: non-empty str or None """
-        return maybe_str if maybe_str and isinstance(maybe_str, str) else None
+    def strict_str(smth) -> str:
+        return smth if smth and isinstance(smth, str) else ''
 
     # Read metadata:
     metadata = load_yaml(source)[1]
     # Read lang extension used for getting comments spec from metadata:
-    comment_lang = good_str(get(metadata, META_KNITTY_COMMENTS_EXT))
+    comment_lang = strict_str(get(metadata, META_KNITTY_COMMENTS_EXT))
     if lang and not comment_lang:
         comment_lang = lang
     elif not lang and comment_lang:
         lang = comment_lang
 
-    def comments() -> List[str] or None:
-        """ Returns comments list if found them in right format. """
-        for meta in (lambda: metadata, lambda: load_yaml(yaml_meta)):
+    def comments() -> Union[List[str], None]:
+        """
+        Returns comments list if found them in right format.
+        """
+        for meta in (lambda: metadata, lambda: load_yaml(yaml_meta)[1]):
             comments_map = get(meta(), META_COMMENTS_MAP)
             _comments = get(comments_map, comment_lang)
             if isinstance(_comments, list):
@@ -418,7 +419,7 @@ def preprocess_options(options_line: str) -> str:
     """
     args, kwargs = [], []
 
-    def sort(kind, text) -> str or None:
+    def sort(kind, text) -> Union[str, None]:
         if kind == 'ARG':
             args.append(text)
         elif kind == 'DELIM':

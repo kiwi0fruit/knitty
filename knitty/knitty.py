@@ -74,9 +74,6 @@ def dir_ext(to):
               'like `input: True`. Intended to be later used with `knotedown --match=in`. Another match value for knotedown can be ' +
               'set in metadata section like `codecell-match-class: in`.')
 def main(ctx, input_file, read, output, to, standalone, self_contained, dir_name, to_ipynb):
-    if sys.stdin.isatty():
-        raise KnittyError('The app is not meant to wait for user input.')
-
     if os.name == 'nt':
         cwd = os.getcwd()
         def cwd_pdc(ext): return p.isfile(p.join(cwd, f'pandoc.{ext}'))

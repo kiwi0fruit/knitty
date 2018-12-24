@@ -7,7 +7,7 @@ yaml_regex = re.compile(r'(?:^|\n)---\n(.+?\n)(?:---|\.\.\.)(?:\n|$)', re.DOTALL
 
 def load_yaml(string: Union[str, None], del_yaml: bool=False) -> Tuple[str, dict]:
     """
-    returns (str_without_first_yaml_maybe, loaded_first_yaml)
+    returns (string_without_first_yaml_maybe, first_yaml_dict)
     """
     if isinstance(string, str) and string:
         found = yaml_regex.search(string)
@@ -15,7 +15,9 @@ def load_yaml(string: Union[str, None], del_yaml: bool=False) -> Tuple[str, dict
             yml = yaml.load(found.group(1))
             if del_yaml:
                 string = yaml_regex.sub('\n\n', string, 1)
-            return string, (yml if isinstance(yml, dict) else {})
+            if not isinstance(yml, dict):
+                yml = {}
+            return string, yml
         else:
             return string, {}
     return '', {}
