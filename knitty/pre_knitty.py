@@ -1,7 +1,5 @@
 """
-CLI wrapper for stitch_preprosess function:
-(source: str, lang: str=None) -> str
-First argument is optional file extension.
+CLI wrapper for stitch_preprosess function
 """
 import sys
 from os import path as p
