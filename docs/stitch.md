@@ -15,7 +15,7 @@ simpler way of doing things.
 The high-level goal of this type of library (knitr/RMarkdown, knitpy,
 and stitch) is to make writing reproducible reports easier.
 
-Documentation is available [here](https://kiwi0fruit.github.io/pystitch/).
+**Documentation** is available [**here**](https://kiwi0fruit.github.io/pystitch/).
 
 This is a fork. See [original version](https://github.com/pystitch/stitch). See differences from pypi Stitch in this [repo](https://github.com/kiwi0fruit/stitch), [commit](https://github.com/pystitch/stitch/commit/09a16da2f2af2be6a960e2338de488c8de2c2271) and [PR](https://github.com/pystitch/stitch/pull/67).
 
