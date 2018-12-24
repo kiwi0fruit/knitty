@@ -14,12 +14,14 @@ import re
 
 def main(text: str) -> str:
     """
-    Converts Markdown document with specially marked code cells to ipynb
-    (together with global yaml metadata section). A text filter that reads
-    from stdin and writes to stdout.
+    When `--to-ipynb` option converts Markdown document with specially marked
+    code cells to ipynb (together with global yaml metadata section).
+    A text filter that reads from stdin and writes to stdout.
 
-    Can use metadata option: `codecell-match-class: in` (default value is `in`)
-    that is a Pandoc class that marks Jupyter code cells.
+    Without options is the same as `--to-ipynb`.
+
+    Can use metadata option: `codecell-match-class: in` (default or malformed
+    fallback value is `in`) that is a Pandoc class that marks Jupyter code cells.
     If `codecell-match-class: ''` (empty string) then all Markdown code cells
     would be converted to Jupyter code cells.
     """
