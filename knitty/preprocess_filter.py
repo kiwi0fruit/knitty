@@ -274,7 +274,7 @@ def knitty_preprosess(source: str, lang: str=None, yaml_meta: str=None) -> str:
 
     # Read metadata:
     metadata = load_yaml(source)
-    # Read code language extension from metadata (overrides argument):
+    # Read lang extension used for getting comments spec from metadata:
     comment_lang = good_str(get(metadata, META_KNITTY_COMMENTS_EXT))
     if lang and not comment_lang:
         comment_lang = lang
