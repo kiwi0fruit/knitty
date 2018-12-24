@@ -363,7 +363,7 @@ class MarkdownReader(NotebookReader):
         Returns a notebook.
         """
         # Split YAML metadata and the rest source code:
-        string, metadata = load_yaml(string)
+        string, metadata = load_yaml(string, del_yaml=True)
         if metadata:
             metadata = {'metadata': metadata}
         #
