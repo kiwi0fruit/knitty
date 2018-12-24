@@ -38,11 +38,17 @@ def main(text: str) -> str:
 
 
 def cli():
+    def stdio(): sys.stdout.write(main(sys.stdin.read()))
+
     if len(sys.argv) > 1:
         if sys.argv[1].lower() == '--help':
             print(main.__doc__)
-            return
-    sys.stdout.write(main(sys.stdin.read()))
+        elif sys.argv[1] == '--to-ipynb':
+            stdio()
+        else:
+            raise ValueError(f'Invalid CLI arg: {sys.argv[1]}')
+    else:
+        stdio()
 
 
 if __name__ == '__main__':
