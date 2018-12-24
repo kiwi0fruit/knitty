@@ -24,7 +24,6 @@ dependencies:
     - pandas
     - matplotlib
     - sphinx_rtd_theme
-    - numpydoc
     - ghp-import
     - nose
 
