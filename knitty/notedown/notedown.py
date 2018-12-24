@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 
 import yaml
+from ..tools import load_yaml
 import json
 import logging
 import os
@@ -364,6 +365,11 @@ class MarkdownReader(NotebookReader):
         Returns a notebook.
         """
         # Split YAML metadata and the rest source code:
+        s, metadata = load_yaml(s)
+        if s is None:
+            s = ''
+        if metadata
+
         m = re.match(r'^---\n(.+?\n)(?:---|\.\.\.)(?:\n(.*)|$)', s, re.DOTALL)
         if m:
             metadata = {'metadata': yaml.load(m.group(1))}
