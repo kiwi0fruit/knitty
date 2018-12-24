@@ -18,7 +18,7 @@ def safe_spawn(func):
     # noinspection PyBroadException
     try:
         func()
-    except:
+    except Exception:
         traceback.print_exc()
 
     procs = psutil.Process().children(recursive=True)

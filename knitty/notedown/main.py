@@ -157,11 +157,11 @@ def command_line_parser():
     parser.add_argument('--timeout',
                         default=30,
                         type=int,
-                        help=("set the cell execution timeout (in seconds)"))
+                        help="set the cell execution timeout (in seconds)")
     parser.add_argument('--strip',
                         action='store_true',
                         dest='strip_outputs',
-                        help=("strip output cells"))
+                        help="strip output cells")
     parser.add_argument('--precode',
                         nargs='+',
                         default=[],
@@ -182,12 +182,12 @@ def command_line_parser():
     parser.add_argument('--nomagic',
                         action='store_false',
                         dest='magic',
-                        help=("disable code magic."))
+                        help="disable code magic.")
     parser.add_argument('--render',
-                        help=('render outputs, forcing markdown output'),
+                        help='render outputs, forcing markdown output',
                         action='store_true')
     parser.add_argument('--template',
-                        help=('template file'))
+                        help='template file')
     parser.add_argument('--match',
                         default='all',
                         help=("determine kind of code blocks that get "
@@ -195,19 +195,19 @@ def command_line_parser():
                               "choose from 'all' (default), 'fenced', "
                               "'strict' or a specific language to match on"))
     parser.add_argument('--examples',
-                        help=('show example usage'),
+                        help='show example usage',
                         action='store_true')
     parser.add_argument('--version',
-                        help=('print version number'),
+                        help='print version number',
                         action='store_true')
     parser.add_argument('--debug',
-                        help=('show logging output'),
+                        help='show logging output',
                         action='store_true')
 
     return parser
 
 
-def main(args, help=''):
+def main(args, help_=''):
     if args.debug:
         logging.basicConfig(level=logging.DEBUG)
 
@@ -221,7 +221,7 @@ def main(args, help=''):
 
     # if no stdin and no input file
     if args.input_file == '-' and sys.stdin.isatty():
-        sys.stdout.write(help)
+        sys.stdout.write(help_)
         sys.exit()
 
     elif args.input_file == '-':
@@ -309,7 +309,7 @@ def main(args, help=''):
 def app():
     parser = command_line_parser()
     args = parser.parse_args()
-    main(args, help=parser.format_help())
+    main(args, help_=parser.format_help())
 
 
 if __name__ == '__main__':

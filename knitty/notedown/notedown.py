@@ -4,6 +4,7 @@ from ..tools import load_yaml
 import json
 import logging
 import os
+import io
 import re
 import subprocess
 import tempfile
@@ -46,7 +47,7 @@ def strip(notebook):
 
 def run(notebook, timeout=30):
     executor = ExecutePreprocessor(timeout=timeout)
-    notebook, resources = executor.preprocess(notebook, resources={})
+    executor.preprocess(notebook, resources={})
 
 
 # you can think of notedown as a document converter that uses the
@@ -131,8 +132,6 @@ class MarkdownReader(NotebookReader):
             self.code_regex = self.fenced_regex
         elif code_regex == 'indented':
             self.code_regex = self.indented_regex
-        elif code_regex == 'old fenced':
-            self.code_regex = self.old_fenced_regex
         else:
             self.code_regex = code_regex
 
@@ -220,9 +219,9 @@ class MarkdownReader(NotebookReader):
         if self.caption_comments:
             # override attributes id and caption with those set in
             # comments, if they exist
-            id, caption = get_caption_comments(block['content'])
-            if id:
-                attr.id = id
+            id_, caption = get_caption_comments(block['content'])
+            if id_:
+                attr.id = id_
             if caption:
                 attr['caption'] = caption
 
@@ -358,17 +357,17 @@ class MarkdownReader(NotebookReader):
 
         return cells
 
-    def to_notebook(self, s, **kwargs):
-        """Convert the markdown string s to an IPython notebook.
+    def to_notebook(self, string):
+        """Convert the markdown string to an IPython notebook.
 
         Returns a notebook.
         """
         # Split YAML metadata and the rest source code:
-        s, metadata = load_yaml(s)
+        string, metadata = load_yaml(string)
         if metadata:
             metadata = {'metadata': metadata}
         #
-        all_blocks = self.parse_blocks(s)
+        all_blocks = self.parse_blocks(string)
         if self.pre_code_block['content']:
             # TODO: if first block is markdown, place after?
             all_blocks.insert(0, self.pre_code_block)
@@ -383,7 +382,7 @@ class MarkdownReader(NotebookReader):
 
     def reads(self, s, **kwargs):
         """Read string s to notebook. Returns a notebook."""
-        return self.to_notebook(s, **kwargs)
+        return self.to_notebook(s)
 
 
 class MarkdownWriter(NotebookWriter):
@@ -415,8 +414,8 @@ class MarkdownWriter(NotebookWriter):
 
         # have to register filters before setting template file for
         # ipython 3 compatibility
-        for name, filter in filters:
-            self.exporter.register_filter(name, filter)
+        for name, filter_ in filters:
+            self.exporter.register_filter(name, filter_)
 
         self.exporter.template_file = os.path.basename(template_file)
 
@@ -434,11 +433,12 @@ class MarkdownWriter(NotebookWriter):
 
     def write_from_json(self, notebook_json):
         notebook = v4.reads_json(notebook_json)
-        return self.write(notebook)
+        with io.StringIO() as f:
+            self.write(notebook, f)
+            return f.getvalue()
 
-    def writes(self, notebook):
+    def writes(self, notebook, **kwargs):
         body, resources = self.exporter.from_notebook_node(notebook)
-        self.resources = resources
 
         if self.write_outputs:
             self.write_resources(resources)
@@ -464,7 +464,8 @@ class MarkdownWriter(NotebookWriter):
                 f.write(data)
 
     # --- filter functions to be used in the output template --- #
-    def string2json(self, string):
+    @staticmethod
+    def string2json(string):
         """Convert json into its string representation.
         Used for writing outputs to markdown."""
         kwargs = {
@@ -541,7 +542,7 @@ class MarkdownWriter(NotebookWriter):
     @staticmethod
     def data2uri(data, data_type):
         """Convert base64 data into a data uri with the given data_type."""
-        MIME_MAP = {
+        mime_map = {
             'image/jpeg': 'jpeg',
             'image/png': 'png',
             'text/plain': 'text',
@@ -550,7 +551,7 @@ class MarkdownWriter(NotebookWriter):
             'application/javascript': 'html',
             'image/svg+xml': 'svg',
         }
-        inverse_map = {v: k for k, v in list(MIME_MAP.items())}
+        inverse_map = {v: k for k, v in list(mime_map.items())}
         mime_type = inverse_map[data_type]
         uri = r"data:{mime};base64,{data}"
         return uri.format(mime=mime_type,
@@ -568,12 +569,12 @@ class CodeMagician(object):
             aliases[key] = v
 
     @classmethod
-    def magic(self, alias):
+    def magic(cls, alias):
         """Returns the appropriate IPython code magic when
         called with an alias for a language.
         """
-        if alias in self.aliases:
-            return self.aliases[alias]
+        if alias in cls.aliases:
+            return cls.aliases[alias]
         else:
             return "%%{}\n".format(alias)
 
@@ -648,7 +649,7 @@ class Knitr(object):
         p = subprocess.Popen(rcmd,
                              stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE)
-        stdout, stderr = p.communicate()
+        p.communicate()
 
 
 def get_caption_comments(content):
@@ -670,7 +671,7 @@ def get_caption_comments(content):
 
     content = content.splitlines()
 
-    id = content[0].strip('## ')
+    id_ = content[0].strip('## ')
 
     caption = []
     for line in content[1:]:
@@ -682,4 +683,4 @@ def get_caption_comments(content):
     # add " around the caption. TODO: consider doing this upstream
     # in pandoc-attributes
     caption = '"' + ' '.join(caption) + '"'
-    return id, caption
+    return id_, caption

@@ -6,7 +6,7 @@ import os.path as p
 import re
 import panflute as pf
 import io
-from .consts import META_CODECELL_MATCH
+from .consts import META_CODECELL_MATCH_CLASS, DEFAULT_CODECELL_MATCH_CLASS
 
 
 class KnittyError(Exception):
@@ -17,7 +17,7 @@ def action(elem, doc):
     if isinstance(elem, pf.CodeBlock):
         input_ = elem.attributes.get('input', doc.get_metadata('input'))
         if str(input_).lower() == 'true':
-            match = str(doc.get_metadata(META_CODECELL_MATCH, 'in'))
+            match = str(doc.get_metadata(META_CODECELL_MATCH_CLASS, DEFAULT_CODECELL_MATCH_CLASS))
             if match not in elem.classes:
                 elem.classes.append(match)
             id_ = elem.identifier
@@ -47,8 +47,9 @@ def dir_ext(to):
 @click.command(
     context_settings=dict(ignore_unknown_options=True,
                           allow_extra_args=True),
-    help="Knitty is a Pandoc AST filter with options. It reads from stdin and writes to stdout. It accepts all possible pandoc options and " +
-    "two knitty-only options. INPUT_FILE is optional but it helps to auto-name Knitty data folder in some cases."
+    help=("Knitty is a Pandoc AST filter with options. It reads from stdin and writes to stdout. "
+          "It accepts all possible pandoc options and two knitty-only options. "
+          "INPUT_FILE is optional but it helps to auto-name Knitty data folder in some cases.")
 )
 @click.pass_context
 @click.argument('input_file', type=str, default=None, required=False)
@@ -69,14 +70,15 @@ def dir_ext(to):
 @click.option('--dir-name', type=str, default=None,
               help='Manually name Knitty data folder (instead of default auto-naming).')
 @click.option('--to-ipynb', is_flag=True, default=False,
-              help='Additionally run Pandoc filter that prepares code blocks for md to ipynb conversion via Notedown. ' +
-              'Code blocks for cells should have `input=True` key word attribute. Default value can be set in metadata section ' +
-              'like `input: True`. Intended to be later used with `knotedown --match=in`. Another match value for knotedown can be ' +
-              'set in metadata section like `codecell-match-class: in`.')
+              help=('Additionally run Pandoc filter that prepares code blocks for md to ipynb conversion via Notedown. '
+                    'Code blocks for cells should have `input=True` key word attribute. Default value can be set in '
+                    'metadata section like `input: True`. Intended to be later used with `knotedown --match=in`. '
+                    'Another match value for knotedown can be set in metadata section like `codecell-match-class: in`.')
+              )
 def main(ctx, input_file, read, output, to, standalone, self_contained, dir_name, to_ipynb):
     if os.name == 'nt':
         cwd = os.getcwd()
-        def cwd_pdc(ext): return p.isfile(p.join(cwd, f'pandoc.{ext}'))
+        def cwd_pdc(ext_): return p.isfile(p.join(cwd, f'pandoc.{ext_}'))
         if cwd_pdc('exe') or cwd_pdc('cmd') or cwd_pdc('bat'):
             if cwd not in os.getenv('PATH', '').split(os.pathsep):
                 raise KnittyError('Error: On Windows Pandoc is in the CWD and the CWD is not in the $PATH')

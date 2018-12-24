@@ -8,6 +8,7 @@ try:
     import notebook.transutils
     from notebook.services.contents.filemanager import FileContentsManager
 except ImportError:
+    # noinspection PyUnresolvedReferences
     from IPython.html.services.contents.filemanager import FileContentsManager
 
 from .main import ftdetect, convert
@@ -62,7 +63,7 @@ class NotedownContentsManager(FileContentsManager):
                                    strip_outputs=self.strip_outputs)
                 f.write(markdown)
 
-    def get(self, path, content=True, type=None, format=None):
+    def get(self, path, content=True, type_=None, format_=None):
         """ Takes a path for an entity and returns its model
 
         Parameters
@@ -71,10 +72,10 @@ class NotedownContentsManager(FileContentsManager):
             the API path that describes the relative path for the target
         content : bool
             Whether to include the contents in the reply
-        type : str, optional
+        type_ : str, optional
             The requested type - 'file', 'notebook', or 'directory'.
             Will raise HTTPError 400 if the content doesn't match.
-        format : str, optional
+        format_ : str, optional
             The requested format for file contents. 'text' or 'base64'.
             Ignored if this returns a notebook or directory model.
 
@@ -93,24 +94,24 @@ class NotedownContentsManager(FileContentsManager):
         extension = ('.ipynb', '.md')
 
         if os.path.isdir(os_path):
-            if type not in (None, 'directory'):
+            if type_ not in (None, 'directory'):
                 raise web.HTTPError(400,
                                     u'%s is a directory, not a %s' % (path,
-                                                                      type),
+                                                                      type_),
                                     reason='bad type')
             model = self._dir_model(path, content=content)
 
-        elif type == 'notebook' or (type is None and path.endswith(extension)):
+        elif type_ == 'notebook' or (type_ is None and path.endswith(extension)):
             model = self._notebook_model(path, content=content)
         else:
-            if type == 'directory':
+            if type_ == 'directory':
                 raise web.HTTPError(400,
                                     u'%s is not a directory' % path,
                                     reason='bad type')
-            model = self._file_model(path, content=content, format=format)
+            model = self._file_model(path, content=content, format=format_)
         return model
 
 
 class NotedownContentsManagerStripped(NotedownContentsManager):
-    """NotedownContentsManager for writing stripped output markdown. """
+    """NotedownContentsManager for writing stripped output markdown."""
     strip_outputs = True

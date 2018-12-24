@@ -7,7 +7,7 @@ from .preprocess_filter import knitty_preprosess
 import click
 
 
-help_str = """A text filter that reads from stdin and writes to stdout.
+@click.command(help="""A text filter that reads from stdin and writes to stdout.
 INPUT_FILE is optional but it helps to determine language and hence a Jupyter kernel.\n
 Settings that can be set in stdin OR in the --yaml file:\n
 ---\n
@@ -19,10 +19,7 @@ Extenstion to get from `comments-map` (can be set in stdin metadata only):\n
 ---\n
 knitty-comments-ext: 'py'\n
 ...\n
-"""
-
-
-@click.command(help=help_str)
+""")
 @click.argument('input_file', type=click.Path(), default=None, required=False)
 @click.option('-y', '--yaml', 'yaml_meta', type=click.Path(), default=None, required=False,
               help='yaml metadata file (wrapped in ---... like in pandoc) with settings for pre-knitty. ')

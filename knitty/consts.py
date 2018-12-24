@@ -1,1 +1,2 @@
-META_CODECELL_MATCH = 'codecell-match-class'
+META_CODECELL_MATCH_CLASS = 'codecell-match-class'
+DEFAULT_CODECELL_MATCH_CLASS = 'in'

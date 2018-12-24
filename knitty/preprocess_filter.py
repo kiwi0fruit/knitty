@@ -8,7 +8,7 @@ that originally comes from *Python Cookbook* 3E, recipie 2.18
 import re
 from collections import namedtuple
 from typing import List, Tuple, Iterable, Union
-from .tools import load_yaml
+from .tools import load_yaml, get, strict_str
 
 Token = namedtuple("Token", ['kind', 'value'])
 
@@ -256,12 +256,6 @@ def knitty_preprosess(source: str, lang: str=None, yaml_meta: str=None) -> str:
     yaml_meta :
         pre-knitty settings via read YAML file contents
     """
-    def get(maybe_dict, key: str):
-        return maybe_dict.get(key, None) if isinstance(maybe_dict, dict) else None
-
-    def strict_str(smth) -> str:
-        return smth if smth and isinstance(smth, str) else ''
-
     # Read metadata:
     metadata = load_yaml(source)[1]
     # Read lang extension used for getting comments spec from metadata:
@@ -419,7 +413,7 @@ def preprocess_options(options_line: str) -> str:
     """
     args, kwargs = [], []
 
-    def sort(kind, text) -> Union[str, None]:
+    def sort(kind, text):
         if kind == 'ARG':
             args.append(text)
         elif kind == 'DELIM':
