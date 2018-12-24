@@ -116,6 +116,6 @@ and execute it:
    pandoc "${reader_args[@]}" -t json | \
    knitty "${input_file}" "${reader_args[@]}" "${writer_args[@]}" --to-ipynb | \
    pandoc -f json "${writer_args}" | \
-   knotedown --match=in --nomagic | \
+   post-knitty --to-ipynb | \
    jupyter nbconvert --to notebook --execute --stdin --stdout > \
    "${input_file}.ipynb"

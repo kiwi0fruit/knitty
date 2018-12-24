@@ -13,6 +13,7 @@ Modified version of [Knotr/Stitch](stitch.md) by Tom Augspurger is included in K
     * [1.1 New command line interfaces][new_cli]
         * [pre-knitty](#pre-knitty)
         * [knitty](#knitty-cli)
+        * [post-knitty](#post-knitty)
         * [knotedown](#knotedown)
         * [knotr](#knotr)
     * [1.2 Alternative settings placement][alt_settings]
@@ -62,7 +63,7 @@ New interfaces are exclusive to Knitty.
 
 ### pre-knitty
 
-`pre-knitty` - CLI app that reads from stdin. Transforms markdown source code from Knitty format to Pandoc format (replaces Knitty-format code chunk options with Pandoc-format code chunk options). And writes to stdout.
+`pre-knitty` - CLI app that reads from stdin and writes to stdout. Transforms markdown source code from Knitty format to Pandoc format (replaces Knitty-format code chunk options with Pandoc-format code chunk options).
 
 * first argument is optional input file path (`pre-knitty` reads it's extension that is needed for [code cells][code_cells] mode).
 
@@ -166,9 +167,23 @@ knitty "%input_file%" %reader_args% %writer_args% | ^
 pandoc -f json %writer_args% -o "%input_file%.html"
 ```
 
-### knotedown
 
-`knotedown` - [patched Notedown module](https://github.com/kiwi0fruit/notedown) by Aaron O'Leary (aaren) was added to Knitty and available via `knotedown` CLI - same API as in `notedown` CLI. Patched version support Pandoc metadata that is then set in notebook metadata. For example:
+### post-knitty
+
+```
+A text filter that reads from stdin and writes to stdout.
+Converts to ipynb when `--to-ipynb` option or no options.
+
+Converts Markdown document with specially marked code cells to ipynb
+(together with global yaml metadata section).
+
+Can use metadata option: `codecell-match-class: in` (default or malformed
+fallback value is `in`) that is a Pandoc class that marks Jupyter code cells.
+If `codecell-match-class: ''` (empty string) then all Markdown code cells
+would be converted to Jupyter code cells.
+```
+
+Supports Pandoc metadata that is then set in notebook metadata. For example:
 
 ```yaml
 ---
@@ -206,12 +221,18 @@ pre-knitty "${input_file}" --yaml "$metadata" | \
 pandoc "${reader_args[@]}" -t json | \
 knitty "${input_file}" "${reader_args[@]}" "${writer_args[@]}" --to-ipynb | \
 pandoc -f json "${writer_args}" | \
-knotedown --match=in --nomagic | \
+post-knitty --to-ipynb | \
 jupyter nbconvert --to notebook --execute --stdin --stdout > \
 "${input_file}.ipynb"
 ```
 
 (`--standalone --self-contained` are necessary for conversion, `--nomagic` is necessary for R kernel conversion, `$jupymd` is a Markdown flavor compatible with *pandoc-crossref* and with Jupyter markdown cells).
+
+
+### knotedown
+
+`knotedown` - [patched Notedown module](https://github.com/kiwi0fruit/notedown) by Aaron O'Leary (aaren) was added to Knitty and available via `knotedown` CLI - same API as in `notedown` CLI. Patched version supports Pandoc metadata that is then set in notebook metadata.
+
 
 ### knotr
 

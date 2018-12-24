@@ -14,11 +14,8 @@ import re
 
 def main(text: str) -> str:
     """
-    When `--to-ipynb` option converts Markdown document with specially marked
-    code cells to ipynb (together with global yaml metadata section).
-    A text filter that reads from stdin and writes to stdout.
-
-    Without options is the same as `--to-ipynb`.
+    Converts Markdown document with specially marked code cells to ipynb
+    (together with global yaml metadata section).
 
     Can use metadata option: `codecell-match-class: in` (default or malformed
     fallback value is `in`) that is a Pandoc class that marks Jupyter code cells.
@@ -40,11 +37,15 @@ def main(text: str) -> str:
 
 
 def cli():
+    """
+    A text filter that reads from stdin and writes to stdout.
+    Converts to ipynb when `--to-ipynb` option or no options.
+    """
     def stdio(): sys.stdout.write(main(sys.stdin.read()))
 
     if len(sys.argv) > 1:
         if sys.argv[1].lower() == '--help':
-            print(main.__doc__)
+            print(cli.__doc__ + main.__doc__)
         elif sys.argv[1] == '--to-ipynb':
             stdio()
         else:
