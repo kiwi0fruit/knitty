@@ -63,7 +63,7 @@ Strip the output cells from markdown:
 You can configure IPython / Jupyter to seamlessly use markdown as its storage
 format. Add the following to your config file:
 
-    c.NotebookApp.contents_manager_class = 'notedown.NotedownContentsManager'
+    c.NotebookApp.contents_manager_class = 'knitty.notedown.NotedownContentsManager'
 
 
 Now you can edit your markdown files in the browser, execute code,
