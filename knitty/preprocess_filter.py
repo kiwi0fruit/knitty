@@ -135,7 +135,7 @@ class Replacer:
         Parameters
         ----------
         lang :
-            Default language via extension. Must be non-empty string,
+            Default language. Must be non-empty string,
             otherwise it would be DEFAULT_EXT (py).
         block_comm :
             ...
