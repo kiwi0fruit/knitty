@@ -13,7 +13,8 @@ from markdown (and r-markdown).
 blocks (fenced or indented) go into input cells, everything else
 goes into markdown cells.
 
-This is a fork. See [original version](https://github.com/aaren/notedown).
+This is a fork. See [original version](https://github.com/aaren/notedown). See differences in this [repo](https://github.com/kiwi0fruit/notedown) and [PR](https://github.com/aaren/notedown/pull/69).
+
 
 Usage:
 
