@@ -9,6 +9,7 @@ import re
 from collections import namedtuple
 from typing import List, Tuple, Iterable, Union
 from .tools import load_yaml, get, strict_str
+from .consts import META_COMMENTS_MAP, META_KNITTY_COMMENTS_EXT, META_KNITTY_LANG
 
 Token = namedtuple("Token", ['kind', 'value'])
 
@@ -29,10 +30,6 @@ DEC = '@'
 DEFAULT_EXT = 'py'
 CHUNK_NAME = 'chunk'
 MARKDOWN_KERNELS = ('markdown', 'md')
-# Metadata options:
-# ---------------------------------
-META_COMMENTS_MAP = 'comments-map'
-META_KNITTY_COMMENTS_EXT = 'knitty-comments-ext'
 
 
 # -----------------------------------
@@ -259,7 +256,10 @@ def knitty_preprosess(source: str, lang: str=None, yaml_meta: str=None) -> str:
     # Read metadata:
     metadata = load_yaml(source)[1]
     # Read lang extension used for getting comments spec from metadata:
+    _lang = strict_str(get(metadata, META_KNITTY_LANG))
     comment_lang = strict_str(get(metadata, META_KNITTY_COMMENTS_EXT))
+    if _lang:
+        lang = _lang
     if lang and not comment_lang:
         comment_lang = lang
     elif not lang and comment_lang:

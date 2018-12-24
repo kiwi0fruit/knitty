@@ -81,9 +81,11 @@ Usage: pre-knitty [OPTIONS] [INPUT_FILE]
     js: ["//", "/*", "*/"]
   ...
 
-  Extenstion to get from `comments-map` (can be set in stdin metadata only):
+  1) Force set document default language name, 2) extenstion to get from
+  `comments-map` (can be set in stdin metadata only):
 
   ---
+  knitty-lang: 'py2'
   knitty-comments-ext: 'py'
   ...
 
@@ -128,7 +130,7 @@ Options:
                                `input=True` key word attribute. Default value
                                can be set in metadata section like `input:
                                True`. Intended to be later used with
-                               `knotedown --match=in`. Another match value for
+                               `post-knitty --to-ipynb`. Another match value for
                                knotedown can be set in metadata section like
                                `codecell-match-class: in`.
   --help                       Show this message and exit.
@@ -176,11 +178,11 @@ Converts to ipynb when `--to-ipynb` option or no options.
 
 Converts Markdown document with specially marked code cells to ipynb
 (together with global yaml metadata section).
-
-Can use metadata option: `codecell-match-class: in` (default or malformed
-fallback value is `in`) that is a Pandoc class that marks Jupyter code cells.
-If `codecell-match-class: ''` (empty string) then all Markdown code cells
-would be converted to Jupyter code cells.
+Can use metadata option: `codecell-match-class: in`
+(default or malformed fallback value is `in`)
+that is a Pandoc class that marks Jupyter code cells.
+If value is `''` (empty string) then all Markdown code cells would be
+converted to Jupyter code cells.
 ```
 
 Supports Pandoc metadata that is then set in notebook metadata. For example:
@@ -312,17 +314,8 @@ Such files for example can be edited in Atom/Hydrogen or in PyCharm.
 
 In order to tell Knitty that the file should be treated as raw code you should do the following:
 
-*  Either set `knitty:` > `comments:` metadata (shoud be in pandoc-like format in between `---...`):
-```yaml
----
-knitty:
-  language: 'py'
-  comments: ['#', "'''", "'''", "\"\"\"", "\"\"\""]
-...
-```
-* (`language: 'py2'` can change the document language that otherwise is a file extension.)
+* Set yaml settings that map language name (that can also be automatically taken from file extension) with comments specs (can be put to the exteranl file too: `pre-knitty --yaml file.yaml`):
 
-* Or set yaml settings file in pre-knitty CLI that maps language name (that can also be automatically taken from file extension) with comments specs: `pre-knitty --yaml file.yaml`.
 ```yaml
 ---
 comments-map:
@@ -330,8 +323,18 @@ comments-map:
   js: ["//", "/*", "*/"]
 ...
 ```
+(should be in pandoc-like format in between `---...`)
 
 * Or the first line should start with 1-3 symbols of the in-line comment (except white spaces), then single white space or nothing, then `%%`, then single white space or end of line. So you actually tell Knitty what symbols are used as in-line comments. For python it would be `# %%` comments. But this way you can only specify in-line comments not block comments.
+
+1) Force set document default language name, 2) extenstion to get from `comments-map` (can be set in stdin metadata only):
+
+```yaml
+---
+knitty-lang: 'py2'
+knitty-comments-ext: 'py'
+...
+```
 
 Also you can specify Knitty settings: `# %% {python, echo=False}`. If no settings specified or no language specified - `# %% {echo=False}` - then the language would be the one specified in `knitty:` > `language:` metadata (see above), or the file extension, or Markdown (the last one depends on where there are block comments at the next line or not - see the next paragraph).
 

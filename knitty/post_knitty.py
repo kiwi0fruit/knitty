@@ -16,11 +16,11 @@ def main(text: str) -> str:
     """
     Converts Markdown document with specially marked code cells to ipynb
     (together with global yaml metadata section).
-
-    Can use metadata option: `codecell-match-class: in` (default or malformed
-    fallback value is `in`) that is a Pandoc class that marks Jupyter code cells.
-    If `codecell-match-class: ''` (empty string) then all Markdown code cells
-    would be converted to Jupyter code cells.
+    Can use metadata option: ``{META_CODECELL_MATCH_CLASS}: in``
+    (default or malformed fallback value is ``{DEFAULT_CODECELL_MATCH_CLASS}``)
+    that is a Pandoc class that marks Jupyter code cells.
+    If value is ``''`` (empty string) then all Markdown code cells would be
+    converted to Jupyter code cells.
     """
     metadata = load_yaml(text)[1]
     match = get(metadata, META_CODECELL_MATCH_CLASS)
@@ -45,7 +45,10 @@ def cli():
 
     if len(sys.argv) > 1:
         if sys.argv[1].lower() == '--help':
-            print(cli.__doc__ + main.__doc__)
+            print(str(cli.__doc__ + main.__doc__).format(
+                META_CODECELL_MATCH_CLASS=META_CODECELL_MATCH_CLASS,
+                DEFAULT_CODECELL_MATCH_CLASS=DEFAULT_CODECELL_MATCH_CLASS
+            ).replace('    ', '').replace('``', '`'))
         elif sys.argv[1] == '--to-ipynb':
             stdio()
         else:

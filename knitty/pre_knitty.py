@@ -5,19 +5,22 @@ import sys
 from os import path as p
 from .preprocess_filter import knitty_preprosess
 import click
+from .consts import META_COMMENTS_MAP, META_KNITTY_COMMENTS_EXT, META_KNITTY_LANG
 
 
-@click.command(help="""A text filter that reads from stdin and writes to stdout.
+@click.command(help=f"""A text filter that reads from stdin and writes to stdout.
 INPUT_FILE is optional but it helps to determine language and hence a Jupyter kernel.\n
 Settings that can be set in stdin OR in the --yaml file:\n
 ---\n
-comments-map:\n
+{META_COMMENTS_MAP}:\n
   py: ['#', "'''", "'''", "\\\"\\\"\\\"", "\\\"\\\"\\\""]\n
   js: ["//", "/*", "*/"]\n
 ...\n
-Extenstion to get from `comments-map` (can be set in stdin metadata only):\n
+1) Force set document default language name, 2) extenstion to get from `{META_COMMENTS_MAP}`
+(can be set in stdin metadata only):\n
 ---\n
-knitty-comments-ext: 'py'\n
+{META_KNITTY_LANG}: 'py2'\n
+{META_KNITTY_COMMENTS_EXT}: 'py'\n
 ...\n
 """)
 @click.argument('input_file', type=click.Path(), default=None, required=False)
