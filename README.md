@@ -4,6 +4,8 @@ Knitty is Atom/Hydrogen friendly inrterface wrapper for [Stitch/Knotr](https://g
 
 See [Knitty documentation](https://github.com/kiwi0fruit/knitty/blob/master/docs/knitty.md).
 
+You can use [vscode-ipynb-py-converter](https://github.com/nojvek/vscode-ipynb-py-converter) to convert .ipynb to .py to use with Knitty.
+
 
 ## Install
 
