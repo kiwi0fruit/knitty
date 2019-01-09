@@ -1,9 +1,6 @@
 Stitch
 ======
 
-[![Build
-Status](https://travis-ci.org/pystitch/stitch.svg?branch=master)](https://travis-ci.org/pystitch/stitch)
-
 A [knitr](http://yihui.name/knitr/)-
 [RMarkdown](http://rmarkdown.rstudio.com)-like library, in Python.
 
