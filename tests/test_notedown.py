@@ -402,7 +402,7 @@ def test_R():
                                      magic=True)
     notebook = reader.read(knitted_markdown_file)
 
-    with open('./examples/notedown/r-examples/r-example.ipynb') as f:
+    with open('./examples/notedown/r-examples/r-example-test.ipynb') as f:
         reference_notebook = nbformat.read(f, as_version=4)
 
     notedown.main.strip(notebook)
