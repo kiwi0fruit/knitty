@@ -1,6 +1,8 @@
 Knitty
 ======
 
+|Build Status|
+
 Knitty is Atom/Hydrogen friendly inrterface wrapper for
 `Stitch/Knotr <https://github.com/kiwi0fruit/knitty/blob/master/docs/stitch.md>`__:
 reproducible report generation tool via Jupyter, Pandoc and Markdown.
@@ -11,6 +13,10 @@ Jupyter notebook via
 
 See `Knitty
 documentation <https://github.com/kiwi0fruit/knitty/blob/master/docs/knitty.md>`__.
+
+You can use
+`vscode-ipynb-py-converter <https://github.com/nojvek/vscode-ipynb-py-converter>`__
+to convert .ipynb to .py to use with Knitty.
 
 Install
 -------
@@ -119,3 +125,6 @@ and execute it:
    post-knitty --to-ipynb | \
    jupyter nbconvert --to notebook --execute --stdin --stdout > \
    "${input_file}.ipynb"
+
+.. |Build Status| image:: https://travis-ci.org/kiwi0fruit/knitty.svg?branch=master
+   :target: https://travis-ci.org/kiwi0fruit/knitty
