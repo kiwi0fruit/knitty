@@ -391,8 +391,6 @@ def test_markdown_markdown():
 def test_R():
     """Check that the R notebook generated from Rmd looks the same
     as the reference (without output cells).
-    
-    kiwi0fruit: I don't really care for this functionality so I xfailed this test.
     """
     knitr = notedown.Knitr()
     with open('./examples/notedown/r-examples/r-example.Rmd') as rmd:
