@@ -1,5 +1,7 @@
 # Knitty
 
+[![Build Status](https://travis-ci.org/kiwi0fruit/knitty.svg?branch=master)](https://travis-ci.org/kiwi0fruit/knitty)
+
 Knitty is Atom/Hydrogen friendly inrterface wrapper for [Stitch/Knotr](https://github.com/kiwi0fruit/knitty/blob/master/docs/stitch.md): reproducible report generation tool via Jupyter, Pandoc and Markdown. Insert python code (or other Jupyter kernel code) to the Markdown document and have code's results in the output document. Exports to Jupyter notebook via [Notedown](https://github.com/kiwi0fruit/knitty/blob/master/docs/notedown.md).
 
 See [Knitty documentation](https://github.com/kiwi0fruit/knitty/blob/master/docs/knitty.md).
