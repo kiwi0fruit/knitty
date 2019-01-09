@@ -1,6 +1,3 @@
-from __future__ import absolute_import
-from __future__ import print_function
-
 import os
 import sys
 import argparse
@@ -24,12 +21,8 @@ try:
 except pkg_resources.DistributionNotFound:
     __version__ = 'testing'
 
-markdown_template \
-    = pkg_resources.resource_filename('knitty',
-                                      'notedown/templates/markdown.tpl')
-markdown_figure_template \
-    = pkg_resources.resource_filename('knitty',
-                                      'notedown/templates/markdown_outputs.tpl')
+markdown_template  = pkg_resources.resource_filename('knitty', 'notedown/templates/markdown.tpl')
+markdown_figure_template  = pkg_resources.resource_filename('knitty', 'notedown/templates/markdown_outputs.tpl')
 
 examples = """
 Example usage of notedown

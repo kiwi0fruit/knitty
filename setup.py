@@ -41,12 +41,12 @@ setup(
     install_requires=['jupyter_core', 'traitlets', 'ipython', 'jupyter_client',
                       'nbconvert', 'pandocfilters', 'pypandoc',
                       'click', 'psutil', 'panflute',
-                      'nbformat', 'pandoc-attributes', 'six', 'pyyaml'],
+                      'nbformat', 'pandoc-attributes', 'pyyaml'],
     # install_requires=['knotr>0.4.1', 'click', 'psutil', 'panflute', 'notedown>1.5.1'],
 
     extras_require={
         'dev': ['pytest', 'pytest-cov', 'sphinx', 'pandas', 'matplotlib', 'sphinx_rtd_theme', 'ghp-import',  # for stitch
-                'nose'],  # for notedown
+                'nose'],  # for notedown; more conda packages: 'r-knitr', 'r-reticulate'
     },
 
     include_package_data=True,

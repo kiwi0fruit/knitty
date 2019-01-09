@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 from ..tools import load_yaml
 import json
 import logging
@@ -7,12 +5,6 @@ import os
 import io
 import re
 import subprocess
-import tempfile
-
-from six import PY3
-from six.moves import map
-from six.moves import range
-from six.moves import zip
 
 import nbformat.v4.nbbase as nbbase
 import nbformat.v4 as v4
@@ -28,13 +20,6 @@ from nbconvert import TemplateExporter
 from pandocattributes import PandocAttributes
 
 languages = ['python', 'r', 'ruby', 'bash']
-
-
-def cast_unicode(s, encoding='utf-8'):
-    """Python 2/3 compatibility function derived from IPython py3compat."""
-    if isinstance(s, bytes) and not PY3:
-        return s.decode(encoding, "replace")
-    return s
 
 
 def strip(notebook):
@@ -63,9 +48,9 @@ class MarkdownReader(NotebookReader):
     Only supports two kinds of notebook cell: code and markdown.
     """
     # type identifiers
-    code = u'code'
-    markdown = u'markdown'
-    python = u'python'
+    code = 'code'
+    markdown = 'markdown'
+    python = 'python'
 
     # regular expressions to match a code block, splitting into groups
     # N.B you can't share group names between these patterns.
@@ -444,9 +429,8 @@ class MarkdownWriter(NotebookWriter):
             self.write_resources(resources)
 
         # remove any blank lines added at start and end by template
-        text = re.sub(r'\A\s*\n|^\s*\Z', '', body)
+        return re.sub(r'\A\s*\n|^\s*\Z', '', body)
 
-        return cast_unicode(text, 'utf-8')
 
     def write_resources(self, resources):
         """Write the output data in resources returned by exporter
@@ -474,7 +458,7 @@ class MarkdownWriter(NotebookWriter):
             'sort_keys': True,
             'separators': (',', ': '),
         }
-        return cast_unicode(json.dumps(string, **kwargs), 'utf-8')
+        return json.dumps(string, **kwargs)
 
     def create_input_codeblock(self, cell):
         codeblock = ('{fence}{attributes}\n'
@@ -606,50 +590,42 @@ class Knitr(object):
                        "{error}").format(cmd=' '.join(cmd), error=stderr)
             raise self.KnitrError(message)
 
-    def knit(self, input_file, opts_chunk='eval=FALSE'):
-        """Use Knitr to convert the r-markdown input_file
-        into markdown, returning a file object.
+    def knit(self, input_file, opts_chunk='eval=FALSE') -> io.StringIO:
         """
-        # use temporary files at both ends to allow stdin / stdout
-        tmp_in = tempfile.NamedTemporaryFile(mode='w+')
-        tmp_out = tempfile.NamedTemporaryFile(mode='w+')
-
-        tmp_in.file.write(input_file.read())
-        tmp_in.file.flush()
-        tmp_in.file.seek(0)
-
-        self._knit(tmp_in.name, tmp_out.name, opts_chunk)
-        tmp_out.file.flush()
-        return tmp_out
+        Use Knitr to convert the R-Markdown ``input_file``
+        (that has ``.read()`` method) into markdown,
+        returning a ``io.StringIO`` object.
+        """
+        return io.StringIO(self._knit(input_file.read(), opts_chunk=opts_chunk))
 
     @staticmethod
-    def _knit(fin, fout,
-              opts_knit='progress=FALSE, verbose=FALSE',
-              opts_chunk='eval=FALSE'):
+    def _knit(input: str,
+              opts_knit: str='progress=FALSE, verbose=FALSE',
+              opts_chunk: str='eval=FALSE') -> str:
         """Use knitr to convert r markdown (or anything knitr supports)
         to markdown.
 
-        fin / fout - strings, input / output filenames.
+        input - input string
         opts_knit - string, options to pass to knit
         opts_shunk - string, chunk options
 
         options are passed verbatim to knitr:knit running in Rscript.
         """
-        script = ('sink("/dev/null");'
-                  'library(knitr);'
-                  'opts_knit$set({opts_knit});'
-                  'opts_chunk$set({opts_chunk});'
-                  'knit("{input}", output="{output}")')
+        script = ('sink("{}");'.format('NUL' if (os.name == 'nt') else '/dev/null') +
+                  'library(knitr);' +
+                  'opts_knit$set({opts_knit});' +
+                  'opts_chunk$set({opts_chunk});' +
+                  'knit(file("stdin"), output=stderr())')
 
-        rcmd = ('Rscript', '-e',
-                script.format(input=fin, output=fout,
-                              opts_knit=opts_knit, opts_chunk=opts_chunk)
-                )
-
-        p = subprocess.Popen(rcmd,
-                             stdout=subprocess.PIPE,
-                             stderr=subprocess.PIPE)
-        p.communicate()
+        rcmd = ('Rscript', '-e', script.format(opts_knit=opts_knit, opts_chunk=opts_chunk))
+        out = subprocess.run(rcmd, input=input, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                             encoding='utf-8').stderr
+        if out:
+            out = re.sub(r'^processing file: stdin(\r?\n|$)', '', out)
+        if out:
+            return out
+        else:
+            raise RuntimeError('Rscript output is empty.')
 
 
 def get_caption_comments(content):

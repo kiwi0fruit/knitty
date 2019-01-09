@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 from .notedown import *
 from .main import convert, markdown_template, __version__
 

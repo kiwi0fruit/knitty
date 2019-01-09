@@ -7,7 +7,6 @@ import tempfile
 import nose.tools as nt
 import nbformat
 import subprocess
-import pytest
 import knitty.notedown as notedown
 
 
@@ -389,7 +388,6 @@ def test_markdown_markdown():
     nt.assert_multi_line_equal(markdown, roundtrip_markdown)
 
 
-@pytest.mark.xfail
 def test_R():
     """Check that the R notebook generated from Rmd looks the same
     as the reference (without output cells).
@@ -439,7 +437,7 @@ def test_command_line():
     def run_proc(*args):
         proc = subprocess.run(['knotedown'] + list(args), stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                               encoding='utf-8', cwd=p.join(p.dirname(p.dirname(__file__)), 'examples', 'notedown'))
-        assert proc.stderr is ''
+        assert proc.stderr == ''
 
     run_proc('example.md')  # basic
     run_proc('example.ipynb')  # reverse
