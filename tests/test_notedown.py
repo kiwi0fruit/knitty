@@ -1,6 +1,3 @@
-from __future__ import absolute_import
-from __future__ import print_function
-
 import os
 import os.path as p
 import tempfile
@@ -83,7 +80,7 @@ echo "This is bash ${BASH_VERSION}!"
 alt_lang_code = '%%bash\necho "This is bash ${BASH_VERSION}!"'
 
 
-sample_markdown = u"""### Create IPython Notebooks from markdown
+sample_markdown = """### Create IPython Notebooks from markdown
 
 This is a simple tool to convert markdown with code into an IPython
 Notebook.
@@ -160,7 +157,7 @@ sample_notebook = r"""{
  "nbformat_minor": 2
 }"""
 
-roundtrip_markdown = u"""## A roundtrip test
+roundtrip_markdown = """## A roundtrip test
 
 Here is a code cell:
 
@@ -175,7 +172,7 @@ b = 2
 ```
 """
 
-attribute_markdown = u"""Attribute test
+attribute_markdown = """Attribute test
 
 ```lang
 code1

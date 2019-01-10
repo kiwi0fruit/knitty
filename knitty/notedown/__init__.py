@@ -1,4 +1,4 @@
-from .notedown import *
+from .notedown import MarkdownReader, MarkdownWriter, markdown_template, Knitr, main
 from .main import convert, markdown_template, __version__
 
 # avoid having to require the notebook to install notedown
