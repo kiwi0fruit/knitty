@@ -32,7 +32,7 @@ Or install on Windows (if you use conda package manager
 
    conda install -c defaults -c conda-forge "pip>=10.0.1" "pandoc>=2.2.1" jupyter_core ^
    traitlets ipython jupyter_client nbconvert pandocfilters pypandoc click psutil nbformat ^
-   pandoc-attributes six pyyaml
+   pandoc-attributes pyyaml
    pip install knitty
 
 If pip install fails try to change codepage: ``chcp 1252``.
@@ -43,13 +43,23 @@ On Unix:
 
    conda install -c defaults -c conda-forge "pip>=10.0.1" "pandoc>=2.2.1" jupyter_core \
    traitlets ipython jupyter_client nbconvert pandocfilters pypandoc click psutil nbformat \
-   pandoc-attributes six pyyaml
+   pandoc-attributes pyyaml
    pip install knitty
 
 Pandoc ≥ 2.0 is needed for proper Knitty output re-processing. In
 particular for nested HTML insertions to Markdown for toolchain:
 ``file.md`` → ``file.md.md`` → ``file.md.md.html``. Pandoc 2.1.\* does
 not works on windows.
+
+Optional install
+~~~~~~~~~~~~~~~~
+
+If you would like to use ``knotedown`` to import from R Markdown you
+need installed ``knitr``:
+
+.. code:: bash
+
+   conda install r-knitr r-reticulate
 
 Usage
 -----
