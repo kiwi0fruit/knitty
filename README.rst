@@ -3,7 +3,8 @@ Knitty
 
 |Build Status|
 
-Knitty is Atom/Hydrogen friendly inrterface wrapper for
+Knitty is a Pandoc filter and Atom/Hydrogen friendly inrterface wrapper
+for
 `Stitch/Knotr <https://github.com/kiwi0fruit/knitty/blob/master/docs/stitch.md>`__:
 reproducible report generation tool via Jupyter, Pandoc and Markdown.
 Insert python code (or other Jupyter kernel code) to the Markdown
