@@ -41,10 +41,7 @@ class NotedownContentsManager(FileContentsManager):
                     nbjson = convert(os_path, informat='markdown', outformat='notebook')
                     return nbformat.reads(nbjson, as_version=as_version)
             except Exception as e:
-                raise web.HTTPError(
-                    400,
-                    "Unreadable Notebook: %s %r" % (os_path, e),
-                )
+                raise web.HTTPError(400, f"Unreadable Notebook: {os_path} {e!r}")
 
     def _save_notebook(self, os_path, nb):
         """Save a notebook to an os_path."""
@@ -84,21 +81,21 @@ class NotedownContentsManager(FileContentsManager):
         path = path.strip('/')
 
         if not self.exists(path):
-            raise web.HTTPError(404, 'No such file or directory: %s' % path)
+            raise web.HTTPError(404, f'No such file or directory: {path}')
 
         os_path = self._get_os_path(path)
         extension = ('.ipynb', '.md')
 
         if os.path.isdir(os_path):
             if type_ not in (None, 'directory'):
-                raise web.HTTPError(400, '%s is a directory, not a %s' % (path, type_), reason='bad type')
+                raise web.HTTPError(400, f'{path} is a directory, not a {type_}', reason='bad type')
             model = self._dir_model(path, content=content)
 
         elif type_ == 'notebook' or (type_ is None and path.endswith(extension)):
             model = self._notebook_model(path, content=content)
         else:
             if type_ == 'directory':
-                raise web.HTTPError(400, '%s is not a directory' % path, reason='bad type')
+                raise web.HTTPError(400, f'{path} is not a directory', reason='bad type')
             model = self._file_model(path, content=content, format=format_)
         return model
 

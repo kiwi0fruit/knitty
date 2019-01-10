@@ -1,4 +1,4 @@
-from ..tools import load_yaml
+from ..tools import load_yaml, where
 import json
 import logging
 import os
@@ -111,8 +111,7 @@ class MarkdownReader(NotebookReader):
                                cell contents
         """
         if not code_regex:
-            self.code_regex = r"({}|{})".format(self.fenced_regex,
-                                                self.indented_regex)
+            self.code_regex = rf"({self.fenced_regex}|{self.indented_regex})"
         elif code_regex == 'fenced':
             self.code_regex = self.fenced_regex
         elif code_regex == 'indented':
@@ -337,8 +336,7 @@ class MarkdownReader(NotebookReader):
                 cells.append(markdown_cell)
 
             else:
-                raise NotImplementedError("{} is not supported as a cell"
-                                          "type".format(block['type']))
+                raise NotImplementedError(f"{block['type']} is not supported as a cell type")
 
         return cells
 
@@ -405,12 +403,9 @@ class MarkdownWriter(NotebookWriter):
         self.exporter.template_file = os.path.basename(template_file)
 
         logging.debug("Creating MarkdownWriter")
-        logging.debug(("MarkdownWriter: template_file = %s"
-                       % template_file))
-        logging.debug(("MarkdownWriter.exporter.template_file = %s"
-                       % self.exporter.template_file))
-        logging.debug(("MarkdownWriter.exporter.filters = %s"
-                       % self.exporter.environment.filters.keys()))
+        logging.debug(f"MarkdownWriter: template_file = {template_file}")
+        logging.debug(f"MarkdownWriter.exporter.template_file = {self.exporter.template_file}")
+        logging.debug(f"MarkdownWriter.exporter.filters = {self.exporter.environment.filters.keys()}")
 
         self.strip_outputs = strip_outputs
         self.write_outputs = write_outputs
@@ -537,9 +532,7 @@ class MarkdownWriter(NotebookWriter):
         }
         inverse_map = {v: k for k, v in list(mime_map.items())}
         mime_type = inverse_map[data_type]
-        uri = r"data:{mime};base64,{data}"
-        return uri.format(mime=mime_type,
-                          data=data[mime_type].replace('\n', ''))
+        return rf"data:{mime_type};base64,{data[mime_type].replace('\n', '')}"
 
 
 class CodeMagician(object):
@@ -560,7 +553,7 @@ class CodeMagician(object):
         if alias in cls.aliases:
             return cls.aliases[alias]
         else:
-            return "%%{}\n".format(alias)
+            return f"%%{alias}\n"
 
 
 class Knitr(object):
@@ -569,15 +562,14 @@ class Knitr(object):
 
     def __init__(self):
         # raise exception if R or knitr not installed
-        cmd = ['Rscript', '-e', 'require(knitr)']
+        cmd = [where('Rscript'), '-e', 'require(knitr)']
 
         try:
             p = subprocess.Popen(cmd,
                                  stdout=subprocess.PIPE,
                                  stderr=subprocess.PIPE)
         except OSError:
-            message = "Rscript was not found on your path."
-            raise self.KnitrError(message)
+            raise self.KnitrError("Rscript was not found on your path.")
 
         stdout, stderr = p.communicate()
 
@@ -586,8 +578,8 @@ class Knitr(object):
 
         if 'Warning' in stderr:
             message = ("Could not load knitr (needs manual installation).\n\n"
-                       "$ {cmd}\n"
-                       "{error}").format(cmd=' '.join(cmd), error=stderr)
+                       f"$ {' '.join(cmd)}\n"
+                       f"{stderr}")
             raise self.KnitrError(message)
 
     def knit(self, input_file, opts_chunk='eval=FALSE') -> io.StringIO:
@@ -617,7 +609,7 @@ class Knitr(object):
                   'opts_chunk$set({opts_chunk});' +
                   'knit(file("stdin"), output=stderr())')
 
-        rcmd = ('Rscript', '-e', script.format(opts_knit=opts_knit, opts_chunk=opts_chunk))
+        rcmd = (where('Rscript'), '-e', script.format(opts_knit=opts_knit, opts_chunk=opts_chunk))
         out = subprocess.run(rcmd, input=input, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                              encoding='utf-8').stderr
         if out:
