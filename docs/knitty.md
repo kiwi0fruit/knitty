@@ -1,6 +1,6 @@
 # Knitty
 
-Knitty is Atom/Hydrogen friendly CLI for [Knotr/Stitch](stitch.md): reproducible report generation tool via Jupyter, Pandoc and Markdown. Insert python code (or other Jupyter kernel code) to the Markdown document and have code's results in the output document. Exports to Jupyter notebook via [Notedown](notedown.md).
+Knitty is a Pandoc filter and Atom/Hydrogen friendly CLI for [Knotr/Stitch](stitch.md): reproducible report generation tool via Jupyter, Pandoc and Markdown. Insert python code (or other Jupyter kernel code) to the Markdown document and have code's results in the output document. Exports to Jupyter notebook via [Notedown](notedown.md).
 
 Modified versions of [Knotr/Stitch](stitch.md) by Tom Augspurger and [Notedown](notedown.md) by Aaron O'Leary are included in Knitty.
 
