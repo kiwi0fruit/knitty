@@ -532,7 +532,8 @@ class MarkdownWriter(NotebookWriter):
         }
         inverse_map = {v: k for k, v in list(mime_map.items())}
         mime_type = inverse_map[data_type]
-        return rf"data:{mime_type};base64,{data[mime_type].replace('\n', '')}"
+        return r"data:{mime};base64,{data}".format(mime=mime_type,
+                                                   data=data[mime_type].replace('\n', ''))
 
 
 class CodeMagician(object):
