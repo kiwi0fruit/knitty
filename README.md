@@ -13,6 +13,8 @@ You can use [vscode-ipynb-py-converter](https://github.com/nojvek/vscode-ipynb-p
 
 Install as part of [Pandoctools](https://github.com/kiwi0fruit/pandoctools) - convenient interface and works out of the box.
 
+Needs Python 3.6+ but you can have other versions via Jupyter kernels as Knitty can use any installed kernel.
+
 Or install on Windows (if you use conda package manager (Anaconda/Miniconda) then you can install dependencies first):
 ```bash
 conda install -c defaults -c conda-forge "pip>=10.0.1" "pandoc>=2.2.1" jupyter_core ^

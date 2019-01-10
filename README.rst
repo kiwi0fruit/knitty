@@ -26,6 +26,9 @@ Install as part of
 `Pandoctools <https://github.com/kiwi0fruit/pandoctools>`__ - convenient
 interface and works out of the box.
 
+Needs Python 3.6+ but you can have other versions via Jupyter kernels as
+Knitty can use any installed kernel.
+
 Or install on Windows (if you use conda package manager
 (Anaconda/Miniconda) then you can install dependencies first):
 
