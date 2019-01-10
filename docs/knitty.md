@@ -474,6 +474,14 @@ eval: True
   - Markdown, HTML and LaTeX outputs are also parsed by Pandoc (with appropriate settigns).
 * `results=hide`: evaluate chunk but hide results (same as in the original Stitch).
 
+Hint: you can insert Raw Pandoc blocks to Markdown via this syntax (`=`):
+
+````
+```{=html} 
+<i>i</i> 
+```
+````
+
 
 ## 2.3 Chunk keyword argument
 
