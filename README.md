@@ -33,6 +33,12 @@ pip install knitty
 
 Pandoc ≥ 2.0 is needed for proper Knitty output re-processing. In particular for nested HTML insertions to Markdown for toolchain: `file.md` → `file.md.md` → `file.md.md.html`. Pandoc 2.1.\* does not works on windows.
 
+If you would like to use `knotedown` to import from R Markdown you need installed `knitr`:
+
+```bash
+conda install r-knitr r-reticulate
+```
+
 
 ## Usage
 
