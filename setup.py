@@ -48,6 +48,7 @@ setup(
         'dev': ['pytest', 'pytest-cov', 'sphinx', 'pandas', 'matplotlib', 'sphinx_rtd_theme', 'ghp-import',  # for stitch
                 'nose'],  # for notedown; more conda packages: 'r-knitr', 'r-reticulate'
     },
+    # conda install -c defaults -c conda-forge pytest pytest-cov sphinx pandas matplotlib sphinx_rtd_theme ghp-import nose r-knitr r-reticulate
 
     include_package_data=True,
     package_data={
