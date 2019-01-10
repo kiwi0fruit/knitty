@@ -393,15 +393,14 @@ def test_R():
     with open('./examples/notedown/r-examples/r-example.Rmd') as rmd:
         knitted_markdown_file = knitr.knit(rmd)
 
-    reader = notedown.MarkdownReader(precode=r"%load_ext rpy2.ipython",
-                                     magic=True)
+    reader = notedown.MarkdownReader(precode=r"%load_ext rpy2.ipython", magic=True)
     notebook = reader.read(knitted_markdown_file)
 
     with open('./examples/notedown/r-examples/r-example-test.ipynb') as f:
         reference_notebook = nbformat.read(f, as_version=4)
 
-    notedown.main.strip(notebook)
-    notedown.main.strip(reference_notebook)
+    notedown.strip(notebook)
+    notedown.strip(reference_notebook)
 
     writer = nbformat
 

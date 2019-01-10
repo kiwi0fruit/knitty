@@ -8,11 +8,7 @@ import logging
 import nbformat as nbformat
 from nbconvert.utils.io import unicode_std_stream
 
-from .notedown import (MarkdownReader,
-                       MarkdownWriter,
-                       Knitr,
-                       run,
-                       strip)
+from .notedown import MarkdownReader, MarkdownWriter, Knitr, run, strip
 
 
 try:
