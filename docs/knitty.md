@@ -533,10 +533,10 @@ styles-map:
 
 ## 3.4 Match metadata option
 
-For `knitty` CLI flag `--to-ipynb` and for `knotedown` CLI flag `--match`, another match value that would be later used by `knotedown` can be set in metadata section like:
+For `knitty` CLI flag `--to-ipynb` and for `post-knitty` another class match value that would be later used by `knotedown`can be  set in metadata section like:
 ```yaml
 ---
-match: in
+codecell-match-class: in
 ...
 ```
 
