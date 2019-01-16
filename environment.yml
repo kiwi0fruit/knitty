@@ -4,6 +4,8 @@ channels:
     - conda-forge
 dependencies:
     - "python>=3.6,<3.7"
+    - "pip>=10.0.1"
+    - "pandoc>=2.2.1"
     - jupyter_core
     - traitlets
     - ipython
@@ -15,7 +17,6 @@ dependencies:
     - psutil
     - nbformat
     - pandoc-attributes
-    - six
     - pyyaml
 
     - pytest
@@ -26,7 +27,14 @@ dependencies:
     - sphinx_rtd_theme
     - ghp-import
     - nose
+    - r-knitr
+    - r-reticulate
+
+    - jupyter
+    - notebook
+    - bokeh
+    - holoviews
+    - altair
 
     - pip:
-        - "panflute>=1.11.1"
         - "git+https://github.com/kiwi0fruit/knitty"
