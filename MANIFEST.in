@@ -5,3 +5,4 @@ include knitty/notedown/*
 include knitty/notedown/templates/*
 include versioneer.py
 include knitty/_version.py
+LICENSE

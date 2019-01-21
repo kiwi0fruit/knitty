@@ -1,12 +1,12 @@
 from setuptools import setup, find_packages
 from os import path
-
+import io
 import versioneer
 
 
 here = path.abspath(path.dirname(__file__))
 
-with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
+with io.open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
@@ -16,6 +16,7 @@ setup(
 
     description='Inrterface wrapper for Stitch/Knotr: reproducible report generation tool via Jupyter, Pandoc and Markdown. Export to Jupyter notebook via Notedown.',
     long_description=long_description,
+    long_description_content_type="text/markdown",
 
     url='https://github.com/kiwi0fruit/knitty',
 
@@ -41,10 +42,9 @@ setup(
 
     install_requires=['jupyter_core', 'traitlets', 'ipython', 'jupyter_client',
                       'nbconvert', 'pandocfilters', 'pypandoc',
-                      'click', 'psutil', 'panflute',
+                      'click', 'psutil', 'panflute>=1.11.2',
                       'nbformat', 'pandoc-attributes', 'pyyaml'],
-    # install_requires=['knotr>0.4.1', 'click', 'psutil', 'panflute', 'notedown>1.5.1'],
-
+    python_requires='>=3.6',
     extras_require={
         'dev': ['pytest', 'pytest-cov', 'sphinx', 'pandas', 'matplotlib', 'sphinx_rtd_theme', 'ghp-import',  # for stitch
                 'nose'],  # for notedown; more conda packages: 'r-knitr', 'r-reticulate'

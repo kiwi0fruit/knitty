@@ -15,25 +15,16 @@ Install as part of [Pandoctools](https://github.com/kiwi0fruit/pandoctools) - co
 
 Needs Python 3.6+ but you can have other versions via Jupyter kernels as Knitty can use any installed kernel.
 
-Or install on Windows (if you use conda package manager (Anaconda/Miniconda) then you can install dependencies first):
+Via conda:
 ```bash
-conda install -c defaults -c conda-forge "pip>=10.0.1" "pandoc>=2.2.1" jupyter_core ^
-traitlets ipython jupyter_client nbconvert pandocfilters pypandoc click psutil nbformat ^
-pandoc-attributes pyyaml
-pip install knitty
+conda install -c defaults -c conda-forge knitty
 ```
 
-If pip install fails try to change codepage: `chcp 1252`.
+Via pip:
 
-On Unix:
 ```bash
-conda install -c defaults -c conda-forge "pip>=10.0.1" "pandoc>=2.2.1" jupyter_core \
-traitlets ipython jupyter_client nbconvert pandocfilters pypandoc click psutil nbformat \
-pandoc-attributes pyyaml
 pip install knitty
 ```
-
-Pandoc ≥ 2.0 is needed for proper Knitty output re-processing. In particular for nested HTML insertions to Markdown for toolchain: `file.md` → `file.md.md` → `file.md.md.html`. Pandoc 2.1.\* does not works on windows.
 
 
 ### Optional install
