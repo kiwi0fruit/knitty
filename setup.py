@@ -31,7 +31,7 @@ setup(
         'Intended Audience :: Science/Research',
         'Topic :: Software Development :: Build Tools',
         'Topic :: Scientific/Engineering :: Information Analysis',
-        'License :: OSI Approved :: GPL',
+        'License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)',
         'Operating System :: OS Independent',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.6',

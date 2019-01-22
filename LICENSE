@@ -3,12 +3,33 @@ Notedown: Copyright (c) 2014, Aaron O'Leary (dev@aaren.me), 2018, Peter Zagubisa
     All rights reserved.
 Sitch: Copyright (c) 2016 Tom Augspurger, 2018 Peter Zagubisalo
 
-* The module as a whole is licensed under GPL because of using Pandoc via pypandoc.
+* The module as a whole is licensed under GNU General Public License v2 or later (GPLv2+)
+  because of using Pandoc via pypandoc.
 * All Knitty and Stitch code that doesn't depend on pypandoc is dual-licensed under MIT.
 * Notedown code is licensed under BSD 2-Clause "Simplified" License.
 * Text of the licenses is brovided below.
 
 -----------------------------------------------------------
+
+GNU General Public License v2 or later (GPLv2+)
+============
+
+This code is released under the GPL, version 2 or later:
+
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2 of the License, or
+   (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
 
 ### GNU GENERAL PUBLIC LICENSE
 
@@ -375,6 +396,7 @@ License.
 -----------------------------------------------------------
 
 The MIT License (MIT)
+============
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -397,6 +419,7 @@ SOFTWARE.
 -----------------------------------------------------------
 
 BSD 2-Clause "Simplified" License
+============
 
 Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
