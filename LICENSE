@@ -5,14 +5,16 @@ Sitch: Copyright (c) 2016 Tom Augspurger, 2018 Peter Zagubisalo
 
 * The module as a whole is licensed under GNU General Public License v2 or later (GPLv2+)
   because of using Pandoc via pypandoc.
-* All Knitty and Stitch code that doesn't depend on pypandoc is dual-licensed under MIT.
-* Notedown code is licensed under BSD 2-Clause "Simplified" License.
+* All Knitty and Stitch submodule code that doesn't fall under restrictions
+  of Pandoc GPLv2+ is dual-licensed under MIT (if the whole module doesn't fall under
+  the mentioned restrictions then it's also dual-licensed under MIT).
+* Notedown submodule code is also licensed under BSD 2-Clause "Simplified" License.
 * Text of the licenses is brovided below.
 
------------------------------------------------------------
 
+-----------------------------------------------------------
 GNU General Public License v2 or later (GPLv2+)
-============
+-----------------------------------------------------------
 
 This code is released under the GPL, version 2 or later:
 
@@ -393,10 +395,10 @@ applications with the library. If this is what you want to do, use the
 License](http://www.gnu.org/licenses/lgpl.html) instead of this
 License.
 
------------------------------------------------------------
 
+-----------------------------------------------------------
 The MIT License (MIT)
-============
+-----------------------------------------------------------
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -416,10 +418,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
------------------------------------------------------------
 
+-----------------------------------------------------------
 BSD 2-Clause "Simplified" License
-============
+-----------------------------------------------------------
 
 Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
