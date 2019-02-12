@@ -38,7 +38,7 @@ requirements:
     - click
     - psutil
     - nbformat
-    - pandoc-attributes
+    - pandoc-attrs
     - pyyaml
 
 test:
