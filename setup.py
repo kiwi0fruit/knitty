@@ -43,7 +43,7 @@ setup(
     install_requires=['jupyter_core', 'traitlets', 'ipython', 'jupyter_client',
                       'nbconvert', 'pandocfilters', 'pypandoc',
                       'click', 'psutil', 'panflute>=1.11.2',
-                      'nbformat', 'pandoc-attributes', 'pyyaml'],
+                      'nbformat', 'pandoc-attrs', 'pyyaml'],
     python_requires='>=3.6',
     extras_require={
         'dev': ['pytest', 'pytest-cov', 'sphinx', 'pandas', 'matplotlib', 'sphinx_rtd_theme', 'ghp-import',  # for stitch
