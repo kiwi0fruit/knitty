@@ -6,7 +6,7 @@ Knitty is a Pandoc filter and Atom/Hydrogen friendly inrterface wrapper for [Sti
 
 See [Knitty documentation](https://github.com/kiwi0fruit/knitty/blob/master/docs/knitty.md).
 
-You can use [vscode-ipynb-py-converter](https://github.com/nojvek/vscode-ipynb-py-converter) to convert .ipynb to .py to use with Knitty.
+You can use [ipynb-py-converter](https://github.com/kiwi0fruit/ipynb-py-converter) to convert .ipynb to .py to use with Knitty.
 
 
 ## Install
