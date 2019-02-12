@@ -17,7 +17,7 @@ from nbconvert.preprocessors.execute import ExecutePreprocessor
 
 from nbconvert import TemplateExporter
 
-from pandocattributes import PandocAttributes
+from pandocattrs import PandocAttributes
 
 languages = ['python', 'r', 'ruby', 'bash']
 
