@@ -70,10 +70,10 @@ def dir_ext(to):
 @click.option('--dir-name', type=str, default=None,
               help='Manually name Knitty data folder (instead of default auto-naming).')
 @click.option('--to-ipynb', is_flag=True, default=False,
-              help=('Additionally run Pandoc filter that prepares code blocks for md to ipynb conversion via Notedown. '
+              help=('Additionally run Pandoc filter that prepares code blocks for md to ipynb conversion via post-knitty. '
                     'Code blocks for cells should have `input=True` key word attribute. Default value can be set in '
-                    'metadata section like `input: True`. Intended to be later used with `knotedown --match=in`. '
-                    'Another match value for knotedown can be set in metadata section like `codecell-match-class: in`.')
+                    'metadata section like `input: True`. Intended to be later used with `post-knitty --to-ipynb`. '
+                    'Another match value for post-knitty can be set in metadata section like `codecell-match-class: in`.')
               )
 def main(ctx, input_file, read, output, to, standalone, self_contained, dir_name, to_ipynb):
     if os.name == 'nt':
