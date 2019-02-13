@@ -87,5 +87,5 @@ def where(executable: str, search_dirs_: Iterable[str]=None, exe_only: bool=True
         exe = which(executable)
         if exe:
             return exe
-    raise KnittyError(
-        f"'{executable}' (should be without extension) wasn't found in the [{', '.join(search_dirs_)}] and in the $PATH.")
+    raise KnittyError(f"'{executable}' (should be without extension) wasn't found in the " +
+                      f"[{', '.join(search_dirs_)}] and in the $PATH.")
