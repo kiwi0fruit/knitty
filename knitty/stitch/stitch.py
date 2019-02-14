@@ -25,6 +25,9 @@ import argparse
 from .exc import StitchError
 from . import options as opt
 from .parser import preprocess_options
+from ..tools import where
+pf.tools.which = where  # patch panflute
+
 
 DISPLAY_PRIORITY = NbConvertBase().display_data_priority
 CODE = 'code'
@@ -555,12 +558,13 @@ def convert(source: str, to: str, extra_args=(),
                       self_contained=self_contained, use_prompt=use_prompt)
     result = stitcher.stitch(source)
     result = json.dumps(result)
-    newdoc = pypandoc.convert_text(result, to, format='json',
-                                   extra_args=extra_args,
-                                   outputfile=output_file)
+    newdoc = pf.convert_text(result, input_format='json', output_format=to,
+                             standalone=standalone, extra_args=extra_args)
 
     if output_file is None:
         print(newdoc)
+    else
+        print(newdoc, file=open(output_file, 'w', encoding='utf-8'))
 
 
 def kernel_factory(kernel_name: str) -> KernelPair:
@@ -676,7 +680,7 @@ def tokenize(source: str) -> dict:
     """
     Convert a document to pandoc's JSON AST.
     """
-    return json.loads(pypandoc.convert_text(source, 'json', 'markdown'))
+    return json.loads(pf.convert_text(source, input_format='markdown', output_format='json'))
 
 
 def tokenize_block(source: str, pandoc_format: str="markdown", pandoc_extra_args: list=None) -> list:
@@ -685,7 +689,10 @@ def tokenize_block(source: str, pandoc_format: str="markdown", pandoc_extra_args
     """
     if pandoc_extra_args is None:
         pandoc_extra_args = []
-    json_doc = pypandoc.convert_text(source, to='json', format=pandoc_format, extra_args=pandoc_extra_args)
+    json_doc = pf.convert_text(
+        source, input_format=pandoc_format, output_format='json',
+        standalone=('--standalone' in extra_args),
+        extra_args=[a for a in pandoc_extra_args if a != '--standalone'])
     return json.loads(json_doc)['blocks']
 
 

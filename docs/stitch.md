@@ -60,7 +60,7 @@ Fortunately the building blocks are all there.
 We reuse
 
 -   [pandoc](http://pandoc.org) via
-    [pypandoc](https://pypi.python.org/pypi/pypandoc) for parsing
+    [panflute](https://github.com/sergiocorreia/panflute) for parsing
     markdown and rendering the final output
 -   [jupyter](http://jupyter.readthedocs.io/en/latest/) for language
     kernels, executing code, and collecting the output
