@@ -34,7 +34,7 @@ requirements:
     - jupyter_client
     - nbconvert
     - pandocfilters
-    - pypandoc
+    - py-pandoc
     - click
     - psutil
     - nbformat

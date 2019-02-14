@@ -19,7 +19,7 @@ from traitlets import HasTraits
 from jupyter_client.manager import start_new_kernel
 from nbconvert.utils.base import NbConvertBase
 from pandocfilters import RawBlock, Div, CodeBlock, Image, Str, Para
-import pypandoc
+import panflute as pf
 import argparse
 
 from .exc import StitchError
