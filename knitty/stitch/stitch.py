@@ -754,15 +754,21 @@ def parse_kernel_arguments(block):
     """
     options = block['c'][0][1]
     kernel_name = chunk_name = None
-    if len(options) == 0:
-        pass
-    elif len(options) == 1:
+    try:
         kernel_name = options[0]
-    elif len(options) >= 2:
-        kernel_name, chunk_name = options[0:2]
+    except IndexError:
+        pass
     kwargs = dict(block['c'][0][2])
-    kwargs = {k: v == 'True' if v in ('True', 'False') else v
+    kwargs = {k: v.lower() == 'true' if v.lower() in ('true', 'false') else v
               for k, v in kwargs.items()}
+
+    if 'chunk' not in kwargs:
+        try:
+            chunk_name = options[1]
+        except IndexError:
+            pass
+    elif kwargs['chunk'].lower() != 'none':
+        chunk_name = kwargs['chunk']
 
     return (kernel_name, chunk_name), kwargs
 

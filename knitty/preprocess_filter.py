@@ -28,7 +28,6 @@ DEC = '@'
 # Chunk options:
 # ---------------------------------
 DEFAULT_EXT = 'py'
-CHUNK_NAME = 'chunk'
 MARKDOWN_KERNELS = ('markdown', 'md')
 
 
@@ -373,14 +372,10 @@ def check_and_change(args: List[str],
     tuple :
         (args, kwargs)
     """
-    chunk = None
-
     def check(kwarg):
         key, val = kwarg
-        nonlocal args, chunk
-        if key == CHUNK_NAME and chunk is None:
-            chunk = val
-        elif key == 'class':
+        nonlocal args
+        if key == 'class':
             n = len(val)
             val = val.strip('"')
             if n == len(val):
@@ -396,9 +391,6 @@ def check_and_change(args: List[str],
         return False
 
     kwargs = [kwarg for kwarg in kwargs if check(kwarg)]
-    # move `chunk` option:
-    if chunk is not None:
-        args = [args[0], chunk] + args[1:]
     # check classes names:
     for arg in args:
         if not OPT.NAME.match(arg):
