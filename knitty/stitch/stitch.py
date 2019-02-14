@@ -691,7 +691,7 @@ def tokenize_block(source: str, pandoc_format: str="markdown", pandoc_extra_args
         pandoc_extra_args = []
     json_doc = pf.convert_text(
         source, input_format=pandoc_format, output_format='json',
-        standalone=('--standalone' in extra_args),
+        standalone=('--standalone' in pandoc_extra_args),
         extra_args=[a for a in pandoc_extra_args if a != '--standalone'])
     return json.loads(json_doc)['blocks']
 
