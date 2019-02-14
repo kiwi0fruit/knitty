@@ -563,7 +563,7 @@ def convert(source: str, to: str, extra_args=(),
 
     if output_file is None:
         print(newdoc)
-    else
+    else:
         print(newdoc, file=open(output_file, 'w', encoding='utf-8'))
 
 

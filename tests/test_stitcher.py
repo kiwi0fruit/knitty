@@ -6,7 +6,7 @@ import datetime
 from textwrap import dedent
 
 import pytest
-import pypandoc
+import panflute as pf
 from traitlets import TraitError
 
 import knitty.stitch.stitch as R
@@ -64,8 +64,8 @@ def document():
 @pytest.fixture
 def as_json(document):
     "JSON representation of the markdown document"
-    return json.loads(pypandoc.convert_text(document, 'json',
-                                            format='markdown'))
+    return json.loads(pf.convert_text(document, output_format='json',
+                                      input_format='markdown'))
 
 
 @pytest.fixture(params=['python', 'R'], ids=['python', 'R'])
