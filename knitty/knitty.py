@@ -6,26 +6,8 @@ import os.path as p
 import re
 import panflute as pf
 import io
-from .consts import META_CODECELL_MATCH_CLASS, DEFAULT_CODECELL_MATCH_CLASS
-
-
-class KnittyError(Exception):
-    pass
-
-
-def action(elem, doc):
-    if isinstance(elem, pf.CodeBlock):
-        input_ = elem.attributes.get('input', doc.get_metadata('input'))
-        if str(input_).lower() == 'true':
-            match = str(doc.get_metadata(META_CODECELL_MATCH_CLASS, DEFAULT_CODECELL_MATCH_CLASS))
-            if match not in elem.classes:
-                elem.classes.append(match)
-            id_ = elem.identifier
-            id_ = ("#" + id_ + " ") if (id_ != "" and id_ is not None) else ""
-            classes = " .".join(elem.classes)
-            classes = ("." + classes + " ") if (classes != "") else ""
-            kwargs = " ".join([f"{k}={v}" for k, v in elem.attributes.items()])
-            elem.classes[0] = "{" + id_ + classes + kwargs + "}"
+from .consts import PANDOC_CODECELL_CLASSES
+from .tools import KnittyError
 
 
 def hyphenized_basename(file_path: str) -> str:
@@ -69,13 +51,7 @@ def dir_ext(to):
               'The option is added to `pandoc_extra_args` given to Stitch.')
 @click.option('--dir-name', type=str, default=None,
               help='Manually name Knitty data folder (instead of default auto-naming).')
-@click.option('--to-ipynb', is_flag=True, default=False,
-              help=('Additionally run Pandoc filter that prepares code blocks for md to ipynb conversion via post-knitty. '
-                    'Code blocks for cells should have `input=True` key word attribute. Default value can be set in '
-                    'metadata section like `input: True`. Intended to be later used with `post-knitty --to-ipynb`. '
-                    'Another match value for post-knitty can be set in metadata section like `codecell-match-class: in`.')
-              )
-def main(ctx, input_file, read, output, to, standalone, self_contained, dir_name, to_ipynb):
+def main(ctx, input_file, read, output, to, standalone, self_contained, dir_name):
     if os.name == 'nt':
         cwd = os.getcwd()
         def cwd_pdc(ext_): return p.isfile(p.join(cwd, f'pandoc.{ext_}'))
@@ -92,24 +68,26 @@ def main(ctx, input_file, read, output, to, standalone, self_contained, dir_name
             dir_name = 'stdout-' + dir_ext(to)
 
     if to is not None:
-        # TODO Knitty (Stitch) later checks if `to` is in ('latex', 'pdf', 'beamer') so using `dir_ext` is OK
+        # TODO Stitch later checks if `to` is in ('latex', 'pdf', 'beamer') so using `dir_ext` is OK
         to = dir_ext(to)
     else:
         ext = (p.splitext(output)[1].lstrip('.')
                if output is not None
                else '')
         to = ext if (ext != '') else 'html'
-    
+
     pandoc_extra_args = ctx.args
     if standalone:
         pandoc_extra_args.append('--standalone')
     if self_contained:
         pandoc_extra_args.append('--self-contained')
-    # TODO Knitty (Stitch) later do not need `to` in `pandoc_extra_args` so loosing it is OK
+    # TODO Stitch later do not need `to` in `pandoc_extra_args` so loosing it is OK
     out = knitty_pandoc_filter(sys.stdin.read(), name=dir_name, to=to, standalone=standalone,
                                self_contained=self_contained, pandoc_format=read,
                                pandoc_extra_args=pandoc_extra_args)
-    if to_ipynb:
+
+    # TODO after `dir_ext()` `to` is still 'ipynb':
+    if to.lower() == 'ipynb':
         with io.StringIO(out) as f:
             doc = pf.load(f)
         pf.run_filter(action, doc=doc)
@@ -117,6 +95,15 @@ def main(ctx, input_file, read, output, to, standalone, self_contained, dir_name
             pf.dump(doc, f)
             out = f.getvalue()
     sys.stdout.write(out)
+
+
+def action(elem, doc):
+    if isinstance(elem, pf.CodeBlock):
+        input_ = elem.attributes.get('input', doc.get_metadata('input'))
+        if str(input_).lower() == 'true':
+            for clss in PANDOC_CODECELL_CLASSES: 
+                if clss not in elem.classes:
+                    elem.classes.append(clss)
 
 
 if __name__ == '__main__':

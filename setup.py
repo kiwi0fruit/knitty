@@ -59,7 +59,6 @@ setup(
         'console_scripts': [
             'knitty=knitty.knitty:main',
             'pre-knitty=knitty.pre_knitty:main',
-            'post-knitty=knitty.post_knitty:cli',
             'knotr=knitty.stitch.cli:cli',
             'knotedown = knitty.notedown.main:app',
         ],
