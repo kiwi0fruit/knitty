@@ -22,21 +22,16 @@ from pandocfilters import RawBlock, Div, CodeBlock, Image, Str, Para
 import panflute as pf
 import argparse
 
-from .exc import StitchError
 from . import options as opt
-from .parser import preprocess_options
 from ..tools import where
 pf.tools.which = where  # patch panflute
 
-
-DISPLAY_PRIORITY = NbConvertBase().display_data_priority
-CODE = 'code'
 CODEBLOCK = 'CodeBlock'
-OUTPUT_FORMATS = ['html', 'latex']
-HERE = os.path.dirname(__file__)
-
 KernelPair = namedtuple("KernelPair", "km kc")
-CODE_CHUNK_XPR = re.compile(r'^```{\w+.*}|^```\w+')
+
+
+class StitchError(Exception):
+    pass
 
 
 class _Fig(HasTraits):
@@ -49,10 +44,10 @@ class _Fig(HasTraits):
     height = opt.Str(None)
     cap = opt.Str(None)
 
+
 # --------
 # User API
 # --------
-
 
 class Stitch(HasTraits):
     """
@@ -61,9 +56,6 @@ class Stitch(HasTraits):
 
     Attributes
     ----------
-    to : str
-        The output file format. Optionally inferred by the output file
-        file extension.
     title : str
         The name of the output document.
     date : str
@@ -114,7 +106,6 @@ class Stitch(HasTraits):
     """
 
     # Document-traits
-    to = opt.Str('html')
     title = opt.Str(None)
     date = opt.Str(None)
     author = opt.Str(None)  # TODO: Multiple authors...
@@ -131,7 +122,8 @@ class Stitch(HasTraits):
     fig = _Fig()
     results = opt.Choice({"pandoc", "hide", "default"}, default_value="default")
 
-    def __init__(self, name: str, to: str='html',
+    def __init__(self, name: str,
+                 filter_to: str,
                  standalone: bool=True,
                  self_contained: bool=True,
                  warning: bool=True,
@@ -145,8 +137,8 @@ class Stitch(HasTraits):
         ----------
         name : str
             controls the directory for supporting files
-        to : str, default ``'html'``
-            output format
+        filter_to : str
+            stripped output format passed py Pandoc to it's filters
         standalone : bool, default True
             whether to make a standalone document
         self_contained: bool, default True
@@ -164,11 +156,12 @@ class Stitch(HasTraits):
             Pandoc format option for converting text from markdown
             to JSON AST
         """
-        super().__init__(to=to, standalone=standalone,
+        super().__init__(standalone=standalone,
                          self_contained=self_contained, warning=warning,
                          error=error, prompt=prompt, use_prompt=use_prompt)
         self._kernel_pairs = {}
         self.name = name
+        self.filter_to = filter_to
         self.resource_dir = self.name_resource_dir(name)
         self.pandoc_extra_args = pandoc_extra_args
         self.pandoc_format = pandoc_format
@@ -248,25 +241,6 @@ class Stitch(HasTraits):
         for attr, val in meta.items():
             if self.has_trait(attr):
                 self.set_trait(attr, val)
-
-    def stitch(self, source: str) -> dict:
-        """
-        Wrapper around ``stitch_ast`` method that preprocesses
-        source code to allow Stitch-style code blocks and
-        then convert to loaded Pandoc JSON AST.
-
-        Parameters
-        ----------
-        source : str
-            the actual text to be converted
-
-        Returns
-        -------
-        doc : dict
-        """
-        source = preprocess(source)
-        ast = tokenize(source)
-        return self.stitch_ast(ast)
 
     def stitch_ast(self, ast: dict) -> dict:
         """
@@ -416,7 +390,7 @@ class Stitch(HasTraits):
                 key = min(all_data.keys(), key=lambda k: order[k])
                 data = all_data[key]
 
-                if self.to in ('latex', 'pdf', 'beamer'):
+                if self.filter_to in ('latex', 'beamer'):
                     if 'text/latex' in all_data.keys():
                         key = 'text/latex'
                         data = all_data[key]
@@ -505,68 +479,6 @@ class Stitch(HasTraits):
         return block
 
 
-def convert_file(input_file: str,
-                 to: str,
-                 extra_args=(),
-                 output_file=None) -> None:
-    """
-    Convert a markdown ``input_file`` to ``to``.
-
-    Parameters
-    ----------
-    input_file : str
-    to : str
-    extra_args : iterable
-    output_file : str
-
-    See Also
-    --------
-    convert
-    """
-    with open(input_file) as f:
-        source = f.read()
-    convert(source, to, extra_args=extra_args, output_file=output_file)
-
-
-def convert(source: str, to: str, extra_args=(),
-            output_file: str=None) -> None:
-    """
-    Convert a source document to an output file.
-
-    Parameters
-    ----------
-    source : str
-    to : str
-    extra_args : iterable
-    output_file : str
-
-    Notes
-    -----
-    Either writes to ``output_file`` or prints to stdout.
-    """
-    output_name = (
-        os.path.splitext(os.path.basename(output_file))[0]
-        if output_file is not None
-        else 'std_out'
-    )
-
-    standalone = '--standalone' in extra_args
-    self_contained = '--self-contained' in extra_args
-    use_prompt = '--use-prompt' in extra_args
-    extra_args = [item for item in extra_args if item != '--use-prompt']
-    stitcher = Stitch(name=output_name, to=to, standalone=standalone,
-                      self_contained=self_contained, use_prompt=use_prompt)
-    result = stitcher.stitch(source)
-    result = json.dumps(result)
-    newdoc = pf.convert_text(result, input_format='json', output_format=to,
-                             standalone=standalone, extra_args=extra_args)
-
-    if output_file is None:
-        print(newdoc)
-    else:
-        print(newdoc, file=open(output_file, 'w', encoding='utf-8'))
-
-
 def kernel_factory(kernel_name: str) -> KernelPair:
     """
     Start a new kernel.
@@ -621,6 +533,7 @@ def is_stitchable(result, attrs):
 # ----------
 # Formatting
 # ----------
+
 def format_input_prompt(prompt, code, number):
     """
     Format the actual input code-text.
@@ -676,13 +589,6 @@ def format_output_prompt(output, number):
 # Input Processing
 # ----------------
 
-def tokenize(source: str) -> dict:
-    """
-    Convert a document to pandoc's JSON AST.
-    """
-    return json.loads(pf.convert_text(source, input_format='markdown', output_format='json'))
-
-
 def tokenize_block(source: str, pandoc_format: str="markdown", pandoc_extra_args: list=None) -> list:
     """
     Convert a Jupyter output to Pandoc's JSON AST.
@@ -694,39 +600,6 @@ def tokenize_block(source: str, pandoc_format: str="markdown", pandoc_extra_args
         standalone=('--standalone' in pandoc_extra_args),
         extra_args=[a for a in pandoc_extra_args if a != '--standalone'])
     return json.loads(json_doc)['blocks']
-
-
-def preprocess(source: str) -> str:
-    """
-    Process a source file prior to tokenezation.
-
-    Parameters
-    ----------
-    source : str
-
-    Returns
-    -------
-    processed : str
-
-    Notes
-    -----
-    Currently applies the following transformations
-
-    - preprocess_options: transform code chunk arguments
-      to allow ``{python, arg, kwarg=val}`` instead of pandoc-style
-      ``{.python .arg kwarg=val}``
-
-    See Also
-    --------
-    prerpocess_options
-    """
-    doc = []
-    for line in source.split('\n'):
-        if CODE_CHUNK_XPR.match(line):
-            doc.append(preprocess_options(line))
-        else:
-            doc.append(line)
-    return '\n'.join(doc)
 
 
 def parse_kernel_arguments(block):
@@ -808,6 +681,7 @@ def is_execute_input(message):
 # --------------
 # Code Execution
 # --------------
+
 def execute_block(block, kp, timeout=None):
     # see nbconvert.run_cell
     code = block['c'][1]

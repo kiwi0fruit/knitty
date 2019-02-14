@@ -399,6 +399,18 @@ def check_and_change(args: List[str],
     return args, kwargs
 
 
+def sort(kind, text, args: list, kwargs: list):
+    if kind == 'ARG':
+        args.append(text)
+    elif kind == 'DELIM':
+        pass
+    elif kind == 'KWARG':
+        m = re.match(OPT.KWARG, text)
+        kwargs.append((m.group('KEY'), m.group('VAL')))
+    else:
+        raise TypeError('Unknown kind %s' % kind)
+
+
 def preprocess_options(options_line: str) -> str:
     """
     Transform a code-chunk options line to allow\n
@@ -406,20 +418,8 @@ def preprocess_options(options_line: str) -> str:
     ``.lang .chunk key=val id=ID`` (also removes extra whitespaces).
     """
     args, kwargs = [], []
-
-    def sort(kind, text):
-        if kind == 'ARG':
-            args.append(text)
-        elif kind == 'DELIM':
-            pass
-        elif kind == 'KWARG':
-            m = re.match(OPT.KWARG, text)
-            kwargs.append((m.group('KEY'), m.group('VAL')))
-        else:
-            raise TypeError('Unknown kind %s' % kind)
-
-    for kind_, text_ in tokenize(options_line):
-        sort(kind_, text_)
+    for kind, text in tokenize(options_line):
+        sort(kind, text, args, kwargs)
     args, kwargs = check_and_change(args, kwargs)
 
     return ' '.join(['.' + arg for arg in args] + [key + '=' + val for key, val in kwargs])

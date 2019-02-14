@@ -29,13 +29,13 @@ def safe_spawn(func):
         print("Killed process that was still alive after 'timeout=50' from 'terminate()' command.")
 
 
-def knitty_pandoc_filter(json_ast: str, name: str, to: str, standalone: bool, self_contained: bool,
+def knitty_pandoc_filter(json_ast: str, name: str, filter_to: str, standalone: bool, self_contained: bool,
                          pandoc_format: str, pandoc_extra_args: list) -> str:
     """
     Changes Pandoc JSON AST string
     """
     ast = json.loads(json_ast)
-    stitcher = Stitch(name=name, to=to, standalone=standalone, self_contained=self_contained,
+    stitcher = Stitch(name=name, filter_to=filter_to, standalone=standalone, self_contained=self_contained,
                       pandoc_format=pandoc_format, pandoc_extra_args=pandoc_extra_args)
 
     def work():

@@ -1,16 +1,25 @@
+from knitty.api import knitty_preprosess
+import json
+import panflute as pf
+from knitty.tools import where
+
 import pytest
 from textwrap import dedent
-from knitty.stitch.stitch import Stitch
+from knitty.stitch import Stitch
+
+pf.tools.which = where  # patch panflute
+
+
+def pre_stitch_ast(source: str) -> dict:
+        return json.loads(pf.convert_text(knitty_preprosess(source), input_format='markdown', output_format='json'))
 
 
 @pytest.fixture
 def doc_meta():
     data = {'date': '2016-01-01', 'title': 'My Title', 'author': 'Jack',
-            'self_contained': True, 'standalone': False,
-            'to': 'pdf'}
+            'self_contained': True, 'standalone': False}
     doc = dedent('''\
     ---
-    to: {to}
     title: {title}
     author: {author}
     date: {date}
@@ -29,7 +38,6 @@ class TestOptions:
         s = Stitch('')
         assert s.warning
         assert s.error == 'continue'
-        assert s.to == 'html'
         assert s.standalone
 
     def test_override(self):
@@ -48,7 +56,7 @@ class TestOptions:
         # Hail and well met
         ''')
         s = Stitch('')
-        s.stitch(doc)
+        s.stitch_ast(pre_stitch_ast(doc))
 
         assert s.standalone is False
         assert s.warning is False
@@ -56,12 +64,12 @@ class TestOptions:
         assert getattr(s, 'abstract', None) is None
 
     @pytest.mark.parametrize('key', [
-        'title', 'author', 'date', 'self_contained', 'standalone', 'to'
+        'title', 'author', 'date', 'self_contained', 'standalone'
     ])
     def test_meta(self, key, doc_meta):
         doc, meta = doc_meta
         s = Stitch('')
-        s.stitch(doc)
+        s.stitch_ast(pre_stitch_ast(doc))
         result = getattr(s, key)
         expected = meta[key]
         assert result == expected
@@ -77,7 +85,7 @@ class TestOptionsKernel:
         plt.plot(range(4), range(4))
         ```''')
         s = Stitch('')
-        result = s.stitch(code)
+        result = s.stitch_ast(pre_stitch_ast(code))
         blocks = result['blocks']
         result = blocks[-1]['c'][0]['c'][1][0]['c']
         assert result == 'This is a caption'

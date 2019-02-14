@@ -9,11 +9,18 @@ import pytest
 import panflute as pf
 from traitlets import TraitError
 
+from knitty.api import knitty_preprosess
+import json
+from knitty.tools import where
+
 import knitty.stitch.stitch as R
-from knitty.stitch.cli import enhance_args, CSS
 
-
+pf.tools.which = where  # patch panflute
 HERE = os.path.dirname(__file__)
+
+
+def pre_stitch_ast(source: str) -> dict:
+        return json.loads(pf.convert_text(knitty_preprosess(source), input_format='markdown', output_format='json'))
 
 
 @pytest.fixture(scope='module')
@@ -429,40 +436,6 @@ class TestIntegration:
         wrapped = s.wrap_output('', messages, None)[0]
         assert wrapped['t'] == 'Para'
         assert wrapped['c'][0]['c'][0]['t'] == 'InlineMath'
-
-
-class TestCLI:
-
-    @pytest.mark.parametrize('expected, no_standalone, extra_args', [
-        (True, False, []),
-        (True, False, ['--standalone']),
-        (True, False, ['-s']),
-        (False, True, []),
-    ])
-    def test_standalone(self, expected, no_standalone, extra_args):
-        args = enhance_args('', no_standalone, False, extra_args)
-        result = '--standalone' in args or '-s' in args
-        assert result is expected
-
-    @pytest.mark.parametrize('expected, no_self_contained, extra_args', [
-        (True, False, []),
-        (True, False, ['--self-contained']),
-        (False, True, []),
-    ])
-    def test_self_contained(self, expected, no_self_contained, extra_args):
-        args = enhance_args('', False, no_self_contained, extra_args)
-        result = '--self-contained' in args
-        assert result is expected
-
-    @pytest.mark.parametrize('expected, to, extra_args', [
-        (['--css=%s' % CSS], 'html', []),
-        (['-s', '--css=%s' % CSS], 'html', ['-s']),
-        (['--css=foo.css'], 'html', ['--css=foo.css']),
-        (['-c', 'foo.css'], 'html', ['-c', 'foo.css']),
-    ])
-    def test_css(self, expected, to, extra_args):
-        result = enhance_args(to, True, True, extra_args)
-        assert result == expected
 
 
 @pytest.mark.slow

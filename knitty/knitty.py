@@ -31,9 +31,11 @@ def dir_ext(to):
                           allow_extra_args=True),
     help=("Knitty is a Pandoc AST filter with options. It reads from stdin and writes to stdout. "
           "It accepts all possible pandoc options and two knitty-only options. "
+          "FILTER_TO is a stripped output format passed py Pandoc to it's filters. "
           "INPUT_FILE is optional but it helps to auto-name Knitty data folder in some cases.")
 )
 @click.pass_context
+@click.argument('filter_to', type=str, required=True)
 @click.argument('input_file', type=str, default=None, required=False)
 @click.option('-f', '-r', '--from', '--read', 'read', type=str, default="markdown",
               help='Pandoc reader option. Specify input format.')
@@ -51,7 +53,7 @@ def dir_ext(to):
               'The option is added to `pandoc_extra_args` given to Stitch.')
 @click.option('--dir-name', type=str, default=None,
               help='Manually name Knitty data folder (instead of default auto-naming).')
-def main(ctx, input_file, read, output, to, standalone, self_contained, dir_name):
+def main(ctx, filter_to, input_file, read, output, to, standalone, self_contained, dir_name):
     if dir_name is None:
         if output is not None:
             dir_name = hyphenized_basename(output)
@@ -75,7 +77,7 @@ def main(ctx, input_file, read, output, to, standalone, self_contained, dir_name
     if self_contained:
         pandoc_extra_args.append('--self-contained')
     # TODO Stitch later do not need `to` in `pandoc_extra_args` so loosing it is OK
-    out = knitty_pandoc_filter(sys.stdin.read(), name=dir_name, to=to, standalone=standalone,
+    out = knitty_pandoc_filter(sys.stdin.read(), name=dir_name, filter_to=filter_to, standalone=standalone,
                                self_contained=self_contained, pandoc_format=read,
                                pandoc_extra_args=pandoc_extra_args)
 
