@@ -1,3 +1,4 @@
+import re
 import panflute as pf
 from .tools import where
 pf.tools.which = where  # patch panflute
