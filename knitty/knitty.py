@@ -52,13 +52,6 @@ def dir_ext(to):
 @click.option('--dir-name', type=str, default=None,
               help='Manually name Knitty data folder (instead of default auto-naming).')
 def main(ctx, input_file, read, output, to, standalone, self_contained, dir_name):
-    if os.name == 'nt':
-        cwd = os.getcwd()
-        def cwd_pdc(ext_): return p.isfile(p.join(cwd, f'pandoc.{ext_}'))
-        if cwd_pdc('exe') or cwd_pdc('cmd') or cwd_pdc('bat'):
-            if cwd not in os.getenv('PATH', '').split(os.pathsep):
-                raise KnittyError('Error: On Windows Pandoc is in the CWD and the CWD is not in the $PATH')
-
     if dir_name is None:
         if output is not None:
             dir_name = hyphenized_basename(output)
