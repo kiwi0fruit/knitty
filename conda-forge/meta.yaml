@@ -27,14 +27,13 @@ requirements:
   run:
     - python >=3.6
     - panflute >=1.11.2
-    - pandoc >=2.4
     - jupyter_core
     - traitlets
     - ipython
     - jupyter_client
     - nbconvert
     - pandocfilters
-    - py-pandoc
+    - py-pandoc >=2.6
     - click
     - psutil
     - nbformat
