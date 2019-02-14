@@ -1,4 +1,4 @@
-from ..tools import load_yaml, where
+from ..tools import load_yaml, where, get
 import json
 import logging
 import os
@@ -346,9 +346,9 @@ class MarkdownReader(NotebookReader):
         Returns a notebook.
         """
         # Split YAML metadata and the rest source code:
-        string, metadata = load_yaml(string, del_yaml=True)
-        if metadata:
-            metadata = {'metadata': metadata}
+        string, meta = load_yaml(string, del_yaml=True)
+        meta = meta.get('jupyter')
+        kwargs = dict(metadata=meta) if meta and isinstance(meta, dict) else {}
         #
         all_blocks = self.parse_blocks(string)
         if self.pre_code_block['content']:
@@ -359,7 +359,7 @@ class MarkdownReader(NotebookReader):
 
         cells = self.create_cells(blocks)
 
-        nb = nbbase.new_notebook(cells=cells, **metadata)
+        nb = nbbase.new_notebook(cells=cells, **kwargs)
 
         return nb
 
