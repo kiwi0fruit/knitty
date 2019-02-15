@@ -52,17 +52,16 @@ Unix:
 export PYTHONIOENCODING=utf-8
 export LANG=C.UTF-8
 
-input_file="doc.md"
-metadata="metadata.yml"
-reader_args=(-f markdown)
-writer_args=(-t html --standalone --self-contained)
+IN=doc.md
+YML=metadata.yml
+R=(-f markdown)
+W=(-t html --standalone --self-contained)
 
-t="$(pandoc-filter-arg "${writer_args[@]}")"
-cat "${input_file}" | \
-pre-knitty "${input_file}" --yaml "$metadata" | \
-pandoc "${reader_args[@]}" -t json | \
-knitty $t "${input_file}" "${reader_args[@]}" "${writer_args[@]}" | \
-pandoc -f json "${writer_args[@]}" -o "${input_file}.html"
+T="$(pandoc-filter-arg "${W[@]}")"
+cat "$IN" | pre-knitty "$IN" --yaml "$YML" |
+pandoc "${R[@]}" -t json |
+knitty $T "$IN" "${R[@]}" "${W[@]}" |
+pandoc -f json "${W[@]}" -o "$IN.html"
 ```
 
 Windows (see [setvar](https://github.com/kiwi0fruit/enaml-video-app/blob/master/enaml-video-app/setvar.bat)):
@@ -70,17 +69,16 @@ Windows (see [setvar](https://github.com/kiwi0fruit/enaml-video-app/blob/master/
 chcp 65001 > NUL
 set PYTHONIOENCODING=utf-8
 
-set input_file=doc.md
-set metadata=metadata.yml
-set reader_args=-f markdown
-set writer_args=-t html --standalone --self-contained
+set IN=doc.md
+set YML=metadata.yml
+set R=-f markdown
+set W=-t html --standalone --self-contained
 
-pandoc-filter-arg %writer_args% | call .\setvar t
-type "%input_file%" | ^
-pre-knitty "%input_file%" --yaml "%metadata%" | ^
-pandoc %reader_args% -t json | ^
-knitty %t% "%input_file%" %reader_args% %writer_args% | ^
-pandoc -f json %writer_args% -o "%input_file%.html"
+pandoc-filter-arg %W% | call .\setvar T
+type "%IN%" | pre-knitty "%IN%" --yaml "%YML%" | ^
+pandoc %R% -t json | ^
+knitty %T% "%IN%" %R% %W% | ^
+pandoc -f json %W% -o "%IN%.html"
 ```
 
 Before v0.5.0 Knitty supported conversion to ipynb via Notedown but since v0.5.0 it is adapted to be used with Pandoc >=2.6. You can learn how to convert to ipynb via Pandoc [**here**](https://pandoc.org/MANUAL.html#creating-jupyter-notebooks-with-pandoc).
