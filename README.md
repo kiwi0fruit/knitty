@@ -43,9 +43,9 @@ You either can use Knitty as a standard Pandoc filter:
 ```bash
 cat doc.md | pre-knitty | pandoc --filter knitty -o doc.ipynb
 ```
-and specify some subset knitty options (except dir) in metadata: `self_contained: True`, `standalone: True`. But this way you cannot switch from Markdown to RST for example.
+and specify some subset of Knitty options in metadata: `self_contained: True`, `standalone: True`. But this way you cannot switch from Markdown to RST for example.
 
-Or you can set all Knitty options (incl. those in metadata) by using it as a Pandoc filter with multiple arguments (`$t` is an arg that Pandoc passes to it's filters):
+Or you can set all Knitty options (including those in metadata) by using it as a Pandoc filter with multiple arguments (`$t` is an arg that Pandoc passes to it's filters):
 
 Unix:
 ```bash
