@@ -1,32 +1,27 @@
 ---
-title: "knitpy: dynamic report generation with python"
-author: "Jan Schulz"
-date: "12.03.2015"
-output:
-  pdf_document: default
-  word_document: default
-  html_document:
-    keep_md: yes
+title: "Knitty: dynamic report generation with Python"
+author: "Jan Schulz, Peter Zagubisalo"
+date: "15.02.2019"
 ---
 
-This is a port of knitr (http://yihui.name/knitr/) and rmarkdown
-(http://rmarkdown.rstudio.com/) to python.
+This is a port of Knitr (http://yihui.name/knitr/) and RMarkdown
+(http://rmarkdown.rstudio.com/) to Python.
 
 For a complete description of the code format see http://rmarkdown.rstudio.com/ and replace
-`{r...}` by `{python ...}` and of course use python code blocks...
+`` ```{r...} `` by `` @{...}\n```python `` and of course use python code blocks...
 
 ## Examples
 
 Here are some examples:
 
-```{python}
+```python
 print("Execute some code chunk and show the result")
 ```
 
 Codechunks which contain lines without output (e.g. assign the result or comments) will
 be shown in the same code block:
 
-```{python}
+```python
 # A comment
 text = "All code in the same code block until some output is produced..."
 more_text = "...and some more."
@@ -39,7 +34,8 @@ print(more_text)
 You can use different arguments in the codechunk declaration. Using `echo=False` will not show
 the code but only the result.
 
-```{python, echo=False}
+@{echo=False}
+```python
 print("Only the output will be visible as `echo=False`")
 ```
 
@@ -51,73 +47,74 @@ through results without reformatting them (useful if results return raw HTML, et
 
 `results='hold'` is not yet implemented.
 
-```{python, results="hide"}
+@{results=hide}
+```python
 print("Only the input is displayed, not the output")
 ```
 
-```{python, results="markup", echo=False}
+@{results=pandoc, echo=False}
+```python
 print("This is formatted as markdown:\n**This text** will be bold...")
 ```
 
-```{python, results="asis", echo=False}
+@{results=pandoc, echo=False}
+```python
 print("**This text** will be bold...")
 ```
 
 **Note**: with python code it is recommended to use the IPython/Jupyter display system and an
-appropriate wrapper (see below) to display such output and not `results="asis"`. This makes it
+appropriate wrapper (see below) to display such output and not `results=pandoc`. This makes it
 possible to convert such output if the output can't be included in the final format.
 
-You can also not show codeblocks at all, but they will be run (not included codeblock sets
-`have_run = True`):
+You can also not show codeblocks at all, but they will be run:
 
-```{python, include=False}
+@{echo=False}
+```python
 have_run = True
 print("This will not be shown, as include is False")
 ```
 
-```{python, include=True}
+@{echo=True}
+```python
 if have_run == True:
     print("'have_run==True': ran the codeblock before this one.")
 ```
 
 Using `eval=False`, one can prevent the evaluation of the codechunk
 
-```{python}
+```python
 x = 1
 ```
 
-```{python, eval=False}
+@{eval=False}
+```python
 x += 1 # this is not executed as eval is False
 ```
 
-```{python}
+```python
 x # still 1
 ```
 
 
-To remove/hide a codechunk completely, i.e. neither execute it nor show the code, you can use both `eval=False, include=False`: nothing will be
+To remove/hide a codechunk completely, i.e. neither execute it nor show the code, you can use both `eval=False, echo=False`: nothing will be
 shown between this text ...
 
-```{python, eval=False, include=False}
+@{eval=False, echo=False}
+```python
 x += 1 # this is not executed and not even shown
 ```
 
 ... and this text here!
 
-The prefix in front of text output (per default `##`) can be changed via the `comment` chunk
-option to a different string or completely removed by setting it to a empty string `""`or None:
-
-```{python, comment="# result:"}
-print("Text output")
-```
-
-```{python, comment=""}
-print("Text output")
-```
-
 ### Inline code
 
-You can also include code inline: "m=`python 1+1`" (expected: "m=2")
+You can use Python f-strings:
+
+```python
+from IPython.display import Markdown
+Markdown(f'You can also include code inline: $m={1+1}$')
+```
+(expected: `$m=2$`)
 
 ### IPython / Jupyter display framework
 
@@ -127,7 +124,8 @@ Plots will be included as images and included in the document. The filename of t
 plot is derived from the chunk label ("sinus" in this case). The code is not
 shown in this case (`echo=False`).
 
-```{python, sinus, echo=False}
+@{chunk=sinus, echo=False}
+```python
 # As this all produces no output, it should go into the same input section...
 import numpy as np
 import matplotlib.pyplot as plt
@@ -136,20 +134,21 @@ line, = plt.plot(y, np.sin(y))
 ```
 
 If a html or similar thing is displayed via the IPython display framework, it will be
-included 'as is', meaning that apart from `text/plain`-only output, everything else
+included as is, meaning that apart from `text/plain`-only output, everything else
 will be included without marking it up as output. Knitpy automagically tries to include only
 formats which are understood by pandoc and the final output format (in some case converting the
 format to one which the final output can handle).
 
-```{python, engine="python"}
-from IPython.core.display import display, HTML
+```python
+from IPython.display import display, HTML
 display(HTML("<strong>strong text</strong>"))
 ```
+`display()` is redundant.
 
 It even handles `pandas.DataFrames` (be aware that not all formatting can be converted into all
 output formats):
 
-```{python}
+```python
 import pandas as pd
 pd.set_option("display.width", 200)
 s = """This is longer text"""
@@ -160,7 +159,7 @@ df
 `pandas.DataFrame` can be represented as `text/plain` or `text/html`, but will default to the html
  version. To force plain text, use either `print(df)` or set the right `pandas` option:
 
-```{python}
+```python
 pd.set_option("display.notebook_repr_html", False)
 df
 # set back the display
@@ -168,14 +167,18 @@ pd.set_option("display.notebook_repr_html", True)
 ```
 
 You can also use package like [tabulate](https://bitbucket.org/astanin/python-tabulate)
-together with `results="asis"` or by wrapping it with the appropriate display class:
+together with `results=pandoc` or by wrapping it with the appropriate display class:
 
-```{python, results="asis"}
+@{results=pandoc}
+```python
 from tabulate import tabulate
-from IPython.core.display import Markdown
-# either print and use `results="asis"`
+# either print and use `results=pandoc`
 print(tabulate(df, list(df.columns), tablefmt="simple"))
+```
+
+```python
+from tabulate import tabulate
+from IPython.display import Markdown
 # or use the IPython display framework to publish markdown
 Markdown(tabulate(df, list(df.columns), tablefmt="simple"))
 ```
-

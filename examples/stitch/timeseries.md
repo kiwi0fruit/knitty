@@ -9,7 +9,7 @@ The first half of this post will look at pandas' capabilities for manipulating t
 The second half will discuss modelling time series data with statsmodels.
 
 
-```{python}
+```python
 %matplotlib inline
 
 import os
@@ -28,7 +28,7 @@ pd.options.display.precision = 2
 Let's grab some stock data for Goldman Sachs using the [`pandas-datareader`](http://pandas-datareader.readthedocs.io/en/latest/) package, which spun off of pandas:
 
 
-```{python}
+```python
 gs = web.DataReader("GS", data_source='yahoo', start='2006-01-01',
                     end='2010-01-01')
 gs.head().round(2)
@@ -41,7 +41,7 @@ There isn't a special data-container just for time series in pandas, they're jus
 Looking at the elements of `gs.index`, we see that `DatetimeIndex`es are made up of `pandas.Timestamp`s:
 
 
-```{python}
+```python
 gs.index[0]
 ```
 
@@ -51,13 +51,13 @@ Working with `Timestamp`s can be awkward, so Series and DataFrames with `Datetim
 The first special case is *partial-string indexing*. Say we wanted to select all the days in 2006. Even with `Timestamp`'s convenient constructors, it's a pain
 
 
-```{python}
+```python
 gs.loc[pd.Timestamp('2006-01-01'):pd.Timestamp('2006-12-31')].head()
 ```
 
 Thanks to partial-string indexing, it's as simple as
 
-```{python}
+```python
 gs.loc['2006'].head()
 ```
 
@@ -78,12 +78,12 @@ This is confusing because in pretty much every other case `DataFrame.__getitem__
 Resampling is similar to a `groupby`: you split the time series into groups (5-day buckets below), apply a function to each group (`mean`), and combine the result (one row per group).
 
 
-```{python}
+```python
 gs.resample("5d").mean().head()
 ```
 
 
-```{python}
+```python
 gs.resample("W").agg(['mean', 'sum']).head()
 ```
 
@@ -92,7 +92,7 @@ You can up-sample to convert to a higher frequency.
 The new points are filled with NaNs.
 
 
-```{python}
+```python
 gs.resample("6H").mean().head()
 ```
 
@@ -101,7 +101,7 @@ gs.resample("6H").mean().head()
 These methods aren't unique to `DatetimeIndex`es, but they often make sense with time series, so I'll show them here.
 
 
-```{python}
+```python
 gs.Close.plot(label='Raw')
 gs.Close.rolling(28).mean().plot(label='28D MA')
 gs.Close.expanding().mean().plot(label='Expanding Average')
@@ -117,13 +117,13 @@ sns.despine()
 Each of `.rolling`, `.expanding`, and `.ewm` return a deferred object, similar to a GroupBy.
 
 
-```{python}
+```python
 roll = gs.Close.rolling(30, center=True)
 roll
 ```
 
 
-```{python}
+```python
 m = roll.agg(['mean', 'std'])
 ax = m['mean'].plot()
 ax.fill_between(m.index, m['mean'] - m['std'], m['mean'] + m['std'],
@@ -139,7 +139,7 @@ sns.despine()
 
 These are similar to `dateutil.relativedelta`, but works with arrays.
 
-```{python}
+```python
 gs.index + pd.DateOffset(months=3, days=-2)
 ```
 
@@ -149,12 +149,12 @@ gs.index + pd.DateOffset(months=3, days=-2)
 There are a whole bunch of special calendars, useful for traders probabaly.
 
 
-```{python}
+```python
 from pandas.tseries.holiday import USColumbusDay
 ```
 
 
-```{python}
+```python
 USColumbusDay.dates('2015-01-01', '2020-01-01')
 ```
 
@@ -169,7 +169,7 @@ The typical workflow is
 If you already have timezone-aware Timestamps, there's no need for step one.
 
 
-```{python}
+```python
 # tz naiive -> tz aware..... to desired UTC
 gs.tz_localize('US/Eastern').tz_convert('UTC').head()
 ```
@@ -184,7 +184,8 @@ What follows certainly isn't a replacement for that.
 Any formality will be restricted to footnotes for the curious.
 I've put a whole bunch of resources at the end for people earger to learn more.
 
-```{python, echo=False}
+@{echo=False}
+```python
 import os
 import io
 import glob
@@ -272,7 +273,7 @@ def read_one(fp):
 ```
 
 
-```{python}
+```python
 store = 'data/ts.hdf5'
 
 if not os.path.exists(store):
@@ -293,14 +294,14 @@ else:
 ```
 
 
-```{python}
+```python
 with pd.option_context('display.max_rows', 100):
     print(df.dtypes)
 ```
 
 We can calculate the historical values with a resample.
 
-```{python}
+```python
 daily = df.fl_date.value_counts().sort_index()
 y = daily.resample('MS').mean()
 y.head()
@@ -311,14 +312,14 @@ Pandas defaults to end of month (or end of year).
 Append an `'S'` to get the start.
 
 
-```{python}
+```python
 ax = y.plot()
 ax.set(ylabel='Average Monthly Flights')
 sns.despine()
 ```
 
 
-```{python}
+```python
 import statsmodels.formula.api as smf
 import statsmodels.tsa.api as smt
 import statsmodels.api as sm
@@ -342,7 +343,7 @@ Afterwards, we'll use a second model, seasonal ARIMA, which handles those proble
 First, let's create a dataframe with our lagged values of `y` using the `.shift` method, which shifts the index `i` periods, so it lines up with that observation.
 
 
-```{python}
+```python
 X = (pd.concat([y.shift(i) for i in range(6)], axis=1,
                keys=['y'] + ['L%s' % i for i in range(1, 6)])
        .dropna())
@@ -352,7 +353,7 @@ X.head()
 We can fit the lagged model using statsmodels (which uses [patsy](http://patsy.readthedocs.org) to translate the formula string to a design matrix).
 
 
-```{python}
+```python
 mod_lagged = smf.ols('y ~ trend + L1 + L2 + L3 + L4 + L5',
                      data=X.assign(trend=np.arange(len(X))))
 res_lagged = mod_lagged.fit()
@@ -364,7 +365,7 @@ Since our lagged values are highly correlated with each other, our regression su
 That ruins our estimates of the slopes.
 
 
-```{python}
+```python
 sns.heatmap(X.corr());
 ```
 
@@ -374,7 +375,7 @@ The immediately preceding period *should* be most important ($\beta_1$ is the la
 Looking at the regression summary and the bar graph below, this isn't the case (the cause is related to multicollinearity).
 
 
-```{python}
+```python
 ax = res_lagged.params.drop(['Intercept', 'trend']).plot.bar(rot=0)
 plt.ylabel('Coefficeint')
 sns.despine()
@@ -391,7 +392,7 @@ Roughly speaking, autocorrelation is when there's a clear pattern in the residua
 Let's fit a simple model of $y = \beta_0 + \beta_1 T + \epsilon$, where `T` is the time trend (`np.arange(len(y))`).
 
 
-```{python}
+```python
 # `Results.resid` is a Series of residuals: y - ŷ
 mod_trend = sm.OLS.from_formula(
     'y ~ trend', data=y.to_frame(name='y')
@@ -406,7 +407,7 @@ In this case there's a correlation between one residual and the next: if the res
 We'll define a helper function to plot the residuals time series, and some diagnostics about them.
 
 
-```{python}
+```python
 def tsplot(y, lags=None, figsize=(10, 8)):
     fig = plt.figure(figsize=figsize)
     layout = (2, 2)
@@ -426,7 +427,7 @@ def tsplot(y, lags=None, figsize=(10, 8)):
 Calling it on the residuals from the linear trend:
 
 
-```{python}
+```python
 tsplot(res_trend.resid, lags=36);
 ```
 
@@ -455,7 +456,7 @@ Rather, there could be a third variable that's driving both (wealth, say).
 The typical way to handle non-stationarity is to difference the non-stationary variable until is is stationary.
 
 
-```{python}
+```python
 y.to_frame(name='y').assign(Δy=lambda x: x.y.diff()).plot(subplots=True)
 sns.despine()
 ```
@@ -476,14 +477,14 @@ This is implemented in statsmodels as [`smt.adfuller`](http://www.statsmodels.or
 The return type is a bit busy for me, so we'll wrap it in a `namedtuple`.
 
 
-```{python}
+```python
 from collections import namedtuple
 
 ADF = namedtuple("ADF", "adf pvalue usedlag nobs critical icbest")
 ```
 
 
-```{python}
+```python
 ADF(*smt.adfuller(y))._asdict()
 ```
 
@@ -492,7 +493,7 @@ So we failed to reject the null hypothesis that the original series was non-stat
 Let's difference it.
 
 
-```{python}
+```python
 ADF(*smt.adfuller(y.diff().dropna()))._asdict()
 ```
 
@@ -502,7 +503,7 @@ It's not statistically significant at the 5% level, but who cares what statistic
 We'll fit another OLS model of $\Delta y = \beta_0 + \beta_1 L \Delta y_{t-1} + e_t$
 
 
-```{python}
+```python
 data = (y.to_frame(name='y')
          .assign(Δy=lambda df: df.y.diff())
          .assign(LΔy=lambda df: df.Δy.shift()))
@@ -511,7 +512,7 @@ res_stationary = mod_stationary.fit()
 ```
 
 
-```{python}
+```python
 tsplot(res_stationary.resid, lags=24);
 ```
 
@@ -522,7 +523,7 @@ So we've taken care of multicolinearity, autocorelation, and stationarity, but w
 We have strong monthly seasonality:
 
 
-```{python}
+```python
 smt.seasonal_decompose(y).plot();
 ```
 
@@ -587,14 +588,14 @@ We went through that *extremely* quickly, so don't feel bad if things aren't cle
 Fortunately, the model is pretty easy to use with statsmodels (using it *correctly*, in a statistical sense, is another matter).
 
 
-```{python}
+```python
 mod = smt.SARIMAX(y, trend='c', order=(1, 1, 1))
 res = mod.fit()
 tsplot(res.resid[2:], lags=24);
 ```
 
 
-```{python}
+```python
 res.summary()
 ```
 
@@ -637,7 +638,7 @@ And the seasonal component is
 - $Q=2$: Use the two previous seasonal residuals
 
 
-```{python}
+```python
 mod_seasonal = smt.SARIMAX(y, trend='c',
                            order=(1, 1, 2), seasonal_order=(0, 1, 2, 12),
                            simple_differencing=False)
@@ -645,12 +646,12 @@ res_seasonal = mod_seasonal.fit()
 ```
 
 
-```{python}
+```python
 res_seasonal.summary()
 ```
 
 
-```{python}
+```python
 tsplot(res_seasonal.resid[12:], lags=24);
 ```
 
@@ -673,13 +674,13 @@ At each point (month), we take the history up to that point and make a forecast 
 So the forecast for January 2014 has available all the data up through December 2013.
 
 
-```{python}
+```python
 pred = res_seasonal.get_prediction(start='2001-03-01')
 pred_ci = pred.conf_int()
 ```
 
 
-```{python}
+```python
 ax = y.plot(label='observed')
 pred.predicted_mean.plot(ax=ax, label='Forecast', alpha=.7)
 ax.fill_between(pred_ci.index,
@@ -700,13 +701,13 @@ The predictions are generated in a similar way: a bunch of one-step forecasts.
 Only instead of plugging in the *actual* values beyond January 2013, we plug in the *forecast* values.
 
 
-```{python}
+```python
 pred_dy = res_seasonal.get_prediction(start='2002-03-01', dynamic='2013-01-01')
 pred_dy_ci = pred_dy.conf_int()
 ```
 
 
-```{python}
+```python
 ax = y.plot(label='observed')
 pred_dy.predicted_mean.plot(ax=ax, label='Forecast')
 ax.fill_between(pred_dy_ci.index,
