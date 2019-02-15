@@ -13,23 +13,7 @@ from markdown (and r-markdown).
 blocks (fenced or indented) go into input cells, everything else
 goes into markdown cells.
 
-This is a fork. See [original version](https://github.com/aaren/notedown). See original Notedown info:
-
-```yaml
-name: "notedown"
-version: "1.5.1"
-description: "Convert markdown to IPython notebook."
-url: "http://github.com/aaren/notedown"
-author: "Aaron O'Leary"
-author_email: "dev@aaren.me"
-license: 'BSD 2-Clause'
-install_requires:
-  - nbformat
-  - nbconvert
-  - pandoc-attributes
-  - six
-  - pyyaml
-```
+This is a fork. See [original version](https://github.com/aaren/notedown).
 
 Usage:
 
