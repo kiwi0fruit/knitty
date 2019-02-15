@@ -2,6 +2,6 @@ include knitty/*
 include knitty/stitch/*
 include knitty/notedown/*
 include knitty/notedown/templates/*
+include knitty/pandoc_filter_arg/pandoc_filter_arg/*
 include versioneer.py
-include knitty/_version.py
 include LICENSE

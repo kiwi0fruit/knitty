@@ -52,14 +52,12 @@ setup(
     # conda install -c defaults -c conda-forge pytest pytest-cov sphinx pandas matplotlib sphinx_rtd_theme ghp-import nose r-knitr r-reticulate
 
     include_package_data=True,
-    package_data={
-        'knitty': ['stitch/*', 'stitch/static/*', 'notedown/*', 'notedown/templates/*'],
-    },
     entry_points={
         'console_scripts': [
             'knitty=knitty.knitty:main',
             'pre-knitty=knitty.pre_knitty:main',
             'knotedown = knitty.notedown.main:app',
+            'pandoc-filter-arg=knitty.pandoc_filter_arg.cli:cli',
         ],
     },
 )

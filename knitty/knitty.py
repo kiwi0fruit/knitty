@@ -36,9 +36,9 @@ def main(ctx, filter_to, input_file, read, output, standalone, self_contained):
         raise KnittyError(f"Invalid Pandoc filter arg: '{filter_to}'")
 
     fmts = dict(commonmark='md', markdown='md', gfm='md')
-    if output:
+    if output and (output != '-'):
         dir_name = p.basename(output).replace('.', '_')
-    elif input_file:
+    elif input_file and (input_file != '-'):
         dir_name = p.basename(input_file).replace('.', '_') + '_' + fmts.get(filter_to, filter_to)
     else:
         dir_name = 'stdout' + '_' + fmts.get(filter_to, filter_to)
