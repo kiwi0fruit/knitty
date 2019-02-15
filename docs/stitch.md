@@ -14,25 +14,7 @@ and stitch) is to make writing reproducible reports easier.
 
 **Documentation** is available [**here**](https://kiwi0fruit.github.io/pystitch/).
 
-This is a fork. See [original version](https://github.com/pystitch/stitch). Original Stitch info:
-
-```yaml
-name: knotr
-description: "Reproducible report generation tool."
-url: "https://github.com/tomaugspurger/stitch"
-author: "Tom Augspurger"
-author_email: "tom.augspurger88@gmail.com"
-license: 'MIT'
-install_requires:
-  - jupyter_core
-  - traitlets
-  - ipython
-  - jupyter_client
-  - nbconvert
-  - pandocfilters
-  - pypandoc
-  - click
-```
+This is a fork. See [original version](https://github.com/pystitch/stitch).
 
 
 Examples
