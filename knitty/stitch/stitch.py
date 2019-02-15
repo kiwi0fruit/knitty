@@ -23,15 +23,11 @@ import panflute as pf
 import argparse
 
 from . import options as opt
-from ..tools import where
+from ..tools import where, KnittyError
 pf.tools.which = where  # patch panflute
 
 CODEBLOCK = 'CodeBlock'
 KernelPair = namedtuple("KernelPair", "km kc")
-
-
-class StitchError(Exception):
-    pass
 
 
 class _Fig(HasTraits):
@@ -380,7 +376,7 @@ class Stitch(HasTraits):
             if message['header']['msg_type'] == 'error':
                 error = self.get_option('error', attrs)
                 if error == 'raise':
-                    exc = StitchError(message['content']['traceback'])
+                    exc = KnittyError(message['content']['traceback'])
                     raise exc
                 blocks = plain_output('\n'.join(message['content']['traceback']))
             else:
