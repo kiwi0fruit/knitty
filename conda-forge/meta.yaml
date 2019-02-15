@@ -1,5 +1,5 @@
 {% set name = "knitty" %}
-{% set version = "0.4.20" %}
+{% set version = "0.5.0" %}
 
 package:
   name: {{ name|lower }}
@@ -15,9 +15,8 @@ build:
   entry_points:
     - knitty = knitty.knitty:main
     - pre-knitty = knitty.pre_knitty:main
-    - post-knitty = knitty.post_knitty:cli
-    - knotr = knitty.stitch.cli:cli
     - knotedown = knitty.notedown.main:app
+    - pandoc-filter-arg = knitty.pandoc_filter_arg.cli:cli
   script: "{{ PYTHON }} -m pip install . --no-deps -vv"
 
 requirements:
@@ -43,15 +42,16 @@ requirements:
 test:
   imports:
     - knitty
+    - knitty.api
     - knitty.tools
     - knitty.notedown
     - knitty.stitch
+    - knitty.pandoc_filter_arg
   commands:
     - knitty --help
     - pre-knitty --help
-    - post-knitty --help
-    - knotr --help
     - knotedown --help
+    - pandoc-filter-arg --help
 
 about:
   home: https://github.com/kiwi0fruit/knitty
