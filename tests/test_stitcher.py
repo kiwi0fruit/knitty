@@ -1,4 +1,5 @@
 import os
+import os.path as p
 import json
 import uuid
 import shutil
@@ -16,7 +17,7 @@ from knitty.tools import where
 import knitty.stitch.stitch as R
 
 pf.tools.which = where  # patch panflute
-HERE = os.path.dirname(__file__)
+HERE = p.dirname(__file__)
 
 
 def pre_stitch_ast(source: str) -> dict:
@@ -59,13 +60,13 @@ def clean_stdout():
 @pytest.fixture
 def document_path():
     "Path to a markdown document"
-    return os.path.join(HERE, 'data', 'small.md')
+    return p.join(HERE, 'data', 'small.md')
 
 
 @pytest.fixture
 def document():
     "In-memory markdown document"
-    with open(os.path.join(HERE, 'data', 'small.md')) as f:
+    with open(p.join(HERE, 'data', 'small.md')) as f:
         doc = f.read()
     return doc
 
@@ -292,10 +293,11 @@ class TestIntegration:
 
     def test_from_file(self, document_path, clean_stdout):
         with open(document_path, 'r', encoding='utf-8') as f:
-            R.Stitch('', 'html').stitch_ast(pre_stitch_ast(f.read()))
+            R.Stitch(p.basename(document_path).replace('.', '_'),
+                     'html').stitch_ast(pre_stitch_ast(f.read()))
 
     def test_from_source(self, document, clean_stdout):
-        R.Stitch('', 'html').stitch_ast(pre_stitch_ast(document))
+        R.Stitch('stdout', 'html').stitch_ast(pre_stitch_ast(document))
 
     @pytest.mark.parametrize("to, value", [
         ("html", "data:image/png;base64,"),
@@ -376,9 +378,9 @@ class TestIntegration:
         s = R.Stitch(clean_name, 'html', self_contained=False)
         s._kernel_pairs['python'] = clean_python_kernel
         s.stitch(code)
-        expected = os.path.join(clean_name + '_files',
-                                'unnamed_chunk_0.' + fmt)
-        assert os.path.exists(expected)
+        expected = p.join(clean_name + '_files',
+                          'unnamed_chunk_0.' + fmt)
+        assert p.exists(expected)
 
     @pytest.mark.parametrize('warning, length', [
         (True, 3),
@@ -413,7 +415,7 @@ class TestIntegration:
         assert '\\begin{tabular}' in result
 
     def test_error_raises(self):
-        s = R.Stitch('', 'html', error='raise')
+        s = R.Stitch('stdout', 'html', error='raise')
         code = dedent('''\
         ```{python}
         1 / 0
@@ -429,7 +431,7 @@ class TestIntegration:
         'html', 'latex', 'docx',
     ])
     def test_ipython_display(self, clean_python_kernel, to):
-        s = R.Stitch('', to)
+        s = R.Stitch('stdout', to)
         code = dedent('''\
         from IPython import display
         import math
@@ -463,7 +465,7 @@ class TestKernel:
 class TestStitcher:
 
     def test_error(self):
-        s = R.Stitch('', 'html')
+        s = R.Stitch('stdout', 'html')
         assert s.error == 'continue'
         s.error = 'raise'
         assert s.error == 'raise'
@@ -472,7 +474,7 @@ class TestStitcher:
             s.error = 'foo'
 
     def test_getattr(self):
-        s = R.Stitch('', 'html')
+        s = R.Stitch('stdout', 'html')
         assert getattr(s, 'fig.width') is None
         assert s.fig.width is None
         with pytest.raises(AttributeError):
@@ -482,7 +484,7 @@ class TestStitcher:
             assert getattr(s, 'foo')
 
     def test_has_trait(self):
-        s = R.Stitch('', 'html')
+        s = R.Stitch('stdout', 'html')
         assert s.has_trait('fig.width')
         assert not s.has_trait('fake.width')
         assert not s.has_trait('fig.fake')
