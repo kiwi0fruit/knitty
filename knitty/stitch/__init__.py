@@ -1,1 +1,1 @@
-from .stitch import kernel_factory, run_code, Stitch, KnittyError # noqa
+from .stitch import kernel_factory, run_code, Stitch, KnittyError, wrap_output # noqa
