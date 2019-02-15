@@ -20,7 +20,9 @@ HERE = os.path.dirname(__file__)
 
 
 def pre_stitch_ast(source: str) -> dict:
-        return json.loads(pf.convert_text(knitty_preprosess(source), input_format='markdown', output_format='json'))
+        return json.loads(pf.convert_text(knitty_preprosess(source),
+                                          input_format='markdown',
+                                          output_format='json'))
 
 
 @pytest.fixture(scope='module')

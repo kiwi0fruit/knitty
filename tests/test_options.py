@@ -11,7 +11,9 @@ pf.tools.which = where  # patch panflute
 
 
 def pre_stitch_ast(source: str) -> dict:
-        return json.loads(pf.convert_text(knitty_preprosess(source), input_format='markdown', output_format='json'))
+        return json.loads(pf.convert_text(knitty_preprosess(source),
+                                          input_format='markdown',
+                                          output_format='json'))
 
 
 @pytest.fixture
@@ -35,7 +37,7 @@ def doc_meta():
 class TestOptions:
 
     def test_defaults(self):
-        s = Stitch('')
+        s = Stitch('', 'html')
         assert s.warning
         assert s.error == 'continue'
         assert s.standalone
@@ -55,7 +57,7 @@ class TestOptions:
 
         # Hail and well met
         ''')
-        s = Stitch('')
+        s = Stitch('', 'html')
         s.stitch_ast(pre_stitch_ast(doc))
 
         assert s.standalone is False
@@ -68,7 +70,7 @@ class TestOptions:
     ])
     def test_meta(self, key, doc_meta):
         doc, meta = doc_meta
-        s = Stitch('')
+        s = Stitch('', 'html')
         s.stitch_ast(pre_stitch_ast(doc))
         result = getattr(s, key)
         expected = meta[key]
@@ -84,7 +86,7 @@ class TestOptionsKernel:
         import matplotlib.pyplot as plt
         plt.plot(range(4), range(4))
         ```''')
-        s = Stitch('')
+        s = Stitch('', 'html')
         result = s.stitch_ast(pre_stitch_ast(code))
         blocks = result['blocks']
         result = blocks[-1]['c'][0]['c'][1][0]['c']
