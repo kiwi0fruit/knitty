@@ -312,7 +312,7 @@ class TestIntegration:
         plt.title('Foo — Bar');  # That's an em dash
         ```
         ''')
-        result = R.Stitch('foo', to).stitch(code)
+        result = R.Stitch('foo', to).stitch_ast(pre_stitch_ast(code))
         blocks = result['blocks']
         assert blocks[1]['c'][0]['t'] == 'Image'
 
@@ -324,7 +324,7 @@ class TestIntegration:
         plt.plot(range(4), range(4));
         ```
         ''')
-        result = R.Stitch('foo', 'latex', standalone=False).stitch(code)
+        result = R.Stitch('foo', 'latex', standalone=False).stitch_ast(pre_stitch_ast(code))
         blocks = result['blocks']
         assert 'chunk' in blocks[1]['c'][0]['c'][0][0]
 
@@ -336,7 +336,7 @@ class TestIntegration:
         plt.plot(range(4), range(4));
         ```
         ''')
-        result = R.Stitch('foo', 'html', standalone=False).stitch(code)
+        result = R.Stitch('foo', 'html', standalone=False).stitch_ast(pre_stitch_ast(code))
         blocks = result['blocks']
         attrs = blocks[1]['c'][0]['c'][0][2]
         assert ('width', '10') in attrs
@@ -352,7 +352,7 @@ class TestIntegration:
         ''')
         s = R.Stitch(clean_name, 'html', self_contained=False)
         s._kernel_pairs['python'] = clean_python_kernel
-        result = s.stitch(code)
+        result = s.stitch_ast(pre_stitch_ast(code))
         blocks = result['blocks']
         expected = ('{}_files/unnamed_chunk_0.png'.format(clean_name),
                     r'{}_files\unnamed_chunk_0.png'.format(clean_name))
@@ -377,7 +377,7 @@ class TestIntegration:
         ''').format(fmt=fmt)
         s = R.Stitch(clean_name, 'html', self_contained=False)
         s._kernel_pairs['python'] = clean_python_kernel
-        s.stitch(code)
+        s.stitch_ast(pre_stitch_ast(code))
         expected = p.join(clean_name + '_files',
                           'unnamed_chunk_0.' + fmt)
         assert p.exists(expected)
@@ -396,7 +396,7 @@ class TestIntegration:
         ''')
         r = R.Stitch('foo', 'html', warning=warning)
         r._kernel_pairs['python'] = clean_python_kernel
-        result = r.stitch(code)
+        result = r.stitch_ast(pre_stitch_ast(code))
         assert len(result['blocks']) == length
 
     @pytest.mark.parametrize('to', ['latex', 'beamer'])
@@ -410,7 +410,7 @@ class TestIntegration:
         ''')
         stitch = R.Stitch('foo', to)
         stitch._kernel_pairs['python'] = clean_python_kernel
-        blocks = stitch.stitch(code)['blocks']
+        blocks = stitch.stitch_ast(pre_stitch_ast(code))['blocks']
         result = blocks[1]['c'][1]
         assert '\\begin{tabular}' in result
 
@@ -422,10 +422,10 @@ class TestIntegration:
         ```
         ''')
         with pytest.raises(R.KnittyError):
-            s.stitch(code)
+            s.stitch_ast(pre_stitch_ast(code))
 
         s.error = 'continue'
-        s.stitch(code)
+        s.stitch_ast(pre_stitch_ast(code))
 
     @pytest.mark.parametrize('to', [
         'html', 'latex', 'docx',
