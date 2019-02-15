@@ -38,16 +38,26 @@ conda install r-knitr r-reticulate
 
 ## Usage
 
+You either can use Knitty as a standard Pandoc filter:
+
+```bash
+cat doc.md | pre-knitty | pandoc --filter knitty -o doc.ipynb
+```
+and specify some subset knitty options (except dir) in metadata: `self_contained: True`, `standalone: True`. But this way you cannot switch from Markdown to RST for example.
+
+Or you can set all Knitty options (incl. those in metadata) by using it as a Pandoc filter with multiple arguments (`$t` is an arg that Pandoc passes to it's filters):
+
 Unix:
 ```bash
 export PYTHONIOENCODING=utf-8
+export LANG=C.UTF-8
 
 input_file="doc.md"
 metadata="metadata.yml"
 reader_args=(-f markdown)
 writer_args=(-t html --standalone --self-contained)
-t=html
 
+t="$(pandoc-filter-arg "${writer_args[@]}")"
 cat "${input_file}" | \
 pre-knitty "${input_file}" --yaml "$metadata" | \
 pandoc "${reader_args[@]}" -t json | \
@@ -55,7 +65,7 @@ knitty $t "${input_file}" "${reader_args[@]}" "${writer_args[@]}" | \
 pandoc -f json "${writer_args[@]}" -o "${input_file}.html"
 ```
 
-Windows:
+Windows (see [setvar](https://github.com/kiwi0fruit/enaml-video-app/blob/master/enaml-video-app/setvar.bat)):
 ```bat
 chcp 65001 > NUL
 set PYTHONIOENCODING=utf-8
@@ -64,8 +74,8 @@ set input_file=doc.md
 set metadata=metadata.yml
 set reader_args=-f markdown
 set writer_args=-t html --standalone --self-contained
-set t=html
 
+pandoc-filter-arg %writer_args% | call .\setvar t
 type "%input_file%" | ^
 pre-knitty "%input_file%" --yaml "%metadata%" | ^
 pandoc %reader_args% -t json | ^
