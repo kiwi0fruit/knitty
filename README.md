@@ -64,7 +64,7 @@ knitty $T "$IN" "${R[@]}" "${W[@]}" |
 pandoc -f json "${W[@]}" -o "$IN.html"
 ```
 
-Windows (see [setvar](https://github.com/kiwi0fruit/enaml-video-app/blob/master/enaml-video-app/setvar.bat)):
+Windows (see [setvar](https://github.com/kiwi0fruit/knitty/blob/master/examples/setvar.bat)):
 ```bat
 chcp 65001 > NUL
 set PYTHONIOENCODING=utf-8

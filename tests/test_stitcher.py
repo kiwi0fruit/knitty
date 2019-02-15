@@ -150,7 +150,7 @@ class TestTesters:
         ({'content': {'name': 'stderr'}}, True),
         ({'content': {}}, False),
     ])
-    def test_is_stderr(selr, message, expected):
+    def test_is_stderr(self, message, expected):
         result = R.is_stderr(message)
         assert result == expected
 
@@ -158,7 +158,7 @@ class TestTesters:
         ({'msg_type': 'execute_input'}, True),
         ({'msg_type': 'idle'}, False),
     ])
-    def test_is_execute_input(selr, message, expected):
+    def test_is_execute_input(self, message, expected):
         result = R.is_execute_input(message)
         assert result == expected
 
@@ -284,7 +284,7 @@ class TestFormatters:
     ])
     @pytest.mark.xfail
     def test_wrap_output(self, output, message, expected):
-        result = R.wrap_output(output, message)
+        result = R.Stitch('stdout', 'html').wrap_output(output, message, {})
         assert result == expected
 
 
