@@ -53,7 +53,7 @@ def clean_name():
 @pytest.fixture
 def clean_stdout():
     yield
-    shutil.rmtree('std_out_files')
+    shutil.rmtree('stdout_files')
 
 
 @pytest.fixture
@@ -291,14 +291,15 @@ class TestFormatters:
 class TestIntegration:
 
     def test_from_file(self, document_path, clean_stdout):
-        R.convert_file(document_path, 'html')
+        with open(document_path, 'r', encoding='utf-8') as f:
+            R.Stitch('', 'html').stitch_ast(pre_stitch_ast(f.read()))
 
     def test_from_source(self, document, clean_stdout):
-        R.convert(document, 'html')
+        R.Stitch('', 'html').stitch_ast(pre_stitch_ast(document))
 
     @pytest.mark.parametrize("to, value", [
         ("html", "data:image/png;base64,"),
-        ("pdf", 'unnamed_chunk_0'),  # TODO: chunk name
+        ("latex", 'unnamed_chunk_0'),  # TODO: chunk name
     ])
     def test_image(self, to, value, global_python_kernel):
         code = dedent('''\
@@ -309,7 +310,7 @@ class TestIntegration:
         plt.title('Foo — Bar');  # That's an em dash
         ```
         ''')
-        result = R.Stitch('foo', to=to).stitch(code)
+        result = R.Stitch('foo', to).stitch(code)
         blocks = result['blocks']
         assert blocks[1]['c'][0]['t'] == 'Image'
 
@@ -321,7 +322,7 @@ class TestIntegration:
         plt.plot(range(4), range(4));
         ```
         ''')
-        result = R.Stitch('foo', to='pdf', standalone=False).stitch(code)
+        result = R.Stitch('foo', 'latex', standalone=False).stitch(code)
         blocks = result['blocks']
         assert 'chunk' in blocks[1]['c'][0]['c'][0][0]
 
@@ -333,7 +334,7 @@ class TestIntegration:
         plt.plot(range(4), range(4));
         ```
         ''')
-        result = R.Stitch('foo', to='html', standalone=False).stitch(code)
+        result = R.Stitch('foo', 'html', standalone=False).stitch(code)
         blocks = result['blocks']
         attrs = blocks[1]['c'][0]['c'][0][2]
         assert ('width', '10') in attrs
@@ -347,7 +348,7 @@ class TestIntegration:
         plt.plot(range(4))
         ```
         ''')
-        s = R.Stitch(clean_name, self_contained=False)
+        s = R.Stitch(clean_name, 'html', self_contained=False)
         s._kernel_pairs['python'] = clean_python_kernel
         result = s.stitch(code)
         blocks = result['blocks']
@@ -372,7 +373,7 @@ class TestIntegration:
         plt.plot(x, np.cos(x))
         ```
         ''').format(fmt=fmt)
-        s = R.Stitch(clean_name, self_contained=False)
+        s = R.Stitch(clean_name, 'html', self_contained=False)
         s._kernel_pairs['python'] = clean_python_kernel
         s.stitch(code)
         expected = os.path.join(clean_name + '_files',
@@ -391,7 +392,7 @@ class TestIntegration:
         2
         ```
         ''')
-        r = R.Stitch('foo', to='html', warning=warning)
+        r = R.Stitch('foo', 'html', warning=warning)
         r._kernel_pairs['python'] = clean_python_kernel
         result = r.stitch(code)
         assert len(result['blocks']) == length
@@ -405,30 +406,30 @@ class TestIntegration:
         pd.DataFrame({'a': [1, 2]})
         ```
         ''')
-        stitch = R.Stitch('foo', to, )
+        stitch = R.Stitch('foo', to)
         stitch._kernel_pairs['python'] = clean_python_kernel
         blocks = stitch.stitch(code)['blocks']
         result = blocks[1]['c'][1]
         assert '\\begin{tabular}' in result
 
     def test_error_raises(self):
-        s = R.Stitch('', error='raise')
+        s = R.Stitch('', 'html', error='raise')
         code = dedent('''\
         ```{python}
         1 / 0
         ```
         ''')
-        with pytest.raises(R.StitchError):
+        with pytest.raises(R.KnittyError):
             s.stitch(code)
 
         s.error = 'continue'
         s.stitch(code)
 
     @pytest.mark.parametrize('to', [
-        'html', 'pdf', 'latex', 'docx',
+        'html', 'latex', 'docx',
     ])
     def test_ipython_display(self, clean_python_kernel, to):
-        s = R.Stitch('', to=to)
+        s = R.Stitch('', to)
         code = dedent('''\
         from IPython import display
         import math
@@ -462,7 +463,7 @@ class TestKernel:
 class TestStitcher:
 
     def test_error(self):
-        s = R.Stitch('')
+        s = R.Stitch('', 'html')
         assert s.error == 'continue'
         s.error = 'raise'
         assert s.error == 'raise'
@@ -471,7 +472,7 @@ class TestStitcher:
             s.error = 'foo'
 
     def test_getattr(self):
-        s = R.Stitch('')
+        s = R.Stitch('', 'html')
         assert getattr(s, 'fig.width') is None
         assert s.fig.width is None
         with pytest.raises(AttributeError):
@@ -481,7 +482,7 @@ class TestStitcher:
             assert getattr(s, 'foo')
 
     def test_has_trait(self):
-        s = R.Stitch('')
+        s = R.Stitch('', 'html')
         assert s.has_trait('fig.width')
         assert not s.has_trait('fake.width')
         assert not s.has_trait('fig.fake')
@@ -501,6 +502,6 @@ def test_empty_message():
                       'msg_id': '6'},
            'content': {'metadata': {}, 'data': {}}, 'msg_id': '6'}
     ]
-    s = R.Stitch('foo')
+    s = R.Stitch('foo', 'html')
     result = s.wrap_output('bar', messages, {})
     assert result == []
