@@ -1,9 +1,9 @@
 # %% 
 """
 ---
-# test start with and without r'^# %%'
-knitty:
-  comments: ['#', "'''", "'''", "\"\"\"", "\"\"\""]
+comments-map:
+  py: ['#', "'''", "'''", "\"\"\"", "\"\"\""]
+  js: ["//", "/*", "*/"]
 ...
 """
 
@@ -12,9 +12,7 @@ knitty:
 
 # %% {r}
 """
-print(0)
-# import os
-# print(0, file=open(os.path.expanduser('~/__debug.txt'), 'a', encoding='utf-8'))
+print(1)
 """
 
 # %%

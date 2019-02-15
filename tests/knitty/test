@@ -1,4 +1,0 @@
-#!/bin/bash
-cd "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-
-cat test.py | pre-knitty -y test.yaml

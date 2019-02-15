@@ -293,11 +293,10 @@ class TestIntegration:
 
     def test_from_file(self, document_path, clean_stdout):
         with open(document_path, 'r', encoding='utf-8') as f:
-            R.Stitch(p.basename(document_path).replace('.', '_'),
-                     'html').stitch_ast(pre_stitch_ast(f.read()))
+            R.Stitch('stdout', 'html', self_contained=False).stitch_ast(pre_stitch_ast(f.read()))
 
     def test_from_source(self, document, clean_stdout):
-        R.Stitch('stdout', 'html').stitch_ast(pre_stitch_ast(document))
+        R.Stitch('stdout', 'html', self_contained=False).stitch_ast(pre_stitch_ast(document))
 
     @pytest.mark.parametrize("to, value", [
         ("html", "data:image/png;base64,"),
