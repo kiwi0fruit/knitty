@@ -25,13 +25,15 @@ from .tools import KnittyError
               help='Pandoc reader option. Specify input format. Affects Knitty parsing.')
 @click.option('-o', '--output', type=str, default=None,
               help='Pandoc writer option. It ONLY helps to auto-name Knitty data folder.')
+@click.option('-w', '-t', '--write', '--to', 'to', type=str, default=None,
+              help="Pandoc writer option. Does nothing.")
 @click.option('--standalone', is_flag=True, default=False,
               help='Pandoc writer option. Produce a standalone document instead of fragment. ' +
               'Affects Knitty behaviour and also is added to `pandoc_extra_args`.')
 @click.option('--self-contained', is_flag=True, default=False,
               help='Pandoc writer option. Store resources like images inside document instead of external files. ' +
               'Affects Knitty behaviour and also is added to `pandoc_extra_args`.')
-def main(ctx, filter_to, input_file, read, output, standalone, self_contained):
+def main(ctx, filter_to, input_file, read, output, to, standalone, self_contained):
     if not filter_to:
         raise KnittyError(f"Invalid Pandoc filter arg: '{filter_to}'")
 
