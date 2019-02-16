@@ -44,12 +44,13 @@ setup(
                       'nbconvert', 'pandocfilters', 'py-pandoc>=2.6', 
                       'click', 'psutil', 'panflute>=1.11.2',
                       'nbformat', 'pandoc-attrs', 'pyyaml'],
+    # jupyter_core traitlets ipython jupyter_client nbconvert pandocfilters "py-pandoc>=2.6" click psutil "panflute>=1.11.2" nbformat pandoc-attrs pyyaml
     python_requires='>=3.6',
     extras_require={
         'dev': ['pytest', 'pytest-cov', 'sphinx', 'pandas', 'matplotlib', 'sphinx_rtd_theme', 'ghp-import',  # for stitch
                 'nose'],  # for notedown; more conda packages: 'r-knitr', 'r-reticulate'
     },
-    # conda install -c defaults -c conda-forge pytest pytest-cov sphinx pandas matplotlib sphinx_rtd_theme ghp-import nose r-knitr r-reticulate
+    # pytest pytest-cov sphinx pandas matplotlib sphinx_rtd_theme ghp-import nose r-knitr r-reticulate
 
     include_package_data=True,
     entry_points={
