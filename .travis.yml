@@ -34,7 +34,7 @@ script:
   - "knitty --help"
   - "pandoc-filter-arg -o doc.pdf"
   - |
-    printf "@{eval=True, echo=True}\n```python\nprint(0)\n```\n" |
+    printf "@{eval=True, echo=True}\n\`\`\`python\nprint(0)\n\`\`\`\n" |
     pre-knitty |
     pandoc -t json |
     knitty markdown |
