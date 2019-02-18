@@ -83,9 +83,9 @@ knitty %t% "%in%" %R% %W% | ^
 pandoc -f json %W% -o "%in%.html"
 ```
 
-Before v0.5.0 Knitty supported conversion to ipynb via Notedown but since v0.5.0 it is adapted to be used with Pandoc >=2.6. You can learn how to convert to ipynb via Pandoc [**here**](https://pandoc.org/MANUAL.html#creating-jupyter-notebooks-with-pandoc) (optionally: [install Pandoc in Python](https://github.com/kiwi0fruit/py-pandoc)).
+Before v0.5.0 Knitty supported conversion to .ipynb via Notedown but since v0.5.0 it is adapted to be used with Pandoc >=2.6. You can learn how to convert to ipynb via Pandoc [**here**](https://pandoc.org/MANUAL.html#creating-jupyter-notebooks-with-pandoc) (optionally: [install Pandoc in Python](https://github.com/kiwi0fruit/py-pandoc)). I also recommend using `knitty.self_contained_raw_html_img` Panflute filter (see [here](https://github.com/kiwi0fruit/knitty/blob/master/docs/knitty.md#self_contained_raw_html_img-panflute-filter)) to fix Pandoc attachments created when to .ipynb conversion.
 
-Worth mentioning that you can use it together with [pandoc-crossref](https://github.com/lierdakil/pandoc-crossref) (see [install instructions](https://github.com/kiwi0fruit/py-pandoc-crossref)). You may also need to tune output format in Pandoc and execute the notebook. See example without Knitty:
+Worth mentioning that you can use Knitty together with [pandoc-crossref](https://github.com/lierdakil/pandoc-crossref) (see [install instructions](https://github.com/kiwi0fruit/py-pandoc-crossref)). You may also need to tune output format in Pandoc and execute the notebook. See example without Knitty:
 
 ```bash
 pandoc doc.md --filter pandoc-crossref --to "ipynb-bracketed_spans-fenced_divs\
