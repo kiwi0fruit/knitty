@@ -28,4 +28,20 @@ install:
 
 # Run test
 script:
+  - "knotedown --help"
+  - "pandoc-filter-arg --help"
+  - "pre-knitty --help"
+  - "knitty --help"
+  - "pandoc-filter-arg -o doc.pdf"
+  - |
+    printf "@{eval=True, echo=True}\n```python\nprint(0)\n```\n" |
+    pre-knitty |
+    pandoc -t json |
+    knitty markdown |
+    pandoc -f json -t markdown
+  - |
+    printf "![Caption](https://avatars0.githubusercontent.com/u/11897326?s=70&v=4)" |
+    pandoc -t json |
+    panfl -t markdown knitty.self_contained_raw_html_img |
+    pandoc -f json -t markdown
   - "py.test tests --cov=knitty --cov-report html --run-slow tests/"
