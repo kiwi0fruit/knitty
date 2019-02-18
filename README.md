@@ -88,7 +88,7 @@ Before v0.5.0 Knitty supported conversion to ipynb via Notedown but since v0.5.0
 Worth mentioning that you can use it together with [pandoc-crossref](https://github.com/lierdakil/pandoc-crossref) (see [install instructions](https://github.com/kiwi0fruit/py-pandoc-crossref)). You may also need to tune output format in Pandoc and execute the notebook. See example without Knitty:
 
 ```bash
-pandoc doc.md -F pandoc-crossref --to "ipynb-bracketed_spans-fenced_divs\
+pandoc doc.md --filter pandoc-crossref --to "ipynb-bracketed_spans-fenced_divs\
 -link_attributes-simple_tables-multiline_tables-grid_tables-pipe_tables\
 -fenced_code_attributes-markdown_in_html_blocks-table_captions-smart" | \
 jupyter nbconvert --to notebook --execute --stdin --stdout > doc.ipynb

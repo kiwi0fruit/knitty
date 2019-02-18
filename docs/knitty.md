@@ -13,9 +13,9 @@ Modified version of [Notedown](notedown.md) by Aaron O'Leary is included in Knit
     * [1.1 New command line interfaces][new_cli]
         * [pre-knitty](#pre-knitty)
         * [knitty](#knitty-cli)
-        * [post-knitty](#post-knitty)
         * [knotedown](#knotedown)
-        * [knotr](#knotr)
+        * [pandoc-filter-arg](#pandoc-filter-arg)
+        * [self_contained_raw_html_img Panflute filter](#self_contained_raw_html_img-panflute-filter)
     * [1.2 Alternative settings placement][alt_settings]
     * [1.3 Support files with Atom/Hydrogen code cells][code_cells]
     * [1.4 Turn ON code cells mode](#14-turn-on-code-cells-mode)
@@ -31,7 +31,6 @@ Modified version of [Notedown](notedown.md) by Aaron O'Leary is included in Knit
     * [3.1 Original document options](#31-original-document-options)
     * [3.2 Disabled code chunks prompt prefixes](#32-disabled-code-chunks-prompt-prefixes)
     * [3.3 Languages / Kernels / Styles mappings in YAML metadata](#33-languages-kernels-styles-mappings-in-yaml-metadata)
-    * [3.4 Match metadata option](#34-match-metadata-option)
 4. [API description](#4-api-description)
 5. [Known issues](#5-known-issues)
     * [5.1 No new line after Jupyter output](#51-no-new-line-after-jupyter-output)
@@ -81,8 +80,8 @@ Usage: pre-knitty [OPTIONS] [INPUT_FILE]
     js: ["//", "/*", "*/"]
   ...
 
-  1) Force set document default language name, 2) extenstion to get from
-  `comments-map` (can be set in stdin metadata only):
+  Can be set in stdin metadata only: 1) Force set document default language
+  name, 2) extenstion to get from `comments-map`:
 
   ---
   knitty-lang: 'py2'
@@ -99,40 +98,28 @@ Options:
 ### knitty CLI
 
 ```
-Usage: knitty [OPTIONS] [INPUT_FILE]
+Usage: knitty [OPTIONS] FILTER_TO [INPUT_FILE]
 
   Knitty is a Pandoc AST filter with options. It reads from stdin and writes
-  to stdout. It accepts all possible pandoc options and two knitty-only
-  options. INPUT_FILE is optional but it helps to auto-name Knitty data
-  folder in some cases.
+  to stdout. It accepts all possible pandoc options but the first arg should
+  be FILTER_TO that is a stripped output format passed py Pandoc to it's
+  filters. INPUT_FILE is optional but it helps to auto-name Knitty data
+  folder if --output is absent.
 
 Options:
   -f, -r, --from, --read TEXT  Pandoc reader option. Specify input format.
-  -o, --output TEXT            Pandoc writer option. Optional but it helps to
-                               auto-name Knitty data folder in some cases.
-  -w, -t, --write, --to TEXT   Pandoc writer option. Optional but it helps to
-                               auto-name Knitty data folder in some cases.
-                               Also the `-t` and `-o` options -> extension ->
-                               passed to Stitch that uses it in: `if self.to
-                               in ('latex', 'pdf', 'beamer')`.
+                               Affects Knitty parsing.
+  -o, --output TEXT            Pandoc writer option. It ONLY helps to auto-
+                               name Knitty data folder.
+  -w, -t, --write, --to TEXT   Pandoc writer option. Does nothing.
   --standalone                 Pandoc writer option. Produce a standalone
-                               document instead of fragment. The option is
-                               added to `pandoc_extra_args` given to Stitch.
+                               document instead of fragment. Affects Knitty
+                               behaviour and also is added to
+                               `pandoc_extra_args`.
   --self-contained             Pandoc writer option. Store resources like
                                images inside document instead of external
-                               files. The option is added to
-                               `pandoc_extra_args` given to Stitch.
-  --dir-name TEXT              Manually name Knitty data folder (instead of
-                               default auto-naming).
-  --to-ipynb                   Additionally run Pandoc filter that prepares
-                               code blocks for md to ipynb conversion via
-                               Notedown. Code blocks for cells should have
-                               `input=True` key word attribute. Default value
-                               can be set in metadata section like `input:
-                               True`. Intended to be later used with
-                               `post-knitty --to-ipynb`. Another match value for
-                               knotedown can be set in metadata section like
-                               `codecell-match-class: in`.
+                               files. Affects Knitty behaviour and also is
+                               added to `pandoc_extra_args`.
   --help                       Show this message and exit.
 ```
 
@@ -158,75 +145,52 @@ pandoc -f json "${W[@]}" -o "$in.html"
 ```
 
 
-### post-knitty
+### pandoc-filter-arg
+
+**pandoc-filter-arg** is a CLI interface that prints argument that is passed by Pandoc to it's filters.
+
+Usage example: `pandoc-filter-arg -t markdown-simple_tables` echoes `markdown`
 
 ```
-A text filter that reads from stdin and writes to stdout.
-Converts to ipynb when `--to-ipynb` option or no options.
+Usage: pandoc-filter-arg [OPTIONS]
 
-Converts Markdown document with specially marked code cells to ipynb
-(together with global yaml metadata section).
-Can use metadata option: `codecell-match-class: in`
-(default or malformed fallback value is `in`)
-that is a Pandoc class that marks Jupyter code cells.
-If value is `''` (empty string) then all Markdown code cells would be
-converted to Jupyter code cells.
+  CLI interface that prints argument that is passed by Pandoc to it's
+  filters. Uses Pandoc's defaults. Ignores extra arguments.
+
+Options:
+  -o, --output TEXT           Pandoc writer option.
+  -w, -t, --write, --to TEXT  Pandoc writer option.
+  --help                      Show this message and exit.
 ```
 
-Supports Pandoc metadata that is then set in notebook metadata. For example:
 
-```yaml
----
-kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
-...
-```
+### self_contained_raw_html_img Panflute filter
 
-```yaml
----
-kernelspec:
-  display_name: R
-  language: R
-  name: ir
-...
-```
-
-Export to Jupyter notebook with cross-references (using [pandoc-crossref](https://github.com/lierdakil/pandoc-crossref): [download](https://github.com/lierdakil/pandoc-crossref/releases)) and execute it:
+Panflute filter `knitty.self_contained_raw_html_img` that replaces images with their **self-contained** html output as raw inline html. Can be used in `panflute` or `panfl` (see [here](https://github.com/kiwi0fruit/pandoctools/blob/master/docs/panfl.md)) Pandoc filters. Usage example in Bash:
 
 ```bash
-export PYTHONIOENCODING=utf-8
-
-input_file="doc.md"
-metadata="metadata.yml"
-reader_args=(-f markdown)
-jupymd="markdown-bracketed_spans-fenced_divs-link_attributes-simple_tables\
--multiline_tables-grid_tables-pipe_tables-fenced_code_attributes\
--markdown_in_html_blocks-table_captions-smart"
-writer_args=(-t "$jupymd" --standalone --self-contained --filter pandoc-crossref)
-
-cat "${input_file}" | \
-pre-knitty "${input_file}" --yaml "$metadata" | \
-pandoc "${reader_args[@]}" -t json | \
-knitty "${input_file}" "${reader_args[@]}" "${writer_args[@]}" --to-ipynb | \
-pandoc -f json "${writer_args}" | \
-post-knitty --to-ipynb | \
-jupyter nbconvert --to notebook --execute --stdin --stdout > \
-"${input_file}.ipynb"
+pandoc doc.md -t json |
+panfl -t ipynb knitty.self_contained_raw_html_img |
+pandoc -f json -o doc.ipynb
 ```
-
-(`--standalone --self-contained` are necessary for conversion, `--nomagic` is necessary for R kernel conversion, `$jupymd` is a Markdown flavor compatible with *pandoc-crossref* and with Jupyter markdown cells).
+This would give .ipynb notebook without attachments but with base64 encoded images with captions.
 
 
 ### knotedown
 
-`knotedown` - [patched Notedown module](https://github.com/kiwi0fruit/notedown) by Aaron O'Leary (aaren) was added to Knitty and available via `knotedown` CLI - same API as in `notedown` CLI. Patched version supports Pandoc metadata that is then set in notebook metadata.
+`knotedown` - patched Notedown module by Aaron O'Leary (aaren) was added to Knitty and available via `knotedown` CLI - same API as in `notedown` CLI. Patched version supports Pandoc metadata that is then set in notebook metadata like in [**here**](https://pandoc.org/MANUAL.html#creating-jupyter-notebooks-with-pandoc).
 
+In previous Knitty versions (before Pandoc >=2.6) `knotedown` was used for to .ipynb conversion like this:
 
-### knotr
-
-`knotr` - [same CLI](https://kiwi0fruit.github.io/pystitch/index.html#usage) as `stitch` from original Stitch. It doesn't support most of Knitty new features.
+```bash
+jupymd="markdown-bracketed_spans-fenced_divs-link_attributes-simple_tables\
+-multiline_tables-grid_tables-pipe_tables-fenced_code_attributes\
+-markdown_in_html_blocks-table_captions-smart"
+pandoc doc.md -t "$jupymd" --standalone --self-contained --filter pandoc-crossref |
+knotedown --match=code --nomagic > doc.ipynb
+# matches cells like ``` {.py .code}
+```
+`--standalone --self-contained` are necessary for conversion, `--nomagic` is necessary for R kernel conversion, `$jupymd` is a Markdown flavor compatible with *pandoc-crossref* and with Jupyter markdown cells).
 
 
 ## 1.2 Alternative settings placement
@@ -267,18 +231,26 @@ print('Hello!')
 ```
 `````
 
+To add custom classes but force automatic chunk naming you can use `chunk=None` that has priority:
+`````python
+@{py, mystyle, chunk=None, echo=True}
+```py
+print('Hello!')
+```
+`````
+
 **Please note** that Knitty converts Knitty-style and Stitch-style options (that are originally not supported by Pandoc parser) to Pandoc-style options.
 
 Specifics:
 
-* There can't be any white spaces between `@` and `{...}`. But there can be whitespace characters between <code>\`\`\`</code> and `{...}` (all whitespace characters except `\r` and `\n` actually).
+* There can't be any white spaces between `@` and `{...}`. But there can be whitespace characters between `` ``` `` and `{...}` (all whitespace characters except `\r` and `\n` actually).
 * Chunk options arguments and keys should start with alphabetic characters or `_` and can contain alphanumeric characters, `-`, and `.` (but can't end with a `.`).  
 * Key values may be put into `''` or `""` but should match the following regex:
 
 ```
 "[^"]*"|'[^']*'|[^\s,{}"'][^\s,{}]*
 ```
-* Please note that the following settings `@{ir, class=r}` are equivalent to `@{ir, r}` that is equivalent to <code>\`\`\`{.ir .r}</code> (this is because for Pandoc `class=c` attribute is the same as `.c` setting). So `r` would be a chunk name.
+* Please note that the following settings `@{ir, class=r}` are equivalent to `@{ir, r}` that is equivalent to `` ```{.ir .r} `` (this is because for Pandoc `class=c` attribute is the same as `.c` setting). So `r` would be a chunk name.
 
 
 ## 1.3 Support files with Atom/Hydrogen code cells
@@ -324,12 +296,12 @@ knitty-comments-ext: 'py'
 ...
 ```
 
-Also you can specify Knitty settings: `# %% {python, echo=False}`. If no settings specified or no language specified - `# %% {echo=False}` - then the language would be the one specified in `knitty:` > `language:` metadata (see above), or the file extension, or Markdown (the last one depends on where there are block comments at the next line or not - see the next paragraph).
+Also you can specify Knitty settings: `# %% {python, echo=False}`. If no settings specified or no language specified - `# %% {echo=False}` - then the language would be the one specified in `knitty-lang` metadata field (see above), or the file extension, or Markdown (the last one depends on where there are block comments at the next line or not - see the next paragraph).
 
 
 ## 1.5 Other languages in code cells mode
 
-You can insert code cells of other languages to the **.py** file with python main language: for example via `# %% {r}` or `# %% {markdown}` (actually this can be done with any language file not only Python). They optionally may be put inside block comments. In order to automatically remove such comments first you should specify block comments settings either in `knitty:` > `comments:` yaml in the document itself or in `--yaml` option of `pre-knitty` CLI (see previous section).
+You can insert code cells of other languages to the **.py** file with python main language: for example via `# %% {r}` or `# %% {markdown}` (actually this can be done with any language file not only Python). They optionally may be put inside block comments. In order to automatically remove such comments first you should specify block comments settings either in `comments-map` yaml metadata field in the document itself or in `--yaml` option of `pre-knitty` CLI (see previous section).
 
 And ror example for Python to put code cell into block comments you need:
 
@@ -473,13 +445,18 @@ Hint: you can insert Raw Pandoc blocks to Markdown via this syntax (`=`):
 
 ## 2.3 Chunk keyword argument
 
-Added `chunk=name` new keyword argument option. It's an alternative way to specify code chunk name (together with second positional argument. Keyword argument has a priority over it).
+Added `chunk=name` new keyword argument option. It's an alternative way to specify code chunk name (together with second positional argument. Keyword argument has a priority over it). You can use it to add custom classes but force automatic chunk naming (but don't forget that the first arg is always the language name):
+`````python
+@{py, mystyle, chunk=None, echo=True}
+```py
+print('Hello!')
+```
+`````
 
-This option is exclusive to Knitty.
 
 ## 2.4 Input keyword argument
 
-For `knitty` CLI flag `--to-ipynb` and for `knotedown` CLI flag `--match`, the code blocks for cells can have `input=True` (or `False`) key word attribute. Default value can be set in metadata section like
+Used for to .ipynb conversion via Pandoc (or `knotedown` with `--match=code` flag): `.code .cell` classes would be added to code blocks that have `input=True` key word attribute set. Default value can be set in metadata section like
 ```yaml
 ---
 input: True
@@ -527,15 +504,6 @@ styles-map:
 ...
 ```
 
-## 3.4 Match metadata option
-
-For `knitty` CLI flag `--to-ipynb` and for `post-knitty` another class match value can be  set in metadata section like:
-```yaml
----
-codecell-match-class: in
-...
-```
-
 
 # 4. API description
 
@@ -557,4 +525,4 @@ below the code chunk fixes the problem.
 
 ## 5.2 Pandoc-crossref labels move to the new line
 
-When you add formula labels for **pandoc-crossref** you should place them right after the formula (like `$$x=y+z$${#eq:1}` – no spaces). Otherwise when stitching from markdown to markdown labels would move to the next line and stop working.
+When you add formula labels for **pandoc-crossref** you should place them right after the formula (like `$$x=y+z$${#eq:1}` – no spaces). Otherwise when converting from markdown to markdown labels would move to the next line and stop working.

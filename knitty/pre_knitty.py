@@ -16,8 +16,8 @@ Settings that can be set in stdin OR in the --yaml file:\n
   py: ['#', "'''", "'''", "\\\"\\\"\\\"", "\\\"\\\"\\\""]\n
   js: ["//", "/*", "*/"]\n
 ...\n
-1) Force set document default language name, 2) extenstion to get from `{META_COMMENTS_MAP}`
-(can be set in stdin metadata only):\n
+Can be set in stdin metadata only: 1) Force set document default language name,
+2) extenstion to get from `{META_COMMENTS_MAP}`:\n
 ---\n
 {META_KNITTY_LANG}: 'py2'\n
 {META_KNITTY_COMMENTS_EXT}: 'py'\n
