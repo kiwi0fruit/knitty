@@ -142,16 +142,18 @@ Examples are given for Bash (if on Windows I also recommend to install [Git toge
 export LANG=C.UTF-8
 export PYTHONIOENCODING=utf-8
 
-in="doc.md"
-yml="metadata.yml"
+in=doc.md
+# in="doc.py"
+yml=metadata.yml
 R=(-f markdown)
 W=(-t html --standalone --self-contained)
 
+t="$(pandoc-filter-arg "${W[@]}")"
 printf "$in" |
 pre-knitty "$in" --yaml "$yml" |
 cat - <(printf "\n\n") "$yml" |
 pandoc "${R[@]}" -t json |
-knitty "$in" "${R[@]}" "${W[@]}" |
+knitty $t "$in" "${R[@]}" "${W[@]}" |
 pandoc -f json "${W[@]}" -o "$in.html"
 ```
 
