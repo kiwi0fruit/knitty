@@ -2,11 +2,14 @@
 
 [![Build Status](https://travis-ci.org/kiwi0fruit/knitty.svg?branch=master)](https://travis-ci.org/kiwi0fruit/knitty)
 
-Knitty is a Pandoc filter and Atom/Hydrogen friendly inrterface wrapper for [Stitch/Knotr](https://github.com/kiwi0fruit/knitty/blob/master/docs/stitch.md): reproducible report generation tool via Jupyter, Pandoc and Markdown. Insert python code (or other Jupyter kernel code) to the Markdown document and have code's results in the output document. Exports to Jupyter notebook via [Notedown](https://github.com/kiwi0fruit/knitty/blob/master/docs/notedown.md).
+Knitty is a Pandoc filter and Atom/Hydrogen-friendly reproducible report generation tool via Jupyter, Pandoc and Markdown (fork of the [Stitch](stitch.md)). Insert python code (or other Jupyter kernel code) to the Markdown document and have code's results in the output document.
 
-See [Knitty documentation](https://github.com/kiwi0fruit/knitty/blob/master/docs/knitty.md).
+See [**Knitty documentation**](https://github.com/kiwi0fruit/knitty/blob/master/docs/knitty.md).
 
-You can use [ipynb-py-converter](https://github.com/kiwi0fruit/ipynb-py-converter) to convert .ipynb to .py to use with Knitty.
+You can use:
+
+* [Pandoc >=2.6](https://pandoc.org/MANUAL.html#creating-jupyter-notebooks-with-pandoc) to export to .ipynb notebooks (optionally: [install Pandoc in Python](https://github.com/kiwi0fruit/py-pandoc)),
+* [ipynb-py-converter](https://github.com/kiwi0fruit/ipynb-py-converter) to convert .ipynb to .py to use with Knitty.
 
 
 ## Install
@@ -29,6 +32,7 @@ pip install knitty
 
 ### Optional install
 
+Modified version of [Notedown](notedown.md) by Aaron O'Leary is included in Knitty as `knotedown`.
 If you would like to use `knotedown` to import from R Markdown you need installed `knitr`:
 
 ```bash
@@ -49,19 +53,18 @@ Or you can set all Knitty options (including those in metadata) by using it as a
 
 Unix:
 ```bash
-export PYTHONIOENCODING=utf-8
 export LANG=C.UTF-8
+export PYTHONIOENCODING=utf-8
 
-IN=doc.md
-YML=metadata.yml
+in=doc.md
 R=(-f markdown)
 W=(-t html --standalone --self-contained)
 
-T="$(pandoc-filter-arg "${W[@]}")"
-cat "$IN" | pre-knitty "$IN" --yaml "$YML" |
+t="$(pandoc-filter-arg "${W[@]}")"
+cat "$in" | pre-knitty |
 pandoc "${R[@]}" -t json |
-knitty $T "$IN" "${R[@]}" "${W[@]}" |
-pandoc -f json "${W[@]}" -o "$IN.html"
+knitty $t "$in" "${R[@]}" "${W[@]}" |
+pandoc -f json "${W[@]}" -o "$in.html"
 ```
 
 Windows (see [setvar](https://github.com/kiwi0fruit/knitty/blob/master/examples/setvar.bat)):
@@ -69,19 +72,18 @@ Windows (see [setvar](https://github.com/kiwi0fruit/knitty/blob/master/examples/
 chcp 65001 > NUL
 set PYTHONIOENCODING=utf-8
 
-set IN=doc.md
-set YML=metadata.yml
+set in=doc.md
 set R=-f markdown
 set W=-t html --standalone --self-contained
 
-pandoc-filter-arg %W% | call .\setvar T
-type "%IN%" | pre-knitty "%IN%" --yaml "%YML%" | ^
+pandoc-filter-arg %W% | call .\setvar t
+type "%in%" | pre-knitty | ^
 pandoc %R% -t json | ^
-knitty %T% "%IN%" %R% %W% | ^
-pandoc -f json %W% -o "%IN%.html"
+knitty %t% "%in%" %R% %W% | ^
+pandoc -f json %W% -o "%in%.html"
 ```
 
-Before v0.5.0 Knitty supported conversion to ipynb via Notedown but since v0.5.0 it is adapted to be used with Pandoc >=2.6. You can learn how to convert to ipynb via Pandoc [**here**](https://pandoc.org/MANUAL.html#creating-jupyter-notebooks-with-pandoc).
+Before v0.5.0 Knitty supported conversion to ipynb via Notedown but since v0.5.0 it is adapted to be used with Pandoc >=2.6. You can learn how to convert to ipynb via Pandoc [**here**](https://pandoc.org/MANUAL.html#creating-jupyter-notebooks-with-pandoc) (optionally: [install Pandoc in Python](https://github.com/kiwi0fruit/py-pandoc)).
 
 Worth mentioning that you can use it together with [pandoc-crossref](https://github.com/lierdakil/pandoc-crossref) (see [install instructions](https://github.com/kiwi0fruit/py-pandoc-crossref)). You may also need to tune output format in Pandoc and execute the notebook. See example without Knitty:
 

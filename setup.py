@@ -14,7 +14,7 @@ setup(
     version=versioneer.get_version(),
     cmdclass=versioneer.get_cmdclass(),
 
-    description='Inrterface wrapper for Stitch/Knotr: reproducible report generation tool via Jupyter, Pandoc and Markdown. Export to Jupyter notebook via Notedown.',
+    description="Reproducible report generation tool via Jupyter, Pandoc and Markdown. Contains fork of the Notedown.",
     long_description=long_description,
     long_description_content_type="text/markdown",
 

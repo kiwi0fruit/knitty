@@ -58,7 +58,7 @@ about:
   license: "GPL2+"
   license_family: GPL2
   license_file: LICENSE
-  summary: "Inrterface wrapper for Stitch/Knotr: reproducible report generation tool via Jupyter, Pandoc and Markdown. Export to Jupyter notebook via Notedown."
+  summary: "Reproducible report generation tool via Jupyter, Pandoc and Markdown. Contains fork of the Notedown."
   doc_url: https://github.com/kiwi0fruit/knitty
   dev_url: https://github.com/kiwi0fruit/knitty
 

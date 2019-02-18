@@ -1,8 +1,8 @@
 # Knitty
 
-Knitty is a Pandoc filter and Atom/Hydrogen friendly CLI for [Knotr/Stitch](stitch.md): reproducible report generation tool via Jupyter, Pandoc and Markdown. Insert python code (or other Jupyter kernel code) to the Markdown document and have code's results in the output document. Exports to Jupyter notebook via [Notedown](notedown.md).
+Knitty is a Pandoc filter and Atom/Hydrogen-friendly reproducible report generation tool via Jupyter, Pandoc and Markdown (fork of the [Stitch](stitch.md) by Tom Augspurger). Insert python code (or other Jupyter kernel code) to the Markdown document and have code's results in the output document.
 
-Modified versions of [Knotr/Stitch](stitch.md) by Tom Augspurger and [Notedown](notedown.md) by Aaron O'Leary are included in Knitty.
+Modified version of [Notedown](notedown.md) by Aaron O'Leary is included in Knitty.
 
 
 # Contents
@@ -136,37 +136,23 @@ Options:
   --help                       Show this message and exit.
 ```
 
-Examples:
+Examples are given for Bash (if on Windows I also recommend to install [Git together with Bash](https://git-scm.com/downloads)):
 
 ```bash
+export LANG=C.UTF-8
 export PYTHONIOENCODING=utf-8
 
-input_file="doc.md"
-metadata="metadata.yml"
-reader_args=(-f markdown)
-writer_args=(-t html --standalone --self-contained)
+in="doc.md"
+yml="metadata.yml"
+R=(-f markdown)
+W=(-t html --standalone --self-contained)
 
-cat "${input_file}" | \
-pre-knitty "${input_file}" --yaml "$metadata" | \
-pandoc "${reader_args[@]}" -t json | \
-knitty "${input_file}" "${reader_args[@]}" "${writer_args[@]}" | \
-pandoc -f json "${writer_args[@]}" -o "${input_file}.html"
-```
-
-```bat
-chcp 65001 > NUL
-set PYTHONIOENCODING=utf-8
-
-set input_file=doc.md
-set metadata=metadata.yml
-set reader_args=-f markdown
-set writer_args=-t html --standalone --self-contained
-
-type "%input_file%" | ^
-pre-knitty "%input_file%" --yaml "%metadata%" | ^
-pandoc %reader_args% -t json | ^
-knitty "%input_file%" %reader_args% %writer_args% | ^
-pandoc -f json %writer_args% -o "%input_file%.html"
+printf "$in" |
+pre-knitty "$in" --yaml "$yml" |
+cat - <(printf "\n\n") "$yml" |
+pandoc "${R[@]}" -t json |
+knitty "$in" "${R[@]}" "${W[@]}" |
+pandoc -f json "${W[@]}" -o "$in.html"
 ```
 
 
