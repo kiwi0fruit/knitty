@@ -1,13 +1,17 @@
 from knitty.api import knitty_preprosess
 import json
 import panflute as pf
-from knitty.tools import where
 
 import pytest
 from textwrap import dedent
 from knitty.stitch import Stitch
 
-pf.tools.which = where  # patch panflute
+if hasattr(pf.tools, 'which'):
+    from shutilwhich_cwdpatch import which
+    pf.tools.which = which
+else:
+    from knitty.tools import KnittyError
+    raise KnittyError('panflute patch failed')
 
 
 def pre_stitch_ast(source: str) -> dict:

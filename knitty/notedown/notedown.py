@@ -1,4 +1,5 @@
-from ..tools import load_yaml, where
+from ..tools import load_yaml
+from shutilwhich_cwdpatch import which
 import json
 import logging
 import os
@@ -563,7 +564,7 @@ class Knitr(object):
 
     def __init__(self):
         # raise exception if R or knitr not installed
-        cmd = [where('Rscript'), '-e', 'require(knitr)']
+        cmd = [which('Rscript'), '-e', 'require(knitr)']
 
         try:
             p = subprocess.Popen(cmd,
@@ -610,7 +611,7 @@ class Knitr(object):
                   'opts_chunk$set({opts_chunk});' +
                   'knit(file("stdin"), output=stderr())')
 
-        rcmd = (where('Rscript'), '-e', script.format(opts_knit=opts_knit, opts_chunk=opts_chunk))
+        rcmd = (which('Rscript'), '-e', script.format(opts_knit=opts_knit, opts_chunk=opts_chunk))
         out = subprocess.run(rcmd, input=input, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                              encoding='utf-8').stderr
         if out:

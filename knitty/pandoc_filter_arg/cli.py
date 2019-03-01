@@ -4,7 +4,8 @@ import re
 import sys
 import click
 from typing import Iterable
-from ..tools import where, KnittyError
+from shutilwhich_cwdpatch import which
+from ..tools import KnittyError
 
 
 doc = '''---
@@ -22,7 +23,7 @@ def pandoc_filter_arg(output: str=None, to: str=None, search_dirs: Iterable[str]
     :return: argument that is passed by Pandoc to it's filters
         Uses Pandoc's defaults.
     """
-    pandoc, panfl = where('pandoc', search_dirs), where('panfl', search_dirs)
+    pandoc, panfl = which('pandoc', search_dirs), which('panfl', search_dirs)
     args = [pandoc, '-f', 'markdown', '--filter', panfl, '-o', (output if output else '-')]
     if to:
         args += ['-t', to]
