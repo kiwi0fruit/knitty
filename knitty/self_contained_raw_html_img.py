@@ -1,5 +1,5 @@
-import re
 import shutilwhich_cwdpatch.patch
+import re
 import panflute as pf
 if hasattr(pf.tools, 'which'):
     from shutilwhich_cwdpatch import which

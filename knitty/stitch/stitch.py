@@ -6,6 +6,7 @@ in the output.
 # Copyright (c) Jan Schulz <jasc@gmx.net>
 # Copyright (c) IPython Development Team.
 # Distributed under the terms of the Modified BSD License.
+import shutilwhich_cwdpatch.patch
 import os
 import re
 import copy
@@ -23,8 +24,14 @@ import panflute as pf
 import argparse
 
 from . import options as opt
-from ..tools import where, KnittyError
-pf.tools.which = where  # patch panflute
+from ..tools import KnittyError
+
+if hasattr(pf.tools, 'which'):
+    from shutilwhich_cwdpatch import which
+    pf.tools.which = which
+else:
+    raise KnittyError('panflute patch failed')
+
 
 CODEBLOCK = 'CodeBlock'
 KernelPair = namedtuple("KernelPair", "km kc")

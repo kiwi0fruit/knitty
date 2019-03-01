@@ -1,8 +1,6 @@
-import os
-import os.path as p
 import yaml
 import re
-from typing import Tuple, Union, Iterable
+from typing import Tuple, Union
 
 yaml_regex = re.compile(r'(?:^|\n)---\n(.+?\n)(?:---|\.\.\.)(?:\n|$)', re.DOTALL)
 
@@ -38,43 +36,3 @@ def get(maybe_dict, key: str, default=None):
 def strict_str(smth) -> str:
     """Converts not str objects to empty string"""
     return smth if smth and isinstance(smth, str) else ''
-
-
-def where(executable: str, search_dirs_: Iterable[str]=None, exe_only: bool=True) -> str:
-    """
-    :param executable: exec name without .exe, .bat or .cmd
-    :param search_dirs_: extra dirs to look for executables
-    :param exe_only: on Windows search for executable.exe only.
-      If False then search for .exe .bat .cmd (in this order).
-    :return: On Windows: absolute path to the exec that was found
-      in the search_dirs or in the $PATH.
-      On Unix: absolute path to the exec that was found in the search_dirs
-      or shutil.which('executable') if it is not None.
-      If wasn't found raises PandotoolsError.
-    """
-    if not (os.name == 'nt'):
-        extensions = ('',)
-    elif exe_only:
-        extensions = ('.exe',)
-    else:
-        extensions = ('.exe', '.bat', '.cmd')
-    if not search_dirs_:
-        search_dirs_ = ()
-
-    for _dir in search_dirs_:
-        for ext in extensions:
-            exe = p.abspath(p.normpath(p.join(_dir, f'{executable}{ext}')))
-            if p.isfile(exe):
-                if os.name == 'nt':
-                    return exe
-                elif os.access(exe, os.X_OK):
-                    return exe
-
-    from shutilwhich_cwdpatch import which
-    for ext in extensions:
-        exe = which(executable + ext)
-        if exe:
-            return exe
-    raise KnittyError(
-        f"'{executable}' wasn't found in the [{', '.join(search_dirs_)}] and in the $PATH. " +
-        "Exec name should be without extension. Only .exe, .bat, .cmd are checked on Windows.")
