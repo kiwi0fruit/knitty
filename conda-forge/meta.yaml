@@ -1,5 +1,5 @@
 {% set name = "knitty" %}
-{% set version = "0.5.0" %}
+{% set version = "0.5.1" %}
 
 package:
   name: {{ name|lower }}
@@ -38,6 +38,7 @@ requirements:
     - nbformat
     - pandoc-attrs
     - pyyaml
+    - shutilwhich-cwdpatch >=0.1.0
 
 test:
   imports:

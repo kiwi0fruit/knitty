@@ -43,7 +43,7 @@ setup(
     install_requires=['jupyter_core', 'traitlets', 'ipython', 'jupyter_client',
                       'nbconvert', 'pandocfilters', 'py-pandoc>=2.6', 
                       'click', 'psutil', 'panflute>=1.11.2',
-                      'nbformat', 'pandoc-attrs', 'pyyaml'],
+                      'nbformat', 'pandoc-attrs', 'pyyaml', 'shutilwhich-cwdpatch>=0.1.0'],
     # jupyter_core traitlets ipython jupyter_client nbconvert pandocfilters "py-pandoc>=2.6" click psutil "panflute>=1.11.2" nbformat pandoc-attrs pyyaml
     python_requires='>=3.6',
     extras_require={

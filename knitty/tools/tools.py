@@ -70,22 +70,11 @@ def where(executable: str, search_dirs_: Iterable[str]=None, exe_only: bool=True
                 elif os.access(exe, os.X_OK):
                     return exe
 
-    if os.name == 'nt':
-        from subprocess import run, PIPE
-        for ext in extensions:
-            exe = f'{executable}{ext}'.lower()
-            exe_abs = run([p.expandvars(r'%WINDIR%\System32\where.exe'), f'$PATH:{exe}'],
-                          stdout=PIPE, stderr=PIPE)
-            if not exe_abs.stderr:
-                execs = list(filter(lambda s: s.endswith(exe),
-                                    exe_abs.stdout.decode().lower().splitlines()))
-                if execs:
-                    if p.isfile(execs[0]):
-                        return execs[0]
-    else:
-        from shutil import which
-        exe = which(executable)
+    from shutilwhich_cwdpatch import which
+    for ext in extensions:
+        exe = which(executable + ext)
         if exe:
             return exe
-    raise KnittyError(f"'{executable}' (should be without extension) wasn't found in the " +
-                      f"[{', '.join(search_dirs_)}] and in the $PATH.")
+    raise KnittyError(
+        f"'{executable}' wasn't found in the [{', '.join(search_dirs_)}] and in the $PATH. " +
+        "Exec name should be without extension. Only .exe, .bat, .cmd are checked on Windows.")

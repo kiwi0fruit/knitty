@@ -1,7 +1,9 @@
 import re
+import shutilwhich_cwdpatch.patch
 import panflute as pf
-from .tools import where
-pf.tools.which = where  # patch panflute
+if hasattr(pf.tools, 'which'):
+    from shutilwhich_cwdpatch import which
+    pf.tools.which = which
 
 
 # noinspection PyUnusedLocal
