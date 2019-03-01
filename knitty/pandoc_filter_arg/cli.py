@@ -1,3 +1,4 @@
+import os
 import os.path as p
 from subprocess import run, PIPE
 import re
@@ -23,7 +24,15 @@ def pandoc_filter_arg(output: str=None, to: str=None, search_dirs: Iterable[str]
     :return: argument that is passed by Pandoc to it's filters
         Uses Pandoc's defaults.
     """
-    pandoc, panfl = which('pandoc', search_dirs), which('panfl', search_dirs)
+    if search_dirs:
+        path = os.environ.get("PATH", os.defpath)
+        kwargs = dict(path=os.pathsep.join(search_dirs) + ((os.pathsep + path) if path else ''))
+    else:
+        kwargs = {}
+    pandoc, panfl = which('pandoc', **kwargs), which('panfl', **kwargs)
+    if not (pandoc and panfl):
+        raise KnittyError("pandoc or panfl executable wasn't found")
+
     args = [pandoc, '-f', 'markdown', '--filter', panfl, '-o', (output if output else '-')]
     if to:
         args += ['-t', to]
