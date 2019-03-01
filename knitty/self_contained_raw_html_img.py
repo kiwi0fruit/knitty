@@ -4,6 +4,8 @@ import panflute as pf
 if hasattr(pf.tools, 'which'):
     from shutilwhich_cwdpatch import which
     pf.tools.which = which
+else:
+    raise RuntimeError('panflute patch failed')
 
 
 # noinspection PyUnusedLocal
