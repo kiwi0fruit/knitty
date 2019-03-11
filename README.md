@@ -32,7 +32,7 @@ pip install knitty
 
 ### Optional install
 
-Modified version of [Notedown](notedown.md) by Aaron O'Leary is included in Knitty as `knotedown`.
+Modified version of [Notedown](https://github.com/kiwi0fruit/knitty/blob/master/docs/notedown.md) by Aaron O'Leary is included in Knitty as `knotedown`.
 If you would like to use `knotedown` to import from R Markdown you need installed `knitr`:
 
 ```bash
