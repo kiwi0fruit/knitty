@@ -65,6 +65,7 @@ New interfaces are exclusive to Knitty.
 `pre-knitty` - CLI app that reads from stdin and writes to stdout. Transforms markdown source code from Knitty format to Pandoc format (replaces Knitty-format code chunk options with Pandoc-format code chunk options).
 
 * first argument is optional input file path (`pre-knitty` reads it's extension that is needed for [code cells][code_cells] mode).
+* language in `comments-map` can also have only inline comment specified like `['#']` (or whatever correct yaml should be).
 
 ```
 Usage: pre-knitty [OPTIONS] [INPUT_FILE]
