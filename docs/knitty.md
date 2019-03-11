@@ -1,6 +1,6 @@
 # Knitty
 
-Knitty is a Pandoc filter and Atom/Hydrogen-friendly reproducible report generation tool via Jupyter, Pandoc and Markdown (fork of the [Stitch](stitch.md) by Tom Augspurger). Insert python code (or other Jupyter kernel code) to the Markdown document **or write in plain Python/Julia/R with block-commented Markdown** and have code's results in the output document.
+Knitty is a Pandoc filter and [Atom/Hydrogen](https://atom.io/packages/hydrogen)-friendly reproducible report generation tool via Jupyter, Pandoc and Markdown (fork of the [Stitch](stitch.md) by Tom Augspurger). Insert python code (or other Jupyter kernel code) to the Markdown document **or write in plain Python/Julia/R with block-commented Markdown** and have code's results in the output document.
 
 Modified version of [Notedown](notedown.md) by Aaron O'Leary is included in Knitty.
 
