@@ -29,6 +29,10 @@ Via pip:
 pip install knitty
 ```
 
+### Atom/Hydrogen
+
+Knitty is much better to be used with something like Atom/Hydrogen. See [Best Python/Jupyter/PyCharm experience + report generation with Pandoc filters](https://github.com/kiwi0fruit/pandoctools/blob/master/docs/best_python_jupyter_pycharm_experience.md) for more details.
+
 
 ### Optional install
 
