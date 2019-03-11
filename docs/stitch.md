@@ -1,8 +1,7 @@
 Stitch
 ======
 
-A [knitr](http://yihui.name/knitr/)-
-[RMarkdown](http://rmarkdown.rstudio.com)-like library, in Python.
+A [knitr](http://yihui.name/knitr/)-[RMarkdown](http://rmarkdown.rstudio.com)-like library in Python.
 
 *Note:* You might want to consider Jan Schulz\'s
 [knitpy](https://github.com/janschulz/knitpy/) instead. It\'s probably
