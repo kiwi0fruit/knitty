@@ -30,18 +30,18 @@ pip install knitty
 ```
 
 
-### Jupyter kernels
+#### Jupyter kernels
 
 See important additional info on how to [**install Jupyter kernels in Conda environments**](https://github.com/kiwi0fruit/pandoctools/blob/master/docs/tips.md).  
 See main info on how to install Jupyter kernels in the Atom/Hydrogen documentstion (for example).
 
 
-### Atom/Hydrogen
+#### Atom/Hydrogen
 
 Knitty is much better to be used with something like Atom/Hydrogen. See [Best Python/Jupyter/PyCharm experience + report generation with Pandoc filters](https://github.com/kiwi0fruit/pandoctools/blob/master/docs/best_python_jupyter_pycharm_experience.md) for more details. You can also try VS Code interface to Jupyter from [vscode-python](https://github.com/Microsoft/vscode-python) instead of Atom/Hydrogen. I highly recommend to try to think about ipynb as merely an output format like pdf (albeit dynamic and rich) instead of main format or intermediate format.
 
 
-### Optional install
+#### Optional install
 
 Modified version of [Notedown](https://github.com/kiwi0fruit/knitty/blob/master/docs/notedown.md) by Aaron O'Leary is included in Knitty as `knotedown`.
 If you would like to use `knotedown` to import from R Markdown you need installed `knitr`:
@@ -108,7 +108,7 @@ pandoc -f json "${W[@]}" -o "$in.html"
 Then use it like `./knitty /path/to/doc.py` that would save `/path/to/doc.py.html`.
 
 
-### Batch
+#### Batch
 
 And if you don't like Bash there is a Windows batch example below (see [setvar](https://github.com/kiwi0fruit/knitty/blob/master/examples/setvar.bat)):
 ```bat
@@ -127,12 +127,12 @@ pandoc -f json %W% -o "%in%.html"
 ```
 
 
-### To ipynb
+#### To ipynb
 
 Before v0.5.0 Knitty supported conversion to .ipynb via Notedown but since v0.5.0 it is adapted to be used with Pandoc >=2.6. You can learn how to convert to ipynb via Pandoc [**here**](https://pandoc.org/MANUAL.html#creating-jupyter-notebooks-with-pandoc) (optionally: [install Pandoc in Python](https://github.com/kiwi0fruit/py-pandoc)). I also recommend using `knitty.self_contained_raw_html_img` Panflute filter (see [here](https://github.com/kiwi0fruit/knitty/blob/master/docs/knitty.md#self_contained_raw_html_img-panflute-filter)) to fix Pandoc attachments created when to .ipynb conversion.
 
 
-### Using with pandoc-crossref
+#### Using with pandoc-crossref
 
 Worth mentioning that you can use Knitty together with [pandoc-crossref](https://github.com/lierdakil/pandoc-crossref) (see [install instructions](https://github.com/kiwi0fruit/py-pandoc-crossref)). You may also need to tune output format in Pandoc and execute the notebook. See example without Knitty:
 
