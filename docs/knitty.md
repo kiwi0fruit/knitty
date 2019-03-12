@@ -137,7 +137,7 @@ R=(-f markdown)
 W=(-t html --standalone --self-contained)
 
 t="$(pandoc-filter-arg "${W[@]}")"
-printf "$in" |
+cat "$in" |
 pre-knitty "$in" --yaml "$yml" |
 cat - <(printf "\n\n") "$yml" |
 pandoc "${R[@]}" -t json |
