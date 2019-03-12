@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/kiwi0fruit/knitty.svg?branch=master)](https://travis-ci.org/kiwi0fruit/knitty)
 
-Knitty is a Pandoc filter and [Atom/Hydrogen](https://atom.io/packages/hydrogen)-friendly reproducible report generation tool via Jupyter, Pandoc and Markdown (fork of the [Stitch](https://github.com/kiwi0fruit/knitty/blob/master/docs/stitch.md) that is a [Knitr](http://yihui.name/knitr/)-[RMarkdown](http://rmarkdown.rstudio.com)-like library in Python). Insert python code (or other Jupyter kernel code) to the Markdown document **or write in plain Python/Julia/R with block-commented Markdown** and have code's results in the output document.
+Knitty is a Pandoc filter and [Atom/Hydrogen](https://atom.io/packages/hydrogen)-friendly reproducible report generation tool via Jupyter, Pandoc and Markdown (fork of the [Stitch](https://github.com/kiwi0fruit/knitty/blob/master/docs/stitch.md) that is a [Knitr](http://yihui.name/knitr/)-[RMarkdown](http://rmarkdown.rstudio.com)-like library in Python). Insert python code (or other Jupyter kernel code) to the Markdown document **or write in plain Python/Julia/R with block-commented Markdown** and have code's results in the Pandoc output document.
 
 See [**Knitty documentation**](https://github.com/kiwi0fruit/knitty/blob/master/docs/knitty.md).
 
