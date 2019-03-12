@@ -1,4 +1,4 @@
-# Knitty: Jupyter power in plain Python/Julia/R/any kernel lang. Pandoc filter and Atom/Hydrogen friendly literature programming (Stitch fork)
+# Knitty: Jupyter+Pandoc+IDE power in plain Python/Julia/R/any-kernel-lang. Pandoc filter and Atom/Hydrogen friendly literature programming
 
 (*__backup of__ [__the reddit post__](https://www.reddit.com/r/datascience/comments/b061up/knitty_jupyterpandocide_power_in_plain/)*)
 
