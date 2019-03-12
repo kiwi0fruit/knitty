@@ -51,6 +51,11 @@ conda install r-knitr r-reticulate
 ```
 
 
+## Examples
+
+You can see examples of using Knitty [**here**](https://github.com/kiwi0fruit/pandoctools/tree/master/examples). It's used together with some other CLI tools via Pandoctools there but cells management and options are from Knitty.
+
+
 ## Usage
 
 You either can use Knitty as a standard Pandoc filter:
@@ -103,7 +108,7 @@ pandoc -f json "${W[@]}" -o "$in.html"
 Then use it like `./knitty /path/to/doc.py` that would save `/path/to/doc.py.html`.
 
 
-### Batch example
+### Batch
 
 And if you don't like Bash there is a Windows batch example below (see [setvar](https://github.com/kiwi0fruit/knitty/blob/master/examples/setvar.bat)):
 ```bat
@@ -122,7 +127,7 @@ pandoc -f json %W% -o "%in%.html"
 ```
 
 
-### To ipynb conversion
+### To ipynb
 
 Before v0.5.0 Knitty supported conversion to .ipynb via Notedown but since v0.5.0 it is adapted to be used with Pandoc >=2.6. You can learn how to convert to ipynb via Pandoc [**here**](https://pandoc.org/MANUAL.html#creating-jupyter-notebooks-with-pandoc) (optionally: [install Pandoc in Python](https://github.com/kiwi0fruit/py-pandoc)). I also recommend using `knitty.self_contained_raw_html_img` Panflute filter (see [here](https://github.com/kiwi0fruit/knitty/blob/master/docs/knitty.md#self_contained_raw_html_img-panflute-filter)) to fix Pandoc attachments created when to .ipynb conversion.
 
