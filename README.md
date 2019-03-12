@@ -29,7 +29,11 @@ Via pip:
 pip install knitty
 ```
 
-See additional info about how to install Jupyter kernels in Conda environments [**here**](https://github.com/kiwi0fruit/pandoctools/blob/master/docs/tips.md).
+
+### Jupyter kernels
+
+See important additional info on how to [**install Jupyter kernels in Conda environments**](https://github.com/kiwi0fruit/pandoctools/blob/master/docs/tips.md).  
+See main info on how to install Jupyter kernels in the Atom/Hydrogen documentstion (for example).
 
 
 ### Atom/Hydrogen
