@@ -53,7 +53,7 @@ cat doc.md | pre-knitty | pandoc --filter knitty -o doc.ipynb
 ```
 and specify some subset of Knitty options in metadata: `self_contained: True`, `standalone: True`. But this way you cannot switch from Markdown to RST for example.
 
-Or you can set all Knitty options (including those in metadata) by using it as a Pandoc filter with multiple arguments. Knitty is intended to be used together with Pandoctools (so it's CLI is split-up) but you can easily use Knitty independently. You should only save shell script for this. There is a Bash example below. If on Windows I strongly recommend to install [Git together with Bash](https://git-scm.com/downloads).
+Or you can set all Knitty options (including those in metadata) by using it as a Pandoc filter with multiple arguments. Knitty is intended to be used in Pandoctools bash profiles (so it's CLI is split-up) but you can easily use Knitty independently. You should only **save and tweak** shell script for this. There is a Bash example below. If on Windows I strongly recommend to install [Git together with Bash](https://git-scm.com/downloads).
 
 `./metadata.yaml`:
 ```yaml
@@ -74,12 +74,12 @@ comments-map:
 `./knitty`:
 ```bash
 #!/bin/bash
+here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 export LANG=C.UTF-8
 export PYTHONIOENCODING=utf-8
 
 in="$1"
-out="$2"
-yml=./metadata.yml
+yml="$here/metadata.yaml"
 R=(-f markdown)
 W=(-t html --standalone --self-contained)
 
@@ -89,9 +89,11 @@ pre-knitty "$in" --yaml "$yml" |
 cat - <(printf "\n\n") "$yml" |
 pandoc "${R[@]}" -t json |
 knitty $t "$in" "${R[@]}" "${W[@]}" |
-pandoc -f json "${W[@]}" -o "$out"
+pandoc -f json "${W[@]}" -o "$in.html"
 ```
 (`$t` is an arg that Pandoc passes to it's filters).
+
+Then use it like `./knitty /path/to/doc.py` that would save `/path/to/doc.py.html`.
 
 
 ### Batch example
