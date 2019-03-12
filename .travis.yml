@@ -1,6 +1,8 @@
 # Only build tags
 if: tag IS present
 
+dist: xenial
+
 language: python
 python:
   - 3.6
