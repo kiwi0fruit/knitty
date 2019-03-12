@@ -29,6 +29,9 @@ Via pip:
 pip install knitty
 ```
 
+See additional info about how to install Jupyter kernels in Conda environments [**here**](https://github.com/kiwi0fruit/pandoctools/blob/master/docs/tips.md).
+
+
 ### Atom/Hydrogen
 
 Knitty is much better to be used with something like Atom/Hydrogen. See [Best Python/Jupyter/PyCharm experience + report generation with Pandoc filters](https://github.com/kiwi0fruit/pandoctools/blob/master/docs/best_python_jupyter_pycharm_experience.md) for more details. You can also try VS Code interface to Jupyter from [vscode-python](https://github.com/Microsoft/vscode-python) instead of Atom/Hydrogen. I highly recommend to try to think about ipynb as merely an output format like pdf (albeit dynamic and rich) instead of main format or intermediate format.
