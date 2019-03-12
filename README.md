@@ -55,6 +55,8 @@ conda install r-knitr r-reticulate
 
 You can see examples of using Knitty [**here**](https://github.com/kiwi0fruit/pandoctools/tree/master/examples). It's used together with some other CLI tools via Pandoctools there but cells management and options are from Knitty.
 
+Also see [example from Knitty documentstion](https://github.com/kiwi0fruit/knitty/blob/master/docs/knitty.md#17-example-files-in-code-cells-mode).
+
 
 ## Usage
 
