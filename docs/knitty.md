@@ -48,6 +48,7 @@ You can use Hydrogen/Knitty combo to write Markdown documents with Jupyter code 
 
 * Write Markdown document: [1.2 Alternative settings placement][alt_settings]
 * Write Atom/Hydrogen code cells document: [1.7 Example python file in code cells mode][code_cells_example]
+* You can see examples of using Knitty [**here**](https://github.com/kiwi0fruit/pandoctools/tree/master/examples). It's used together with some other CLI tools via Pandoctools there but cells management and options are from Knitty.
 
 Tip: see how to [install and use Hydrogen Atom package](hydrogen.md).
 
