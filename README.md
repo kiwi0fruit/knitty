@@ -53,25 +53,50 @@ cat doc.md | pre-knitty | pandoc --filter knitty -o doc.ipynb
 ```
 and specify some subset of Knitty options in metadata: `self_contained: True`, `standalone: True`. But this way you cannot switch from Markdown to RST for example.
 
-Or you can set all Knitty options (including those in metadata) by using it as a Pandoc filter with multiple arguments (`$t` is an arg that Pandoc passes to it's filters):
+Or you can set all Knitty options (including those in metadata) by using it as a Pandoc filter with multiple arguments. Knitty is intended to be used together with Pandoctools (so it's CLI is split-up) but you can easily use Knitty independently. You should only save shell script for this. There is a Bash example below. If on Windows I strongly recommend to install [Git together with Bash](https://git-scm.com/downloads).
 
-Unix:
+`./metadata.yaml`:
+```yaml
+---
+kernels-map:
+  r: ir
+  py: python
+styles-map:
+  py: python
+comments-map:
+  py: ['#', "'''", "'''", "\"\"\"", "\"\"\""]
+  js: ["//", "/*", "*/"]
+  ts: ["//", "/*", "*/"]
+  r: ['#', "'", "'", "\"", "\""]
+...
+```
+
+`./knitty`:
 ```bash
+#!/bin/bash
 export LANG=C.UTF-8
 export PYTHONIOENCODING=utf-8
 
-in=doc.md
+in="$1"
+out="$2"
+yml=./metadata.yml
 R=(-f markdown)
 W=(-t html --standalone --self-contained)
 
 t="$(pandoc-filter-arg "${W[@]}")"
-cat "$in" | pre-knitty |
+cat "$in" |
+pre-knitty "$in" --yaml "$yml" |
+cat - <(printf "\n\n") "$yml" |
 pandoc "${R[@]}" -t json |
 knitty $t "$in" "${R[@]}" "${W[@]}" |
-pandoc -f json "${W[@]}" -o "$in.html"
+pandoc -f json "${W[@]}" -o "$out"
 ```
+(`$t` is an arg that Pandoc passes to it's filters).
 
-Windows (see [setvar](https://github.com/kiwi0fruit/knitty/blob/master/examples/setvar.bat)):
+
+### Batch example
+
+And if you don't like Bash there is a Windows batch example below (see [setvar](https://github.com/kiwi0fruit/knitty/blob/master/examples/setvar.bat)):
 ```bat
 chcp 65001 > NUL
 set PYTHONIOENCODING=utf-8
@@ -87,7 +112,13 @@ knitty %t% "%in%" %R% %W% | ^
 pandoc -f json %W% -o "%in%.html"
 ```
 
+
+### To ipynb conversion
+
 Before v0.5.0 Knitty supported conversion to .ipynb via Notedown but since v0.5.0 it is adapted to be used with Pandoc >=2.6. You can learn how to convert to ipynb via Pandoc [**here**](https://pandoc.org/MANUAL.html#creating-jupyter-notebooks-with-pandoc) (optionally: [install Pandoc in Python](https://github.com/kiwi0fruit/py-pandoc)). I also recommend using `knitty.self_contained_raw_html_img` Panflute filter (see [here](https://github.com/kiwi0fruit/knitty/blob/master/docs/knitty.md#self_contained_raw_html_img-panflute-filter)) to fix Pandoc attachments created when to .ipynb conversion.
+
+
+### Using with pandoc-crossref
 
 Worth mentioning that you can use Knitty together with [pandoc-crossref](https://github.com/lierdakil/pandoc-crossref) (see [install instructions](https://github.com/kiwi0fruit/py-pandoc-crossref)). You may also need to tune output format in Pandoc and execute the notebook. See example without Knitty:
 
