@@ -1,5 +1,9 @@
 # Only build PRs or tags
-if: (type = pull_request) OR (tag IS present)
+# if: (type = pull_request) OR (tag IS present)
+
+os:
+  - windows
+  - linux
 
 dist: xenial
 
@@ -15,10 +19,15 @@ git:
 
 # Install packages
 install:
-  - sudo apt-get update
-  - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
-  - bash miniconda.sh -b -p $HOME/miniconda
-  - export PATH="$HOME/miniconda/bin:$PATH"
+  - |
+    if [ "$TRAVIS_OS_NAME" = 'windows' ]; then
+        choco install miniconda3 --params="'/AddToPath:1'"
+    else
+        sudo apt-get update
+        wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+        bash miniconda.sh -b -p $HOME/miniconda
+        export PATH="$HOME/miniconda/bin:$PATH"
+    fi
   - hash -r
   - source activate base
   - conda config --set always_yes yes --set changeps1 no
