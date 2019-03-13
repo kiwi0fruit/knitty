@@ -1,5 +1,5 @@
 # Only build PRs or tags
-# if: (type = pull_request) OR (tag IS present)
+if: (type = pull_request) OR (tag IS present)
 
 os:
   - windows
@@ -43,9 +43,9 @@ install:
   # Useful for debugging any issues with conda
   - conda info -a
   - |
-    conda create -y -n test-environment "python=$_py_ver" "pip>=10.0.1" "knitty>=0.5.5" \
+    conda create -y -n test-environment "python=$_py_ver" "pip>=10.0.1" "knitty>=0.5.6" \
     pytest pytest-cov pandas matplotlib notebook nose \
-    r-knitr r-reticulate sphinx sphinx_rtd_theme ghp-import ipykernel
+    r-knitr r-reticulate sphinx sphinx_rtd_theme ghp-import
   - source activate test-environment
   - conda remove -y knitty
   - jupyter kernelspec list
