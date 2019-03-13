@@ -1,5 +1,5 @@
-# Only build tags
-if: tag IS present
+# Only build PRs or tags
+if: (type = pull_request) OR (tag IS present)
 
 dist: xenial
 
