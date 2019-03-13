@@ -39,13 +39,15 @@ install:
   - conda config --set always_yes yes --set changeps1 no
   - conda config --add channels conda-forge
   - conda config --add channels defaults
-  - conda update -q conda
+  - conda update -y conda
   # Useful for debugging any issues with conda
   - conda info -a
-  - conda create -q -n test-environment "python=$_py_ver" "pip>=10.0.1" "knitty>=0.5.5" pytest pytest-cov pandas matplotlib notebook nose ipykernel
+  - |
+    conda create -y -n test-environment "python=$_py_ver" "pip>=10.0.1" "knitty>=0.5.5" \
+    pytest pytest-cov pandas matplotlib notebook nose \
+    r-knitr r-reticulate sphinx sphinx_rtd_theme ghp-import ipykernel
   - source activate test-environment
-  - conda install -q r-knitr r-reticulate
-  - conda remove -q knitty
+  - conda remove -y knitty
   - jupyter kernelspec list
   - pip install -e .[dev]
 
