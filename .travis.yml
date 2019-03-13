@@ -7,7 +7,7 @@ os:
 
 dist: xenial
 
-language: node_js
+language: shell
 
 notifications:
   email: false
