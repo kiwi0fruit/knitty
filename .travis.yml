@@ -2,9 +2,9 @@
 # if: (type = pull_request) OR (tag IS present)
 
 os:
-  # - windows
+  - windows
   - linux
-  # - osx
+  - osx
 
 dist: xenial
 
