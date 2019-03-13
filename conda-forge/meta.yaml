@@ -39,6 +39,7 @@ requirements:
     - pandoc-attrs
     - pyyaml
     - shutilwhich-cwdpatch >=0.1.0
+    - ipykernel
 
 test:
   imports:
