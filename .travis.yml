@@ -42,7 +42,7 @@ install:
   - conda update -q conda
   # Useful for debugging any issues with conda
   - conda info -a
-  - conda create -q -n test-environment "python=$_py_ver" "pip>=10.0.1" "knitty>=0.5.5" pytest pytest-cov pandas matplotlib nose r-knitr r-reticulate ipykernel
+  - conda create -q -n test-environment "python=$_py_ver" "pip>=10.0.1" "knitty>=0.5.5" pytest pytest-cov pandas matplotlib nose r-knitr r-reticulate ipykernel notebook
   - source activate test-environment
   - conda remove -q knitty
   - jupyter kernelspec list
