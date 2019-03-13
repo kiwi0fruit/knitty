@@ -5,7 +5,7 @@
 {% endblock input %}
 
 {% block markdowncell scoped %}
-{{ cell.source | wordwrap(80, False) }}
+{{ cell.source }}
 {% endblock markdowncell %}
 
 {% block outputs %}
