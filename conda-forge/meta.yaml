@@ -30,7 +30,7 @@ requirements:
     - traitlets
     - ipython
     - jupyter_client
-    - nbconvert
+    - nbconvert >=5.4.1
     - pandocfilters
     - py-pandoc >=2.6
     - click
