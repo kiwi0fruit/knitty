@@ -349,7 +349,6 @@ Here is some markdown text.
 # %% {echo=False} `py` cell, language name is taken from file extension:
 from IPython.display import Markdown
 import math
-import sugartex as stex
 print('This was {py, echo=False} cell')
 
 
@@ -379,14 +378,16 @@ x <- c(10, 20)
 
 
 # %%
-Markdown(stex.pre(f'''
+def md(s): return Markdown(s.replace('ˎ', '$'))
+
+md(f'''
 
 Another markdown text. Now with SugarTeX formula: ˎα^˱{math.pi:1.3f}˲ˎ.
-It works because of the `Markdown` display option and `sugartex` Pandoc filter.
-Acually `stex.pre` is redundant here but it is needed when the text is imported
-or read from somewhere instead of being written in the same document.
+It works because of the `Markdown()` display option and SugarTeX Pandoc filter in the
+Pandoctools profile. Acually `replace()` is redundant here but it is needed when
+the text is imported or read from somewhere instead of being written in the same document.
 
-'''))
+''')
 ````
 
 
