@@ -7,7 +7,7 @@ Modified version of [Notedown](notedown.md) by Aaron O'Leary is included in Knit
 
 # Contents
 
-* [Knitty usage](#knitty-usage)
+* [Knitty usage and examples](#knitty-usage-and-examples)
 * [Differences from original Stitch:](#differences-from-original-stitch)
 1. [New interfaces](#1-new-interfaces)
     * [1.1 New command line interfaces][new_cli]
@@ -42,13 +42,13 @@ Modified version of [Notedown](notedown.md) by Aaron O'Leary is included in Knit
 [code_cells_example]: #17-example-files-in-code-cells-mode
 
 
-# Knitty usage
+# Knitty usage and examples
 
 You can use Hydrogen/Knitty combo to write Markdown documents with Jupyter code chunks (you can use any Jupyter kernel). You can execute code chunks with Atom/Hydrogen right when writing the document and instantly see the results. Knitty helps to export the whole document to other format (html, pdf, output self-contained markdown).
 
 * Write Markdown document: [1.2 Alternative settings placement][alt_settings]
 * Write Atom/Hydrogen code cells document: [1.7 Example python file in code cells mode][code_cells_example]
-* You can see examples of using Knitty [**here**](https://github.com/kiwi0fruit/pandoctools/tree/master/examples). It's used together with some other CLI tools via Pandoctools there but cells management and options are from Knitty.
+* You can see examples of using Knitty in [**pandoctools examples**](https://github.com/kiwi0fruit/pandoctools/tree/master/examples) and in [**matplotlibhelper examples**](https://github.com/kiwi0fruit/matplotlibhelper#usage-example). It's used together with some other CLI tools via Pandoctools there but cells management and options are from Knitty.
 
 Tip: see how to [install and use Hydrogen Atom package](hydrogen.md).
 
