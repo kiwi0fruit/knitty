@@ -23,7 +23,7 @@ setup(
     author='Peter Zagubisalo',
     author_email='peter.zagubisalo@gmail.com',
 
-    license='GPLv2+',
+    license='MIT and BSD 2-Clause',
 
     classifiers=[
         'Development Status :: 3 - Alpha',
@@ -31,7 +31,6 @@ setup(
         'Intended Audience :: Science/Research',
         'Topic :: Software Development :: Build Tools',
         'Topic :: Scientific/Engineering :: Information Analysis',
-        'License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)',
         'Operating System :: OS Independent',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.6',
