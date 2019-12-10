@@ -3,7 +3,7 @@ channels:
     - defaults
     - conda-forge
 dependencies:
-    - "python>=3.6,<3.7"
+    - "python>=3.6"
     - "pip>=10.0.1"
     - "pandoc>=2.2.1"
     - jupyter_core
@@ -12,12 +12,11 @@ dependencies:
     - jupyter_client
     - nbconvert
     - pandocfilters
-    - pypandoc
+    - py-pandoc
     - click
     - psutil
-    - nbformat
-    - pandoc-attributes
     - pyyaml
+    - panflute
 
     - pytest
     - pytest-cov
@@ -26,9 +25,6 @@ dependencies:
     - matplotlib
     - sphinx_rtd_theme
     - ghp-import
-    - nose
-    - r-knitr
-    - r-reticulate
 
     - jupyter
     - notebook

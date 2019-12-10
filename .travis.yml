@@ -43,17 +43,15 @@ install:
   # Useful for debugging any issues with conda
   - conda info -a
   - |
-    conda create -y -n test-environment "python=$_py_ver" "pip>=10.0.1" "knitty>=0.5.6" \
-    pytest pytest-cov pandas matplotlib notebook nose \
-    r-knitr r-reticulate sphinx sphinx_rtd_theme ghp-import
-  - source activate test-environment
+    conda create -y -n test-knitty "python=$_py_ver" "pip>=10.0.1" "knitty>=0.5.6" \
+    pytest pytest-cov pandas matplotlib notebook sphinx sphinx_rtd_theme ghp-import \
+  - source activate test-knitty
   - conda remove -y knitty
   - jupyter kernelspec list
   - pip install -e .[dev]
 
 # Run test
 script:
-  - "knotedown --help"
   - "pandoc-filter-arg --help"
   - "pre-knitty --help"
   - "knitty --help"

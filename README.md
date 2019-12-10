@@ -41,16 +41,6 @@ See main info on how to install Jupyter kernels in the Atom/Hydrogen documentsti
 Knitty is much better to be used with something like Atom/Hydrogen. See [Best Python/Jupyter/PyCharm experience + report generation with Pandoc filters](https://github.com/kiwi0fruit/pandoctools/blob/master/docs/best_python_jupyter_pycharm_experience.md) for more details. You can also try **VS Code** interface to Jupyter from [vscode-python](https://github.com/Microsoft/vscode-python) instead of Atom/Hydrogen. I highly recommend to try to think about ipynb as merely an output format like pdf (albeit dynamic and rich) instead of main format or intermediate format.
 
 
-#### Optional install
-
-Modified version of [Notedown](https://github.com/kiwi0fruit/knitty/blob/master/docs/notedown.md) by Aaron O'Leary is included in Knitty as `knotedown`.
-If you would like to use `knotedown` to import from R Markdown you need installed `knitr`:
-
-```bash
-conda install r-knitr r-reticulate
-```
-
-
 ## Examples
 
 You can see examples of using Knitty [**here**](https://github.com/kiwi0fruit/pandoctools/tree/master/examples). It's used together with some other CLI tools via Pandoctools there but cells management and options are from Knitty.

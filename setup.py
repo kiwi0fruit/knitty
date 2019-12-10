@@ -14,7 +14,7 @@ setup(
     version=versioneer.get_version(),
     cmdclass=versioneer.get_cmdclass(),
 
-    description="Reproducible report generation tool via Jupyter, Pandoc and Markdown. Contains fork of the Notedown.",
+    description="Reproducible report generation tool via Jupyter, Pandoc and Markdown.",
     long_description=long_description,
     long_description_content_type="text/markdown",
 
@@ -23,7 +23,7 @@ setup(
     author='Peter Zagubisalo',
     author_email='peter.zagubisalo@gmail.com',
 
-    license='MIT and BSD 2-Clause',
+    license='MIT License',
 
     classifiers=[
         'Development Status :: 3 - Alpha',
@@ -31,6 +31,7 @@ setup(
         'Intended Audience :: Science/Research',
         'Topic :: Software Development :: Build Tools',
         'Topic :: Scientific/Engineering :: Information Analysis',
+        'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.6',
@@ -42,14 +43,13 @@ setup(
     install_requires=['jupyter_core', 'traitlets', 'ipython', 'jupyter_client', 'ipykernel',
                       'nbconvert>=5.4.1', 'pandocfilters', 'py-pandoc>=2.6',
                       'click', 'psutil', 'panflute>=1.11.2', 'shutilwhich-cwdpatch>=0.1.0',
-                      'nbformat', 'pandoc-attrs', 'pyyaml'],
-    # jupyter_core traitlets ipython jupyter_client nbconvert pandocfilters "py-pandoc>=2.6" click psutil "panflute>=1.11.2" nbformat pandoc-attrs pyyaml "shutilwhich-cwdpatch>=0.1.0" ipykernel
+                      'pyyaml'],
+    # jupyter_core traitlets ipython jupyter_client nbconvert pandocfilters "py-pandoc>=2.6" click psutil "panflute>=1.11.2" pyyaml "shutilwhich-cwdpatch>=0.1.0" ipykernel
     python_requires='>=3.6',
     extras_require={
-        'dev': ['pytest', 'pytest-cov', 'pandas', 'matplotlib', 'sphinx', 'sphinx_rtd_theme', 'ghp-import',  # for stitch
-                'notebook', 'nose'],  # 'r-knitr', 'r-reticulate'],  # for notedown (+ conda packages)
+        'dev': ['pytest', 'pytest-cov', 'pandas', 'matplotlib', 'sphinx', 'sphinx_rtd_theme', 'ghp-import'],
     },
-    # test: pytest pytest-cov pandas matplotlib notebook nose r-knitr r-reticulate
+    # test: pytest pytest-cov pandas matplotlib
     # docs: sphinx sphinx_rtd_theme ghp-import
 
     include_package_data=True,
@@ -57,7 +57,6 @@ setup(
         'console_scripts': [
             'knitty=knitty.knitty:main',
             'pre-knitty=knitty.pre_knitty:main',
-            'knotedown = knitty.notedown.main:app',
             'pandoc-filter-arg=knitty.pandoc_filter_arg.cli:cli',
         ],
     },

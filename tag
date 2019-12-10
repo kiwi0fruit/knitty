@@ -1,7 +1,7 @@
 #!/bin/bash
 cd "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-tagname="0.5.7"
+tagname="0.6.0"
 git tag -d "$tagname"
 git push --delete origin "$tagname"
 git tag -a "$tagname"

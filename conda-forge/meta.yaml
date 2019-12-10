@@ -1,5 +1,5 @@
 {% set name = "knitty" %}
-{% set version = "0.5.3" %}
+{% set version = "0.6.0" %}
 
 package:
   name: {{ name|lower }}
@@ -7,7 +7,7 @@ package:
 
 source:
   url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: 9f72d70908f9872f1b08559ce8776724020c373aaa150332a1421e4352be5d38
+  sha256: xxx
 
 build:
   noarch: python
@@ -15,7 +15,6 @@ build:
   entry_points:
     - knitty = knitty.knitty:main
     - pre-knitty = knitty.pre_knitty:main
-    - knotedown = knitty.notedown.main:app
     - pandoc-filter-arg = knitty.pandoc_filter_arg.cli:cli
   script: "{{ PYTHON }} -m pip install . --no-deps -vv"
 
@@ -35,8 +34,6 @@ requirements:
     - py-pandoc >=2.6
     - click
     - psutil
-    - nbformat
-    - pandoc-attrs
     - pyyaml
     - shutilwhich-cwdpatch >=0.1.0
     - ipykernel
@@ -46,19 +43,17 @@ test:
     - knitty
     - knitty.api
     - knitty.tools
-    - knitty.notedown
     - knitty.stitch
     - knitty.pandoc_filter_arg
   commands:
     - knitty --help
     - pre-knitty --help
-    - knotedown --help
     - pandoc-filter-arg --help
 
 about:
   home: https://github.com/kiwi0fruit/knitty
-  license: "GPL2+"
-  license_family: GPL2
+  license: MIT
+  license_family: MIT
   license_file: LICENSE
   summary: "Reproducible report generation tool via Jupyter, Pandoc and Markdown. Contains fork of the Notedown."
   doc_url: https://github.com/kiwi0fruit/knitty
