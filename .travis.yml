@@ -1,5 +1,5 @@
 # Only build PRs or tags
-if: (type = pull_request) OR (tag IS present)
+# if: (type = pull_request) OR (tag IS present)
 
 os:
   - windows
@@ -43,10 +43,10 @@ install:
   # Useful for debugging any issues with conda
   - conda info -a
   - |
-    conda create -y -n test-knitty "python=$_py_ver" "pip>=10.0.1" "knitty>=0.5.6" \
-    pytest pytest-cov pandas matplotlib notebook sphinx sphinx_rtd_theme ghp-import \
+    conda create -y -n test-knitty "python=$_py_ver" "pip>=10.0.1" \
+    jupyter_core traitlets ipython jupyter_client nbconvert pandocfilters "py-pandoc>=2.6" click psutil "panflute>=1.11.2" pyyaml "shutilwhich-cwdpatch>=0.1.0" ipykernel \
+    pytest pytest-cov pandas matplotlib sphinx sphinx_rtd_theme ghp-import
   - source activate test-knitty
-  - conda remove -y knitty
   - jupyter kernelspec list
   - pip install -e .[dev]
 
