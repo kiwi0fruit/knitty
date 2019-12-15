@@ -107,7 +107,7 @@ class SEARCH:
     ))
 
     @staticmethod
-    def hydro_regex(comm: str, begins: Tuple[str]=None, ends: Tuple[str]=None):
+    def hydro_regex(comm: str, begins: Tuple[str, ...]=None, ends: Tuple[str, ...]=None):
         def del_named_groups(regex: str) -> str:
             return re.sub(r'\?P<\w+>', '', regex)
 
