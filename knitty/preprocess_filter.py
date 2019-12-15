@@ -124,7 +124,7 @@ class SEARCH:
 
 
 class Replacer:
-    def __init__(self, lang: str=None, block_comm: Tuple[str]=()):
+    def __init__(self, lang: str=None, block_comm: Tuple[str, ...]=()):
         """
         Sets default language. Initiates some bool vars.
 
