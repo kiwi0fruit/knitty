@@ -140,7 +140,7 @@ W=(-t html --standalone --self-contained)
 t="$(pandoc-filter-arg "${W[@]}")"
 cat "$in" |
 pre-knitty "$in" --yaml "$yml" |
-cat - <(printf "\n\n") "$yml" |
+cat "$yml" <(printf "\n\n") - |
 pandoc "${R[@]}" -t json |
 knitty $t "$in" "${R[@]}" "${W[@]}" |
 pandoc -f json "${W[@]}" -o "$in.html"
