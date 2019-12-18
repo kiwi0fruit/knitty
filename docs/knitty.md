@@ -2,8 +2,6 @@
 
 Knitty is a Pandoc filter and [Atom/Hydrogen](https://atom.io/packages/hydrogen)-friendly reproducible report generation tool via Jupyter, Pandoc and Markdown (fork of the [Stitch](stitch.md) by Tom Augspurger that is a [Knitr](http://yihui.name/knitr/)-[RMarkdown](http://rmarkdown.rstudio.com)-like library in Python). Insert python code (or other Jupyter kernel code) to the Markdown document **or write in plain Python/Julia/R with block-commented Markdown** and have code's results in the output document.
 
-Modified version of [Notedown](notedown.md) by Aaron O'Leary is included in Knitty.
-
 
 # Contents
 
@@ -13,7 +11,6 @@ Modified version of [Notedown](notedown.md) by Aaron O'Leary is included in Knit
     * [1.1 New command line interfaces][new_cli]
         * [pre-knitty](#pre-knitty)
         * [knitty](#knitty-cli)
-        * [knotedown](#knotedown)
         * [pandoc-filter-arg](#pandoc-filter-arg)
         * [self_contained_raw_html_img Panflute filter](#self_contained_raw_html_img-panflute-filter)
     * [1.2 Alternative settings placement][alt_settings]
@@ -459,7 +456,7 @@ print('Hello!')
 
 ## 2.4 Input keyword argument
 
-Used for to .ipynb conversion via Pandoc (or `knotedown` with `--match=code` flag): `.code .cell` classes would be added to code blocks that have `input=True` key word attribute set. Default value can be set in metadata section like
+Used for to .ipynb conversion via Pandoc: `.code .cell` classes would be added to code blocks that have `input=True` key word attribute set. Default value can be set in metadata section like
 ```yaml
 ---
 input: True
