@@ -175,23 +175,6 @@ pandoc -f json -o doc.ipynb
 This would give .ipynb notebook without attachments but with base64 encoded images with captions.
 
 
-### knotedown
-
-`knotedown` - patched Notedown module by Aaron O'Leary (aaren) was added to Knitty and available via `knotedown` CLI - same API as in `notedown` CLI. Patched version supports Pandoc metadata that is then set in notebook metadata like in [**here**](https://pandoc.org/MANUAL.html#creating-jupyter-notebooks-with-pandoc).
-
-In previous Knitty versions (before Pandoc >=2.6) `knotedown` was used for to .ipynb conversion like this:
-
-```bash
-jupymd="markdown-bracketed_spans-fenced_divs-link_attributes-simple_tables\
--multiline_tables-grid_tables-pipe_tables-fenced_code_attributes\
--markdown_in_html_blocks-table_captions-smart"
-pandoc doc.md -t "$jupymd" --standalone --self-contained --filter pandoc-crossref |
-knotedown --match=code --nomagic > doc.ipynb
-# matches cells like ``` {.py .code}
-```
-`--standalone --self-contained` are necessary for conversion, `--nomagic` is necessary for R kernel conversion, `$jupymd` is a Markdown flavor compatible with *pandoc-crossref* and with Jupyter markdown cells).
-
-
 ## 1.2 Alternative settings placement
 
 Alternative Knitty settings placement was added for GitHub flavored markdown (GFM) compatibility in Atom editor (**language-gfm** compatibility with working spell checking).
