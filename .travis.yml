@@ -1,13 +1,13 @@
 # Only build PRs or tags
-if: (type = pull_request) OR (tag IS present)
+# if: (type = pull_request) OR (tag IS present)
 
 os:
   - windows
   - linux
   - osx
 
-dist: xenial
-
+dist: bionic
+osx_image: xcode11.3
 language: shell
 
 notifications:
@@ -18,7 +18,7 @@ git:
 
 # Install packages
 install:
-  - _py_ver="3.7"
+  - _py_ver="3.8"
   - |
     if [ "$TRAVIS_OS_NAME" = 'windows' ]; then
         choco install miniconda3
