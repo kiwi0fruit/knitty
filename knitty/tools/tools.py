@@ -17,7 +17,7 @@ def load_yaml(string: Union[str, None], del_yaml: bool=False) -> Tuple[str, dict
     if isinstance(string, str) and string:
         found = yaml_regex.search(string)
         if found:
-            yml = yaml.load(found.group(1))
+            yml = yaml.load(found.group(1), Loader=yaml.SafeLoader)
             if del_yaml:
                 string = yaml_regex.sub('\n\n', string, 1)
             if not isinstance(yml, dict):
