@@ -1,8 +1,6 @@
 #!/bin/bash
 cd "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-source ./tag
-
 python setup.py sdist
 if [[ "$(uname -s)" == MINGW* ]]; then
     winpty twine upload dist/* --skip-existing
