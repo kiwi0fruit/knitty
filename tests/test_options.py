@@ -81,7 +81,6 @@ class TestOptions:
         assert result == expected
 
 
-@pytest.mark.slow
 class TestOptionsKernel:
 
     def test_fig_cap(self):
