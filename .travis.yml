@@ -68,3 +68,4 @@ script:
     panfl -t markdown knitty.self_contained_raw_html_img |
     pandoc -f json -t markdown
   - "py.test tests --cov=knitty --cov-report html"
+  - "py.test tests2 --cov=knitty --cov-report html"
