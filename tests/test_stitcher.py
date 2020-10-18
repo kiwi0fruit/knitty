@@ -292,7 +292,6 @@ class TestFormatters:
         assert result == expected
 
 
-@pytest.mark.slow
 class TestIntegration:
 
     def test_from_file(self, document_path, clean_stdout):
@@ -446,7 +445,6 @@ class TestIntegration:
         assert wrapped['c'][0]['c'][0]['t'] == 'InlineMath'
 
 
-@pytest.mark.slow
 class TestKernel:
 
     def test_init_python_pre(self):
