@@ -1,4 +1,23 @@
 import knitty.stitch.stitch as R
+import pytest
+
+
+@pytest.fixture(scope='module')
+def global_python_kernel():
+    """
+    A python kernel anyone can use.
+    """
+    return R.kernel_factory('python')
+
+
+@pytest.fixture(scope='function')
+def clean_python_kernel(global_python_kernel):
+    """
+    Takes ``global_python_kernel`` and resets all variables,
+    returning the clean kernel.
+    """
+    R.run_code('%reset -f', global_python_kernel)
+    return global_python_kernel
 
 
 class TestKernel:

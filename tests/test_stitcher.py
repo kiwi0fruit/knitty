@@ -445,7 +445,6 @@ class TestIntegration:
 
 
 class TestStitcher:
-
     def test_error(self):
         s = R.Stitch('stdout', 'html')
         assert s.error == 'continue'
@@ -470,6 +469,7 @@ class TestStitcher:
         assert s.has_trait('fig.width')
         assert not s.has_trait('fake.width')
         assert not s.has_trait('fig.fake')
+
 
 def test_empty_message():
     # GH 52
