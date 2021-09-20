@@ -714,12 +714,12 @@ def run_code(code: str, kp: KernelPair, timeout=None):
     msg_id = kp.kc.execute(code)
     while True:
         try:
-            msg = kp.kc.shell_channel.get_msg(timeout=timeout)
+            msg = kp.kc.get_shell_msg(timeout=timeout)
         except Empty:
             # TODO: Log error
             raise
 
-        if msg['parent_header'].get('msg_id') == msg_id:
+        if msg['parent_header']['msg_id'] == msg_id:
             break
         else:
             # not our reply
@@ -734,11 +734,11 @@ def run_code(code: str, kp: KernelPair, timeout=None):
             # in certain CI systems, waiting < 1 second might miss messages.
             # So long as the kernel sends a status:idle message when it
             # finishes, we won't actually have to wait this long, anyway.
-            msg = kp.kc.iopub_channel.get_msg(timeout=4)
+            msg = kp.kc.get_iopub_msg(timeout=4)
         except Empty:
             pass
             # TODO: Log error
-        if msg['parent_header'].get('msg_id') != msg_id:
+        if msg['parent_header']['msg_id'] != msg_id:
             # not an output from our execution
             continue
 
